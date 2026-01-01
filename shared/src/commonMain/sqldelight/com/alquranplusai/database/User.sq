@@ -1,0 +1,133 @@
+-- User table
+CREATE TABLE IF NOT EXISTS User (
+    id TEXT PRIMARY KEY NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    username TEXT NOT NULL UNIQUE,
+    displayName TEXT NOT NULL,
+    firstName TEXT,
+    lastName TEXT,
+    avatarUrl TEXT,
+    bio TEXT,
+    country TEXT,
+    language TEXT NOT NULL DEFAULT 'en',
+    timezone TEXT,
+    dateOfBirth TEXT,
+    gender TEXT,
+    createdAt INTEGER NOT NULL,
+    updatedAt INTEGER NOT NULL,
+    lastLoginAt INTEGER,
+    isEmailVerified INTEGER NOT NULL DEFAULT 0,
+    isActive INTEGER NOT NULL DEFAULT 1
+);
+
+-- UserStatistics table
+CREATE TABLE IF NOT EXISTS UserStatistics (
+    userId TEXT PRIMARY KEY NOT NULL,
+    totalReadingTime INTEGER NOT NULL DEFAULT 0,
+    totalAyahsRead INTEGER NOT NULL DEFAULT 0,
+    totalSessions INTEGER NOT NULL DEFAULT 0,
+    currentStreak INTEGER NOT NULL DEFAULT 0,
+    longestStreak INTEGER NOT NULL DEFAULT 0,
+    quranCompletions INTEGER NOT NULL DEFAULT 0,
+    surahsCompleted INTEGER NOT NULL DEFAULT 0,
+    juzCompleted INTEGER NOT NULL DEFAULT 0,
+    bookmarksCount INTEGER NOT NULL DEFAULT 0,
+    notesCount INTEGER NOT NULL DEFAULT 0,
+    quizzesCompleted INTEGER NOT NULL DEFAULT 0,
+    averageQuizScore REAL NOT NULL DEFAULT 0.0,
+    achievementsUnlocked INTEGER NOT NULL DEFAULT 0,
+    rank INTEGER,
+    joinedDate INTEGER NOT NULL,
+    lastActiveDate INTEGER NOT NULL,
+    FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_user_email ON User(email);
+CREATE INDEX IF NOT EXISTS idx_user_username ON User(username);
+CREATE INDEX IF NOT EXISTS idx_user_active ON User(isActive);
+
+-- User Queries
+selectUserById:
+SELECT * FROM User WHERE id = ?;
+
+selectUserByEmail:
+SELECT * FROM User WHERE email = ?;
+
+selectUserByUsername:
+SELECT * FROM User WHERE username = ?;
+
+insertUser:
+INSERT OR REPLACE INTO User(
+    id, email, username, displayName, firstName, lastName,
+    avatarUrl, bio, country, language, timezone, dateOfBirth, gender,
+    createdAt, updatedAt, lastLoginAt, isEmailVerified, isActive
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateUserProfile:
+UPDATE User 
+SET displayName = ?, firstName = ?, lastName = ?, avatarUrl = ?,
+    bio = ?, country = ?, timezone = ?, dateOfBirth = ?, gender = ?,
+    updatedAt = ?
+WHERE id = ?;
+
+updateUserLastLogin:
+UPDATE User SET lastLoginAt = ? WHERE id = ?;
+
+deleteUser:
+DELETE FROM User WHERE id = ?;
+
+-- UserStatistics Queries
+selectUserStatistics:
+SELECT * FROM UserStatistics WHERE userId = ?;
+
+insertUserStatistics:
+INSERT OR REPLACE INTO UserStatistics(
+    userId, totalReadingTime, totalAyahsRead, totalSessions,
+    currentStreak, longestStreak, quranCompletions, surahsCompleted, juzCompleted,
+    bookmarksCount, notesCount, quizzesCompleted, averageQuizScore,
+    achievementsUnlocked, rank, joinedDate, lastActiveDate
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateUserStatistics:
+UPDATE UserStatistics 
+SET totalReadingTime = ?, totalAyahsRead = ?, totalSessions = ?,
+    currentStreak = ?, longestStreak = ?, quranCompletions = ?,
+    surahsCompleted = ?, juzCompleted = ?, lastActiveDate = ?
+WHERE userId = ?;
+
+incrementReadingStats:
+UPDATE UserStatistics 
+SET totalReadingTime = totalReadingTime + ?,
+    totalAyahsRead = totalAyahsRead + ?,
+    totalSessions = totalSessions + 1,
+    lastActiveDate = ?
+WHERE userId = ?;
+
+-- Reading Position Queries (for QuranRepository)
+updateReadingPosition:
+UPDATE UserStatistics
+SET lastActiveDate = ?
+WHERE userId = ?;
+
+getReadingPosition:
+SELECT userId, 0 AS lastSurah, 0 AS lastAyah FROM UserStatistics WHERE userId = ? LIMIT 1;
+
+-- Completion Tracking Queries
+markSurahComplete:
+UPDATE UserStatistics
+SET surahsCompleted = surahsCompleted + 1,
+    lastActiveDate = ?
+WHERE userId = ?;
+
+markJuzComplete:
+UPDATE UserStatistics
+SET juzCompleted = juzCompleted + 1,
+    lastActiveDate = ?
+WHERE userId = ?;
+
+getCompletedSurahs:
+SELECT 0 FROM UserStatistics WHERE userId = ? LIMIT 0;
+
+getCompletedJuz:
+SELECT 0 FROM UserStatistics WHERE userId = ? LIMIT 0;

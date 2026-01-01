@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark Theme Colors -->
+    <color name="primary">#90CAF9</color>
+    <color name="primary_dark">#003258</color>
+    <color name="primary_light">#CCE5FF</color>
+    
+    <color name="secondary">#B8C8DA</color>
+    <color name="secondary_dark">#23323F</color>
+    <color name="secondary_light">#D4E4F6</color>
+    
+    <color name="accent">#D4BEE4</color>
+    <color name="accent_light">#F0DBFF</color>
+    
+    <color name="background">#1A1C1E</color>
+    <color name="surface">#1A1C1E</color>
+    <color name="surface_variant">#42474E</color>
+    
+    <color name="text_primary">#E2E2E6</color>
+    <color name="text_secondary">#C2C7CF</color>
+    <color name="text_on_primary">#003258</color>
+    
+    <color name="error">#FFB4AB</color>
+    <color name="error_container">#93000A</color>
+    <color name="on_error">#690005</color>
+    
+    <color name="quran_text">#E2E2E6</color>
+    <color name="quran_background">#1E2022</color>
+    <color name="quran_highlight">#4A4A00</color>
+    
+    <color name="divider">#424242</color>
+</resources>

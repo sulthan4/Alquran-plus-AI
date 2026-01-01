@@ -1,0 +1,71 @@
+
+> Configure project :shared
+w: The Default Kotlin Hierarchy Template was not applied to 'project ':shared'':
+Explicit .dependsOn() edges were configured for the following source sets:
+[iosArm64Main, iosMain, iosSimulatorArm64Main, iosX64Main]
+
+Consider removing dependsOn-calls or disabling the default template by adding
+    'kotlin.mpp.applyDefaultHierarchyTemplate=false'
+to your gradle.properties
+
+Learn more about hierarchy templates: https://kotl.in/hierarchy-template
+
+
+> Task :shared:preBuild UP-TO-DATE
+> Task :androidApp:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:preDebugBuild UP-TO-DATE
+> Task :androidApp:preBuild UP-TO-DATE
+> Task :androidApp:preDebugBuild UP-TO-DATE
+> Task :shared:writeDebugAarMetadata UP-TO-DATE
+> Task :androidApp:generateDebugBuildConfig UP-TO-DATE
+> Task :shared:generateDebugResValues UP-TO-DATE
+> Task :shared:generateDebugResources UP-TO-DATE
+> Task :shared:packageDebugResources UP-TO-DATE
+> Task :shared:extractDeepLinksDebug UP-TO-DATE
+> Task :shared:processDebugManifest UP-TO-DATE
+> Task :shared:compileDebugLibraryResources UP-TO-DATE
+> Task :shared:parseDebugLocalResources UP-TO-DATE
+> Task :shared:generateDebugRFile UP-TO-DATE
+> Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:generateCommonMainAlQuranDatabaseInterface UP-TO-DATE
+> Task :androidApp:checkDebugAarMetadata UP-TO-DATE
+> Task :androidApp:generateDebugResValues UP-TO-DATE
+> Task :androidApp:mapDebugSourceSetPaths UP-TO-DATE
+> Task :androidApp:generateDebugResources UP-TO-DATE
+> Task :androidApp:mergeDebugResources UP-TO-DATE
+> Task :androidApp:packageDebugResources UP-TO-DATE
+> Task :androidApp:parseDebugLocalResources UP-TO-DATE
+> Task :androidApp:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :androidApp:extractDeepLinksDebug UP-TO-DATE
+> Task :shared:compileDebugKotlinAndroid UP-TO-DATE
+> Task :shared:javaPreCompileDebug UP-TO-DATE
+> Task :androidApp:processDebugMainManifest UP-TO-DATE
+> Task :androidApp:processDebugManifest UP-TO-DATE
+> Task :shared:compileDebugJavaWithJavac NO-SOURCE
+> Task :androidApp:processDebugManifestForPackage UP-TO-DATE
+> Task :shared:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :androidApp:processDebugResources UP-TO-DATE
+
+> Task :androidApp:compileDebugKotlin FAILED
+e: file:///Users/mohamed/.gemini/antigravity/scratch/AlQuranPlusAI/androidApp/src/main/kotlin/com/alquranplusai/android/ui/screens/settings/ReadingPreferencesScreen.kt:21:18 Property delegate must have a 'getValue(Nothing?, KProperty0<ERROR CLASS: Cannot infer argument for type parameter T>)' method. None of the following functions is applicable:
+fun <T> State<T>.getValue(thisObj: Any?, property: KProperty<*>): T
+e: file:///Users/mohamed/.gemini/antigravity/scratch/AlQuranPlusAI/androidApp/src/main/kotlin/com/alquranplusai/android/ui/screens/settings/ReadingPreferencesScreen.kt:21:21 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///Users/mohamed/.gemini/antigravity/scratch/AlQuranPlusAI/androidApp/src/main/kotlin/com/alquranplusai/android/ui/screens/settings/ReadingPreferencesScreen.kt:21:31 Unresolved reference 'fontSize'.
+e: file:///Users/mohamed/.gemini/antigravity/scratch/AlQuranPlusAI/androidApp/src/main/kotlin/com/alquranplusai/android/ui/screens/settings/ReadingPreferencesScreen.kt:21:40 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///Users/mohamed/.gemini/antigravity/scratch/AlQuranPlusAI/androidApp/src/main/kotlin/com/alquranplusai/android/ui/viewmodels/ReadingPreferencesViewModel.kt:24:17 Unresolved reference '_fontSize'.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':androidApp:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1s
+26 actionable tasks: 1 executed, 25 up-to-date

@@ -1,0 +1,46 @@
+-- Surah table
+CREATE TABLE IF NOT EXISTS Surah (
+    number INTEGER PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    nameArabic TEXT NOT NULL,
+    nameTransliteration TEXT NOT NULL,
+    nameTranslation TEXT NOT NULL,
+    revelationType TEXT NOT NULL,
+    numberOfAyahs INTEGER NOT NULL,
+    bismillahPre INTEGER NOT NULL DEFAULT 1,
+    rukuCount INTEGER NOT NULL DEFAULT 0
+);
+
+-- Indexes for Surah
+CREATE INDEX IF NOT EXISTS idx_surah_revelation_type ON Surah(revelationType);
+CREATE INDEX IF NOT EXISTS idx_surah_name ON Surah(name);
+
+-- Queries
+selectAll:
+SELECT * FROM Surah ORDER BY number;
+
+selectByNumber:
+SELECT * FROM Surah WHERE number = ?;
+
+selectByRevelationType:
+SELECT * FROM Surah WHERE revelationType = ? ORDER BY number;
+
+searchByName:
+SELECT * FROM Surah 
+WHERE name LIKE '%' || ? || '%' 
+   OR nameArabic LIKE '%' || ? || '%'
+   OR nameTransliteration LIKE '%' || ? || '%'
+ORDER BY number;
+
+insert:
+INSERT OR REPLACE INTO Surah(
+    number, name, nameArabic, nameTransliteration, nameTranslation,
+    revelationType, numberOfAyahs, bismillahPre, rukuCount
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+
+deleteAll:
+DELETE FROM Surah;
+
+count:
+SELECT count(*) FROM Surah;

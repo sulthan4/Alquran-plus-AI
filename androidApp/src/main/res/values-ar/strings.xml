@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">القرآن بلس AI</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_quran">القرآن</string>
+    <string name="nav_audio">الصوت</string>
+    <string name="nav_bookmarks">العلامات</string>
+    <string name="nav_more">المزيد</string>
+    
+    <!-- Common -->
+    <string name="loading">جاري التحميل…</string>
+    <string name="error">خطأ</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="cancel">إلغاء</string>
+    <string name="ok">موافق</string>
+    <string name="save">حفظ</string>
+    <string name="delete">حذف</string>
+    <string name="edit">تعديل</string>
+    <string name="share">مشاركة</string>
+    <string name="search">بحث</string>
+    <string name="settings">الإعدادات</string>
+    
+    <!-- Quran -->
+    <string name="quran_surah">سورة</string>
+    <string name="quran_juz">جزء</string>
+    <string name="quran_page">صفحة</string>
+    <string name="quran_ayah">آية</string>
+    <string name="quran_reading">القراءة</string>
+    <string name="quran_continue_reading">متابعة القراءة</string>
+    <string name="quran_last_read">آخر قراءة</string>
+    
+    <!-- Audio -->
+    <string name="audio_reciter">القارئ</string>
+    <string name="audio_play">تشغيل</string>
+    <string name="audio_pause">إيقاف مؤقت</string>
+    <string name="audio_next">التالي</string>
+    <string name="audio_previous">السابق</string>
+    <string name="audio_repeat">تكرار</string>
+    <string name="audio_download">تحميل</string>
+    <string name="audio_playlist">قائمة التشغيل</string>
+</resources>

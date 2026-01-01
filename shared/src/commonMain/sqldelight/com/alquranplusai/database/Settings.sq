@@ -1,0 +1,121 @@
+-- Settings table for user preferences
+CREATE TABLE IF NOT EXISTS Settings (
+    userId TEXT PRIMARY KEY NOT NULL,
+    -- Reading preferences
+    defaultReadingMode TEXT NOT NULL DEFAULT 'CONTINUOUS',
+    defaultTextType TEXT NOT NULL DEFAULT 'UTHMANI',
+    arabicFontFamily TEXT NOT NULL DEFAULT 'uthmanic_hafs',
+    arabicFontSize INTEGER NOT NULL DEFAULT 24,
+    translationFontSize INTEGER NOT NULL DEFAULT 16,
+    lineSpacing REAL NOT NULL DEFAULT 1.5,
+    showTajweed INTEGER NOT NULL DEFAULT 1,
+    showTransliteration INTEGER NOT NULL DEFAULT 0,
+    showWordByWord INTEGER NOT NULL DEFAULT 0,
+    
+    -- Audio preferences
+    defaultReciterId TEXT,
+    autoPlayAudio INTEGER NOT NULL DEFAULT 0,
+    audioPlaybackSpeed REAL NOT NULL DEFAULT 1.0,
+    wordByWordAudio INTEGER NOT NULL DEFAULT 0,
+    
+    -- UI preferences
+    theme TEXT NOT NULL DEFAULT 'SYSTEM',
+    language TEXT NOT NULL DEFAULT 'en',
+    enableAnimations INTEGER NOT NULL DEFAULT 1,
+    enableHapticFeedback INTEGER NOT NULL DEFAULT 1,
+    
+    -- Notification preferences
+    enableNotifications INTEGER NOT NULL DEFAULT 1,
+    dailyReminderEnabled INTEGER NOT NULL DEFAULT 0,
+    dailyReminderTime TEXT,
+    quizReminderEnabled INTEGER NOT NULL DEFAULT 0,
+    achievementNotifications INTEGER NOT NULL DEFAULT 1,
+    
+    -- Privacy preferences
+    shareStatistics INTEGER NOT NULL DEFAULT 0,
+    showOnLeaderboard INTEGER NOT NULL DEFAULT 1,
+    biometricLockEnabled INTEGER NOT NULL DEFAULT 0,
+    
+    -- Data preferences
+    autoDownloadAudio INTEGER NOT NULL DEFAULT 0,
+    downloadOnWifiOnly INTEGER NOT NULL DEFAULT 1,
+    autoBackup INTEGER NOT NULL DEFAULT 1,
+    backupFrequency TEXT NOT NULL DEFAULT 'WEEKLY',
+    
+    FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
+);
+
+-- DefaultTranslation table (many-to-many)
+CREATE TABLE IF NOT EXISTS DefaultTranslation (
+    userId TEXT NOT NULL,
+    translationId TEXT NOT NULL,
+    position INTEGER NOT NULL,
+    PRIMARY KEY (userId, translationId),
+    FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE,
+    FOREIGN KEY (translationId) REFERENCES Translation(id) ON DELETE CASCADE
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_default_translation_user ON DefaultTranslation(userId, position);
+
+-- Settings Queries
+selectUserSettings:
+SELECT * FROM Settings WHERE userId = ?;
+
+insertSettings:
+INSERT OR REPLACE INTO Settings(
+    userId, defaultReadingMode, defaultTextType, arabicFontFamily,
+    arabicFontSize, translationFontSize, lineSpacing, showTajweed,
+    showTransliteration, showWordByWord, defaultReciterId, autoPlayAudio,
+    audioPlaybackSpeed, wordByWordAudio, theme, language,
+    enableAnimations, enableHapticFeedback, enableNotifications,
+    dailyReminderEnabled, dailyReminderTime, quizReminderEnabled,
+    achievementNotifications, shareStatistics, showOnLeaderboard,
+    biometricLockEnabled, autoDownloadAudio, downloadOnWifiOnly,
+    autoBackup, backupFrequency
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateReadingPreferences:
+UPDATE Settings 
+SET defaultReadingMode = ?, defaultTextType = ?, arabicFontFamily = ?,
+    arabicFontSize = ?, translationFontSize = ?, lineSpacing = ?,
+    showTajweed = ?, showTransliteration = ?, showWordByWord = ?
+WHERE userId = ?;
+
+updateAudioPreferences:
+UPDATE Settings 
+SET defaultReciterId = ?, autoPlayAudio = ?, audioPlaybackSpeed = ?, wordByWordAudio = ?
+WHERE userId = ?;
+
+updateUIPreferences:
+UPDATE Settings 
+SET theme = ?, language = ?, enableAnimations = ?, enableHapticFeedback = ?
+WHERE userId = ?;
+
+updateNotificationPreferences:
+UPDATE Settings 
+SET enableNotifications = ?, dailyReminderEnabled = ?, dailyReminderTime = ?,
+    quizReminderEnabled = ?, achievementNotifications = ?
+WHERE userId = ?;
+
+updatePrivacyPreferences:
+UPDATE Settings 
+SET shareStatistics = ?, showOnLeaderboard = ?, biometricLockEnabled = ?
+WHERE userId = ?;
+
+updateDataPreferences:
+UPDATE Settings 
+SET autoDownloadAudio = ?, downloadOnWifiOnly = ?, autoBackup = ?, backupFrequency = ?
+WHERE userId = ?;
+
+-- DefaultTranslation Queries
+selectDefaultTranslations:
+SELECT translationId FROM DefaultTranslation 
+WHERE userId = ? ORDER BY position;
+
+insertDefaultTranslation:
+INSERT OR REPLACE INTO DefaultTranslation(userId, translationId, position)
+VALUES (?, ?, ?);
+
+deleteDefaultTranslations:
+DELETE FROM DefaultTranslation WHERE userId = ?;

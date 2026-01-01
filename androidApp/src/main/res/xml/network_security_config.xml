@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <!-- Allow HTTPS connections to Quran data sources -->
+        <domain includeSubdomains="true">quran.com</domain>
+        <domain includeSubdomains="true">cdn.islamic.network</domain>
+        <domain includeSubdomains="true">everyayah.com</domain>
+        <domain includeSubdomains="true">tanzil.net</domain>
+        <domain includeSubdomains="true">alquran.cloud</domain>
+        
+        <!-- Trust system certificates -->
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+    
+    <!-- For debugging purposes only - remove in production -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">10.0.2.2</domain>
+    </domain-config>
+</network-security-config>

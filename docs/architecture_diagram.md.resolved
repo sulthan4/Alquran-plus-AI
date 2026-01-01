@@ -1,0 +1,210 @@
+# AlQuranPlusAI Architecture Flow Diagram
+
+This document illustrates the high-level architecture and data flow of the **AlQuranPlusAI** application, tailored for a Kotlin Multiplatform (KMP) structure with Android Jetpack Compose.
+
+```mermaid
+graph TD
+    %% Styling
+    classDef ui fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef vm fill:#e0f2f1,stroke:#00695c,stroke-width:2px;
+    classDef domain fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef data fill:#fce4ec,stroke:#880e4f,stroke-width:2px;
+    classDef db fill:#e8eaf6,stroke:#1a237e,stroke-width:2px;
+    classDef network fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
+    classDef external fill:#eeeeee,stroke:#616161,stroke-dasharray: 5 5;
+
+    subgraph AndroidApp ["Android App Module (:androidApp)"]
+        subgraph UI_Layer ["UI Layer (Jetpack Compose)"]
+            Screens["Screens / Composables\n(Home, Reading, Search, etc.)"]:::ui
+            Nav["Navigation Graph\n(AppNavHost)"]:::ui
+        end
+        
+        subgraph Presentation_Layer ["Presentation Layer"]
+            ViewModels["Android ViewModels\n(HomeViewModel, ReadingViewModel...)"]:::vm
+        end
+    end
+
+    subgraph SharedModule ["Shared Module (:shared)"]
+        subgraph Domain_Layer ["Domain Layer"]
+            UseCases["Use Cases\n(Optional Business Logic)"]:::domain
+            ReposInterface["Repository Interfaces\n(QuranRepository, AudioRepository...)"]:::domain
+            Models["Domain Models"]:::domain
+        end
+
+        subgraph Data_Layer ["Data Layer"]
+            ReposImpl["Repository Implementations\n(QuranRepositoryImpl...)"]:::data
+            
+            subgraph Data_Sources ["Data Sources"]
+                LocalDB["Local Database\n(SQLDelight)"]:::db
+                Prefs["Preferences\n(DataStore)"]:::db
+                NetworkClient["Network Client\n(Ktor)"]:::network
+                AI_Engine["AI Engine\n(TFLite / Semantic Search)"]:::data
+                AudioEngine["Audio Engine\n(ExoPlayer Wrapper)"]:::data
+            end
+        end
+    end
+
+    subgraph External ["External/Platform"]
+        API["Remote APIs\n(Quran Text, Audio, Auth)"]:::external
+        FileSystem["File System\n(Downloads, Cache)"]:::external
+    end
+
+    %% Connections
+    Nav --> Screens
+    Screens -- "Events/State" --> ViewModels
+    ViewModels -- "Calls" --> UseCases
+    ViewModels -- "Calls (if simple)" --> ReposInterface
+    
+    UseCases --> ReposInterface
+    ReposImpl -. "implements" .-> ReposInterface
+    
+    ReposImpl --> LocalDB
+    ReposImpl --> Prefs
+    ReposImpl --> NetworkClient
+    ReposImpl --> AI_Engine
+    ReposImpl --> AudioEngine
+
+    LocalDB --> FileSystem
+    NetworkClient -- "HTTP/REST" --> API
+    AudioEngine --> FileSystem
+    AudioEngine -- "Stream" --> API
+
+    %% Cross-cutting concerns
+    DI["Dependency Injection (Koin)"] -.-> ViewModels
+    DI -.-> ReposImpl
+    DI -.-> LocalDB
+    DI -.-> NetworkClient
+```
+
+## Layers Description
+
+1.  **UI Layer (Android)**:
+    *   Built with **Jetpack Compose**.
+    *   **Screens** act as the view, consuming state and emitting events.
+    *   **Navigation** handles routing between screens.
+
+2.  **Presentation Layer (Android/Shared)**:
+    *   **ViewModels**: Hold UI state (StateFlow), handle UI logic, and communicate with the Domain layer.
+    *   (Note: In this architecture, ViewModels are primarily in the Android module, bridging the platform-specific UI with the shared business logic).
+
+3.  **Domain Layer (Shared)**:
+    *   **pure Kotlin**, platform-agnostic.
+    *   **Models**: Data classes defining the core business objects.
+    *   **Repository Interfaces**: Contracts defining data operations.
+    *   **Use Cases**: Encapsulate complex business rules (e.g., "CalculateReadingStreak").
+
+4.  **Data Layer (Shared)**:
+    *   **Repository Implementations**: Coordinate data fetching from various sources (offline-first strategy).
+    *   **SQLDelight**: Type-safe local database for caching Quran text, user data, etc.
+    *   **Ktor**: HTTP client for API calls.
+    *   **AI Engine**: TFLite wrapper for on-device ML tasks (Shared/Android specific implementation injected).
+    *   **Audio Engine**: Handles media playback logic.
+
+5.  **Infrastructure**:
+    *   **Koin**: Dependency Injection framework gluing everything together across modules.
+
+## Application Navigation Flow
+
+This diagram visualizes the user journey and navigation paths through the AlQuranPlusAI application.
+
+```mermaid
+graph TD
+    %% Nodes
+    Start((Start))
+    Splash[Splash Screen]
+    Onboarding[Onboarding Flow]
+    Auth[Auth / Welcome]
+    
+    subgraph Main_Navigation [Main Navigation Host]
+        Home[Home Dashboard]
+        
+        subgraph Quran_Feature [Quran Reading]
+            SurahList[Surah/Juz List]
+            Reading[Reading Screen]
+            WordDetail[Word Detail / Tafsir]
+            ReadingSettings[Reading Settings]
+        end
+        
+        subgraph Audio_Feature [Audio Experience]
+            AudioHome[Audio Hub]
+            ReciterSelect[Reciter Selection]
+            Player[Full Screen Player]
+            Playlist[Playlists]
+        end
+        
+        subgraph Search_AI_Feature [Search & AI]
+            SearchHome[Search Hub]
+            TextSearch[Text Search]
+            VoiceSearch[Voice/AI Search]
+            SearchResults[Results & Insights]
+        end
+        
+        subgraph Profile_Settings [User & Settings]
+            Profile[Profile & Stats]
+            Settings[Settings Menu]
+            Analytics[Analytics Dashboard]
+            Subs[Subscription]
+        end
+        
+        subgraph Gamification [Quiz & Goals]
+            QuizHome[Quiz Hub]
+            QuizPlay[Quiz Session]
+            Results[Quiz Results]
+        end
+    end
+
+    %% Edge Definitions
+    Start --> Splash
+    Splash -- First Time --> Onboarding
+    Splash -- Logged Out --> Auth
+    Splash -- Logged In --> Home
+    Onboarding --> Auth
+    Auth --> Home
+
+    %% Neural connections
+    Home --> SurahList
+    Home --> SearchHome
+    Home --> AudioHome
+    Home --> QuizHome
+    Home --> Profile
+
+    %% Quran Flow
+    SurahList --> Reading
+    Reading --> WordDetail
+    Reading --> ReadingSettings
+    Reading -- "Play Audio" --> Player
+
+    %% Audio Flow
+    AudioHome --> ReciterSelect
+    AudioHome --> Playlist
+    AudioHome --> Player
+    ReciterSelect --> Player
+
+    %% Search Flow
+    SearchHome --> TextSearch
+    SearchHome --> VoiceSearch
+    TextSearch --> SearchResults
+    VoiceSearch --> SearchResults
+    SearchResults --> Reading
+
+    %% Quiz Flow
+    QuizHome --> QuizPlay
+    QuizPlay --> Results
+    Results --> QuizHome
+
+    %% Profile Flow
+    Profile --> Settings
+    Profile --> Analytics
+    Profile --> Subs
+
+    %% Styling
+    classDef plain fill:#fff,stroke:#333,stroke-width:1px;
+    classDef start fill:#d1c4e9,stroke:#512da8,stroke-width:2px;
+    classDef feature fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
+    classDef main fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    
+    class Start start;
+    class Splash,Onboarding,Auth plain;
+    class Home main;
+    class Reading,AudioHome,SearchHome,QuizHome,Profile feature;
+```

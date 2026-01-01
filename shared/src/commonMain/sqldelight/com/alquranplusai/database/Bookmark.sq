@@ -1,0 +1,76 @@
+-- Bookmark table
+CREATE TABLE IF NOT EXISTS Bookmark (
+    id TEXT PRIMARY KEY NOT NULL,
+    surahNumber INTEGER NOT NULL,
+    ayahNumber INTEGER NOT NULL,
+    folderId TEXT,
+    title TEXT,
+    note TEXT,
+    category TEXT NOT NULL DEFAULT 'GENERAL',
+    priority TEXT NOT NULL DEFAULT 'NORMAL',
+    color TEXT,
+    createdAt INTEGER NOT NULL,
+    updatedAt INTEGER NOT NULL,
+    lastAccessedAt INTEGER,
+    accessCount INTEGER NOT NULL DEFAULT 0,
+    hasReminder INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (folderId) REFERENCES Folder(id) ON DELETE SET NULL
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_bookmark_surah_ayah ON Bookmark(surahNumber, ayahNumber);
+CREATE INDEX IF NOT EXISTS idx_bookmark_folder ON Bookmark(folderId);
+CREATE INDEX IF NOT EXISTS idx_bookmark_category ON Bookmark(category);
+CREATE INDEX IF NOT EXISTS idx_bookmark_created ON Bookmark(createdAt DESC);
+CREATE INDEX IF NOT EXISTS idx_bookmark_accessed ON Bookmark(lastAccessedAt DESC);
+
+-- Queries
+selectAllBookmarks:
+SELECT * FROM Bookmark ORDER BY createdAt DESC;
+
+selectBookmarkById:
+SELECT * FROM Bookmark WHERE id = ?;
+
+selectBookmarksByFolder:
+SELECT * FROM Bookmark WHERE folderId IS ? ORDER BY createdAt DESC;
+
+selectBookmarksByCategory:
+SELECT * FROM Bookmark WHERE category = ? ORDER BY createdAt DESC;
+
+selectBookmarkForAyah:
+SELECT * FROM Bookmark WHERE surahNumber = ? AND ayahNumber = ? LIMIT 1;
+
+selectRecentBookmarks:
+SELECT * FROM Bookmark ORDER BY createdAt DESC LIMIT ?;
+
+selectMostAccessedBookmarks:
+SELECT * FROM Bookmark ORDER BY accessCount DESC, lastAccessedAt DESC LIMIT ?;
+
+searchBookmarks:
+SELECT * FROM Bookmark 
+WHERE title LIKE '%' || ? || '%' OR note LIKE '%' || ? || '%'
+ORDER BY createdAt DESC;
+
+insertBookmark:
+INSERT OR REPLACE INTO Bookmark(
+    id, surahNumber, ayahNumber, folderId, title, note,
+    category, priority, color, createdAt, updatedAt,
+    lastAccessedAt, accessCount, hasReminder
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateBookmark:
+UPDATE Bookmark 
+SET title = ?, note = ?, folderId = ?, category = ?, 
+    priority = ?, color = ?, updatedAt = ?
+WHERE id = ?;
+
+updateBookmarkAccess:
+UPDATE Bookmark 
+SET lastAccessedAt = ?, accessCount = accessCount + 1
+WHERE id = ?;
+
+deleteBookmark:
+DELETE FROM Bookmark WHERE id = ?;
+
+deleteBookmarksByFolder:
+DELETE FROM Bookmark WHERE folderId = ?;

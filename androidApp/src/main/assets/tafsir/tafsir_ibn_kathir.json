@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "tafsir_id": "ibn_kathir",
+    "name": "Tafsir Ibn Kathir",
+    "name_ar": "تفسير ابن كثير",
+    "author": "Ismail ibn Kathir",
+    "author_ar": "إسماعيل بن كثير",
+    "language": "English",
+    "description": "One of the most famous and authentic tafsir books",
+    "total_surahs": 114,
+    "sample_only": true,
+    "note": "This is a sample file with only Surah Al-Fatihah. Complete tafsir should include all 114 surahs."
+  },
+  "surahs": [
+    {
+      "surah_number": 1,
+      "surah_name": "Al-Fatihah",
+      "total_ayahs": 7,
+      "ayahs": [
+        {
+          "ayah_number": 1,
+          "tafsir": "Bismillah (In the name of Allah) is the start of all good matters. The Prophet Muhammad (peace be upon him) used to begin his letters with Bismillah. It means: I begin with the Name of Allah, seeking His help and blessings. Ar-Rahman and Ar-Rahim are two of Allah's Beautiful Names, both derived from the root word 'Rahmah' (mercy). Ar-Rahman indicates the vastness of Allah's mercy, while Ar-Rahim indicates His specific mercy for the believers."
+        },
+        {
+          "ayah_number": 2,
+          "tafsir": "All praise and thanks are due to Allah alone, the Lord of all that exists. He is the Creator, Sustainer, and Master of everything. The word 'Alamin' (worlds) refers to all creation - humans, jinn, angels, and everything else. This verse establishes that Allah alone deserves all praise and worship."
+        },
+        {
+          "ayah_number": 3,
+          "tafsir": "This verse repeats the Beautiful Names Ar-Rahman and Ar-Rahim to emphasize Allah's infinite mercy. It reminds us that despite being the Lord of all worlds, Allah is Most Merciful to His creation."
+        },
+        {
+          "ayah_number": 4,
+          "tafsir": "Malik (Sovereign/Master) of the Day of Recompense refers to the Day of Judgment when all will be held accountable. On that Day, no one will have any power except Allah. This verse reminds us of the Hereafter and encourages us to prepare for it."
+        },
+        {
+          "ayah_number": 5,
+          "tafsir": "This verse contains the essence of worship and reliance on Allah. 'You alone we worship' affirms Tawhid (monotheism) - that worship is due to Allah alone. 'You alone we ask for help' shows our complete dependence on Allah for all our needs. The shift from third person (He) to second person (You) indicates direct address and intimacy with Allah."
+        },
+        {
+          "ayah_number": 6,
+          "tafsir": "The Straight Path (As-Sirat Al-Mustaqim) is the path of Islam, the religion of truth. It is the path that leads to Paradise. This is a supplication asking Allah to guide us to and keep us on the right path, as guidance is from Allah alone."
+        },
+        {
+          "ayah_number": 7,
+          "tafsir": "This verse clarifies what the Straight Path is - it is the path of those whom Allah has favored, meaning the Prophets, the truthful, the martyrs, and the righteous. It is not the path of those who earned Allah's anger (those who knew the truth but rejected it) nor the path of those who went astray (those who were ignorant of the truth). This verse teaches us to seek Allah's guidance and avoid deviation."
+        }
+      ]
+    }
+  ]
+}

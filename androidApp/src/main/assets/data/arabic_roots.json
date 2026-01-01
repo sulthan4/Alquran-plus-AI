@@ -1,0 +1,156 @@
+{
+  "roots": [
+    {
+      "root": "ك ت ب",
+      "transliteration": "k-t-b",
+      "meaning": "to write",
+      "meaning_ar": "الكتابة",
+      "examples": [
+        {
+          "word": "كَتَبَ",
+          "transliteration": "kataba",
+          "meaning": "he wrote",
+          "form": "I"
+        },
+        {
+          "word": "كِتَاب",
+          "transliteration": "kitab",
+          "meaning": "book",
+          "form": "noun"
+        },
+        {
+          "word": "كَاتِب",
+          "transliteration": "katib",
+          "meaning": "writer",
+          "form": "active participle"
+        },
+        {
+          "word": "مَكْتُوب",
+          "transliteration": "maktub",
+          "meaning": "written",
+          "form": "passive participle"
+        }
+      ],
+      "occurrences_in_quran": 319
+    },
+    {
+      "root": "ق ر أ",
+      "transliteration": "q-r-'",
+      "meaning": "to read, to recite",
+      "meaning_ar": "القراءة",
+      "examples": [
+        {
+          "word": "قَرَأَ",
+          "transliteration": "qara'a",
+          "meaning": "he read",
+          "form": "I"
+        },
+        {
+          "word": "قُرْآن",
+          "transliteration": "quran",
+          "meaning": "recitation, Quran",
+          "form": "noun"
+        },
+        {
+          "word": "قَارِئ",
+          "transliteration": "qari'",
+          "meaning": "reader, reciter",
+          "form": "active participle"
+        }
+      ],
+      "occurrences_in_quran": 88
+    },
+    {
+      "root": "ص ل ي",
+      "transliteration": "s-l-y",
+      "meaning": "to pray",
+      "meaning_ar": "الصلاة",
+      "examples": [
+        {
+          "word": "صَلَّى",
+          "transliteration": "salla",
+          "meaning": "he prayed",
+          "form": "II"
+        },
+        {
+          "word": "صَلَاة",
+          "transliteration": "salah",
+          "meaning": "prayer",
+          "form": "noun"
+        },
+        {
+          "word": "مُصَلٍّ",
+          "transliteration": "musalli",
+          "meaning": "one who prays",
+          "form": "active participle"
+        }
+      ],
+      "occurrences_in_quran": 99
+    },
+    {
+      "root": "ع ل م",
+      "transliteration": "'- l-m",
+      "meaning": "to know",
+      "meaning_ar": "العلم",
+      "examples": [
+        {
+          "word": "عَلِمَ",
+          "transliteration": "'alima",
+          "meaning": "he knew",
+          "form": "I"
+        },
+        {
+          "word": "عِلْم",
+          "transliteration": "'ilm",
+          "meaning": "knowledge",
+          "form": "noun"
+        },
+        {
+          "word": "عَالِم",
+          "transliteration": "'alim",
+          "meaning": "knowledgeable, scholar",
+          "form": "active participle"
+        },
+        {
+          "word": "مَعْلُوم",
+          "transliteration": "ma'lum",
+          "meaning": "known",
+          "form": "passive participle"
+        }
+      ],
+      "occurrences_in_quran": 854
+    },
+    {
+      "root": "ح م د",
+      "transliteration": "h-m-d",
+      "meaning": "to praise",
+      "meaning_ar": "الحمد",
+      "examples": [
+        {
+          "word": "حَمِدَ",
+          "transliteration": "hamida",
+          "meaning": "he praised",
+          "form": "I"
+        },
+        {
+          "word": "حَمْد",
+          "transliteration": "hamd",
+          "meaning": "praise",
+          "form": "noun"
+        },
+        {
+          "word": "مُحَمَّد",
+          "transliteration": "muhammad",
+          "meaning": "praised one",
+          "form": "passive participle"
+        }
+      ],
+      "occurrences_in_quran": 73
+    }
+  ],
+  "metadata": {
+    "total_roots": 5,
+    "note": "This is a sample file. Complete Arabic root dictionary should contain 1000+ roots",
+    "source": "Classical Arabic morphology"
+  }
+}

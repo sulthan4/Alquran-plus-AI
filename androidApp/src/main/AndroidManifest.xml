@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    
+    <!-- Optional permissions -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" 
+        android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <application
+        android:name=".AlQuranApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.Material.Light.NoActionBar"
+        android:usesCleartextTraffic="false"
+        android:networkSecurityConfig="@xml/network_security_config">
+        
+        <!-- Main Activity -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            
+            <!-- Deep Links -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="alquran"
+                    android:host="app" />
+            </intent-filter>
+        </activity>
+
+        <!-- ============================================ -->
+        <!-- SERVICES (12 total) -->
+        <!-- ============================================ -->
+        
+        <!-- Audio Playback Service -->
+        <service
+            android:name=".services.AudioPlaybackService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+        </service>
+
+        <!-- Download Service -->
+        <service
+            android:name=".services.DownloadService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <!-- Sync Service -->
+        <service
+            android:name=".services.SyncService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <!-- Backup Service -->
+        <service
+            android:name=".services.BackupService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <!-- Restore Service -->
+        <service
+            android:name=".services.RestoreService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <!-- Reminder Service -->
+        <service
+            android:name=".services.ReminderService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <!-- Notification Service -->
+        <service
+            android:name=".services.NotificationService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <!-- Update Service -->
+        <service
+            android:name=".services.UpdateService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <!-- ============================================ -->
+        <!-- BROADCAST RECEIVERS (7 total) -->
+        <!-- ============================================ -->
+        
+        <!-- Boot Receiver -->
+        <receiver
+            android:name=".receivers.BootReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Notification Receiver -->
+        <receiver
+            android:name=".receivers.NotificationReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.alquranplusai.ACTION_PLAY_PAUSE" />
+                <action android:name="com.alquranplusai.ACTION_NEXT" />
+                <action android:name="com.alquranplusai.ACTION_PREVIOUS" />
+                <action android:name="com.alquranplusai.ACTION_STOP" />
+                <action android:name="com.alquranplusai.ACTION_REMINDER_DISMISSED" />
+                <action android:name="com.alquranplusai.ACTION_REMINDER_SNOOZED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Alarm Receiver -->
+        <receiver
+            android:name=".receivers.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.alquranplusai.ACTION_DAILY_REMINDER" />
+                <action android:name="com.alquranplusai.ACTION_STREAK_CHECK" />
+                <action android:name="com.alquranplusai.ACTION_BACKUP_REMINDER" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Media Button Receiver -->
+        <receiver
+            android:name=".receivers.MediaButtonReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Connectivity Receiver -->
+        <receiver
+            android:name=".receivers.ConnectivityReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Reminder Receiver (legacy) -->
+        <receiver
+            android:name=".receivers.ReminderReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <!-- ============================================ -->
+        <!-- PROVIDERS -->
+        <!-- ============================================ -->
+        
+        <!-- File Provider for sharing -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- ============================================ -->
+        <!-- WORK MANAGER -->
+        <!-- ============================================ -->
+        <!-- WorkManager is automatically initialized -->
+        <!-- Workers: DataSyncWorker, BackupWorker, AnalyticsWorker, -->
+        <!-- CleanupWorker, AudioDownloadWorker, ReminderWorker -->
+
+    </application>
+
+</manifest>

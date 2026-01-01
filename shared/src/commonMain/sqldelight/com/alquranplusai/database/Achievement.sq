@@ -1,0 +1,71 @@
+-- Achievement table
+CREATE TABLE IF NOT EXISTS Achievement (
+    id TEXT PRIMARY KEY NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    icon TEXT NOT NULL,
+    category TEXT NOT NULL,
+    requirement INTEGER NOT NULL,
+    reward INTEGER NOT NULL DEFAULT 0
+);
+
+-- UserAchievement table (many-to-many with progress)
+CREATE TABLE IF NOT EXISTS UserAchievement (
+    userId TEXT NOT NULL,
+    achievementId TEXT NOT NULL,
+    isUnlocked INTEGER NOT NULL DEFAULT 0,
+    unlockedAt INTEGER,
+    progress INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (userId, achievementId),
+    FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE,
+    FOREIGN KEY (achievementId) REFERENCES Achievement(id) ON DELETE CASCADE
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_achievement_category ON Achievement(category);
+CREATE INDEX IF NOT EXISTS idx_user_achievement_user ON UserAchievement(userId);
+CREATE INDEX IF NOT EXISTS idx_user_achievement_unlocked ON UserAchievement(isUnlocked);
+
+-- Achievement Queries
+selectAllAchievements:
+SELECT * FROM Achievement ORDER BY category, requirement;
+
+selectAchievementById:
+SELECT * FROM Achievement WHERE id = ?;
+
+selectAchievementsByCategory:
+SELECT * FROM Achievement WHERE category = ? ORDER BY requirement;
+
+insertAchievement:
+INSERT OR REPLACE INTO Achievement(
+    id, title, description, icon, category, requirement, reward
+) VALUES (?, ?, ?, ?, ?, ?, ?);
+
+-- UserAchievement Queries
+selectUserAchievements:
+SELECT a.*, ua.isUnlocked, ua.unlockedAt, ua.progress
+FROM Achievement a
+INNER JOIN UserAchievement ua ON a.id = ua.achievementId
+WHERE ua.userId = ?
+ORDER BY ua.unlockedAt DESC, a.category;
+
+selectUnlockedAchievements:
+SELECT a.*, ua.isUnlocked, ua.unlockedAt, ua.progress
+FROM Achievement a
+INNER JOIN UserAchievement ua ON a.id = ua.achievementId
+WHERE ua.userId = ? AND ua.isUnlocked = 1
+ORDER BY ua.unlockedAt DESC;
+
+insertUserAchievement:
+INSERT OR REPLACE INTO UserAchievement(userId, achievementId, isUnlocked, unlockedAt, progress)
+VALUES (?, ?, ?, ?, ?);
+
+unlockAchievement:
+UPDATE UserAchievement 
+SET isUnlocked = 1, unlockedAt = ?
+WHERE userId = ? AND achievementId = ?;
+
+updateAchievementProgress:
+UPDATE UserAchievement 
+SET progress = ?
+WHERE userId = ? AND achievementId = ?;

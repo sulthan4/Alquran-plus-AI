@@ -1,0 +1,56 @@
+{
+  "metadata": {
+    "total_surahs": 114,
+    "total_ayahs": 6236,
+    "total_words": 77439,
+    "total_letters": 323015
+  },
+  "surahs": [
+    {
+      "number": 1,
+      "name": "الفاتحة",
+      "transliteration": "Al-Fatihah",
+      "translation": "The Opening",
+      "type": "Meccan",
+      "total_verses": 7,
+      "bismillah_pre": false
+    },
+    {
+      "number": 2,
+      "name": "البقرة",
+      "transliteration": "Al-Baqarah",
+      "translation": "The Cow",
+      "type": "Medinan",
+      "total_verses": 286,
+      "bismillah_pre": true
+    },
+    {
+      "number": 3,
+      "name": "آل عمران",
+      "transliteration": "Ali 'Imran",
+      "translation": "Family of Imran",
+      "type": "Medinan",
+      "total_verses": 200,
+      "bismillah_pre": true
+    },
+    {
+      "number": 4,
+      "name": "النساء",
+      "transliteration": "An-Nisa",
+      "translation": "The Women",
+      "type": "Medinan",
+      "total_verses": 176,
+      "bismillah_pre": true
+    },
+    {
+      "number": 5,
+      "name": "المائدة",
+      "transliteration": "Al-Ma'idah",
+      "translation": "The Table Spread",
+      "type": "Medinan",
+      "total_verses": 120,
+      "bismillah_pre": true
+    }
+  ],
+  "note": "This is a sample file. Complete Quran metadata with all 114 surahs should be added."
+}

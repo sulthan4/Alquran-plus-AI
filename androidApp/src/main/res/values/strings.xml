@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">AlQuran Plus AI</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_quran">Quran</string>
+    <string name="nav_audio">Audio</string>
+    <string name="nav_bookmarks">Bookmarks</string>
+    <string name="nav_more">More</string>
+    
+    <!-- Common -->
+    <string name="loading">Loading…</string>
+    <string name="error">Error</string>
+    <string name="retry">Retry</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="share">Share</string>
+    <string name="search">Search</string>
+    <string name="settings">Settings</string>
+    
+    <!-- Onboarding -->
+    <string name="onboarding_welcome_title">Welcome to AlQuran Plus AI</string>
+    <string name="onboarding_welcome_desc">Your comprehensive Quran companion with AI-powered features</string>
+    <string name="onboarding_features_title">Powerful Features</string>
+    <string name="onboarding_features_desc">Word-by-word translation, audio recitation, smart search, and more</string>
+    <string name="onboarding_get_started">Get Started</string>
+    <string name="onboarding_skip">Skip</string>
+    
+    <!-- Auth -->
+    <string name="auth_login">Login</string>
+    <string name="auth_register">Register</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Password</string>
+    <string name="auth_forgot_password">Forgot Password?</string>
+    <string name="auth_or_continue_with">Or continue with</string>
+    
+    <!-- Quran -->
+    <string name="quran_surah">Surah</string>
+    <string name="quran_juz">Juz</string>
+    <string name="quran_page">Page</string>
+    <string name="quran_ayah">Ayah</string>
+    <string name="quran_reading">Reading</string>
+    <string name="quran_continue_reading">Continue Reading</string>
+    <string name="quran_last_read">Last Read</string>
+    
+    <!-- Audio -->
+    <string name="audio_reciter">Reciter</string>
+    <string name="audio_play">Play</string>
+    <string name="audio_pause">Pause</string>
+    <string name="audio_next">Next</string>
+    <string name="audio_previous">Previous</string>
+    <string name="audio_repeat">Repeat</string>
+    <string name="audio_download">Download</string>
+    <string name="audio_playlist">Playlist</string>
+    
+    <!-- Bookmarks -->
+    <string name="bookmark_add">Add Bookmark</string>
+    <string name="bookmark_remove">Remove Bookmark</string>
+    <string name="bookmark_folder">Folder</string>
+    <string name="bookmark_note">Note</string>
+    <string name="bookmark_tag">Tag</string>
+    
+    <!-- Quiz -->
+    <string name="quiz_start">Start Quiz</string>
+    <string name="quiz_question">Question</string>
+    <string name="quiz_answer">Answer</string>
+    <string name="quiz_score">Score</string>
+    <string name="quiz_result">Result</string>
+    <string name="quiz_daily_challenge">Daily Challenge</string>
+    
+    <!-- Analytics -->
+    <string name="analytics_streak">Streak</string>
+    <string name="analytics_goal">Goal</string>
+    <string name="analytics_achievement">Achievement</string>
+    <string name="analytics_progress">Progress</string>
+    
+    <!-- Settings -->
+    <string name="settings_reading">Reading Settings</string>
+    <string name="settings_audio">Audio Settings</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_about">About</string>
+    
+    <!-- Errors -->
+    <string name="error_network">Network error. Please check your connection.</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="error_no_data">No data available</string>
+</resources>

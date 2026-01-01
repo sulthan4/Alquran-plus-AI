@@ -1,0 +1,58 @@
+-- Quiz table
+CREATE TABLE IF NOT EXISTS Quiz (
+    id TEXT PRIMARY KEY NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT,
+    category TEXT NOT NULL,
+    difficulty TEXT NOT NULL,
+    questionCount INTEGER NOT NULL,
+    timeLimit INTEGER,
+    passingScore INTEGER NOT NULL DEFAULT 70,
+    createdAt INTEGER NOT NULL,
+    updatedAt INTEGER NOT NULL,
+    attemptCount INTEGER NOT NULL DEFAULT 0,
+    averageScore REAL NOT NULL DEFAULT 0.0,
+    isPublished INTEGER NOT NULL DEFAULT 1
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_quiz_category ON Quiz(category);
+CREATE INDEX IF NOT EXISTS idx_quiz_difficulty ON Quiz(difficulty);
+CREATE INDEX IF NOT EXISTS idx_quiz_published ON Quiz(isPublished);
+
+-- Queries
+selectAllQuizzes:
+SELECT * FROM Quiz WHERE isPublished = 1 ORDER BY createdAt DESC;
+
+selectQuizById:
+SELECT * FROM Quiz WHERE id = ?;
+
+selectQuizzesByCategory:
+SELECT * FROM Quiz WHERE category = ? AND isPublished = 1 ORDER BY createdAt DESC;
+
+selectQuizzesByDifficulty:
+SELECT * FROM Quiz WHERE difficulty = ? AND isPublished = 1 ORDER BY createdAt DESC;
+
+selectPopularQuizzes:
+SELECT * FROM Quiz WHERE isPublished = 1 ORDER BY attemptCount DESC LIMIT ?;
+
+searchQuizzes:
+SELECT * FROM Quiz 
+WHERE (title LIKE '%' || ? || '%' OR description LIKE '%' || ? || '%')
+  AND isPublished = 1
+ORDER BY createdAt DESC;
+
+insertQuiz:
+INSERT OR REPLACE INTO Quiz(
+    id, title, description, category, difficulty,
+    questionCount, timeLimit, passingScore, createdAt, updatedAt,
+    attemptCount, averageScore, isPublished
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateQuizStats:
+UPDATE Quiz 
+SET attemptCount = ?, averageScore = ?, updatedAt = ?
+WHERE id = ?;
+
+deleteQuiz:
+DELETE FROM Quiz WHERE id = ?;

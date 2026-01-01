@@ -1,0 +1,113 @@
+{
+  "achievements": [
+    {
+      "id": 1,
+      "name": "First Steps",
+      "name_ar": "الخطوات الأولى",
+      "description": "Complete your first Quran reading session",
+      "icon": "ic_achievement_first_steps",
+      "points": 10,
+      "type": "reading",
+      "requirement": {
+        "action": "read_verses",
+        "count": 1
+      }
+    },
+    {
+      "id": 2,
+      "name": "Daily Reader",
+      "name_ar": "القارئ اليومي",
+      "description": "Read Quran for 7 consecutive days",
+      "icon": "ic_achievement_daily_reader",
+      "points": 50,
+      "type": "streak",
+      "requirement": {
+        "action": "daily_streak",
+        "count": 7
+      }
+    },
+    {
+      "id": 3,
+      "name": "Juz Master",
+      "name_ar": "إتقان الجزء",
+      "description": "Complete reading one Juz",
+      "icon": "ic_achievement_juz_master",
+      "points": 100,
+      "type": "reading",
+      "requirement": {
+        "action": "complete_juz",
+        "count": 1
+      }
+    },
+    {
+      "id": 4,
+      "name": "Quiz Champion",
+      "name_ar": "بطل المسابقة",
+      "description": "Score 100% on 5 quizzes",
+      "icon": "ic_achievement_quiz_champion",
+      "points": 75,
+      "type": "quiz",
+      "requirement": {
+        "action": "perfect_quiz",
+        "count": 5
+      }
+    },
+    {
+      "id": 5,
+      "name": "Bookmark Collector",
+      "name_ar": "جامع العلامات",
+      "description": "Save 50 bookmarks",
+      "icon": "ic_achievement_bookmark_collector",
+      "points": 30,
+      "type": "bookmark",
+      "requirement": {
+        "action": "create_bookmarks",
+        "count": 50
+      }
+    },
+    {
+      "id": 6,
+      "name": "Khatm Completion",
+      "name_ar": "ختم القرآن",
+      "description": "Complete reading the entire Quran",
+      "icon": "ic_achievement_khatm",
+      "points": 1000,
+      "type": "reading",
+      "requirement": {
+        "action": "complete_quran",
+        "count": 1
+      }
+    },
+    {
+      "id": 7,
+      "name": "Night Owl",
+      "name_ar": "قارئ الليل",
+      "description": "Read Quran during Tahajjud time (last third of night) for 10 days",
+      "icon": "ic_achievement_night_owl",
+      "points": 150,
+      "type": "special",
+      "requirement": {
+        "action": "night_reading",
+        "count": 10
+      }
+    },
+    {
+      "id": 8,
+      "name": "Ramadan Warrior",
+      "name_ar": "محارب رمضان",
+      "description": "Complete one Khatm during Ramadan",
+      "icon": "ic_achievement_ramadan",
+      "points": 500,
+      "type": "special",
+      "requirement": {
+        "action": "ramadan_khatm",
+        "count": 1
+      }
+    }
+  ],
+  "metadata": {
+    "total_achievements": 8,
+    "total_points_available": 1915,
+    "categories": ["reading", "streak", "quiz", "bookmark", "special"]
+  }
+}

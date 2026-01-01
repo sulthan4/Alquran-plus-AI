@@ -1,0 +1,77 @@
+-- Word table for word-by-word analysis
+CREATE TABLE IF NOT EXISTS Word (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ayahId INTEGER NOT NULL,
+    position INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    textUthmani TEXT NOT NULL,
+    textSimple TEXT NOT NULL,
+    translation TEXT,
+    transliteration TEXT,
+    root TEXT,
+    lemma TEXT,
+    partOfSpeech TEXT,
+    derivation TEXT,
+    mood TEXT,
+    wordCase TEXT,
+    person TEXT,
+    wordNumber TEXT,
+    gender TEXT,
+    verbal TEXT,
+    state TEXT,
+    aspect TEXT,
+    form TEXT,
+    voice TEXT,
+    occurrenceCount INTEGER NOT NULL DEFAULT 0,
+    audioUrl TEXT,
+    FOREIGN KEY (ayahId) REFERENCES Ayah(id) ON DELETE CASCADE,
+    UNIQUE(ayahId, position)
+);
+
+-- Indexes for Word
+CREATE INDEX IF NOT EXISTS idx_word_ayah ON Word(ayahId);
+CREATE INDEX IF NOT EXISTS idx_word_root ON Word(root) WHERE root IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_word_lemma ON Word(lemma) WHERE lemma IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_word_pos ON Word(partOfSpeech) WHERE partOfSpeech IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_word_text ON Word(text);
+
+-- Queries
+selectAll:
+SELECT * FROM Word ORDER BY ayahId, position;
+
+selectById:
+SELECT * FROM Word WHERE id = ?;
+
+selectByAyah:
+SELECT * FROM Word WHERE ayahId = ? ORDER BY position;
+
+selectByRoot:
+SELECT * FROM Word WHERE root = ? ORDER BY ayahId, position;
+
+selectByLemma:
+SELECT * FROM Word WHERE lemma = ? ORDER BY ayahId, position;
+
+selectByPartOfSpeech:
+SELECT * FROM Word WHERE partOfSpeech = ? ORDER BY ayahId, position;
+
+searchByText:
+SELECT * FROM Word 
+WHERE text LIKE '%' || ? || '%' 
+   OR textUthmani LIKE '%' || ? || '%'
+   OR textSimple LIKE '%' || ? || '%'
+ORDER BY ayahId, position;
+
+insert:
+INSERT OR REPLACE INTO Word(
+    ayahId, position, text, textUthmani, textSimple,
+    translation, transliteration, root, lemma,
+    partOfSpeech, derivation, mood, wordCase, person,
+    wordNumber, gender, verbal, state, aspect, form, voice,
+    occurrenceCount, audioUrl
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteAll:
+DELETE FROM Word;
+
+deleteByAyah:
+DELETE FROM Word WHERE ayahId = ?;

@@ -1,0 +1,42 @@
+-- PlaylistItem table
+CREATE TABLE IF NOT EXISTS PlaylistItem (
+    id TEXT PRIMARY KEY NOT NULL,
+    playlistId TEXT NOT NULL,
+    reciterId TEXT NOT NULL,
+    surahNumber INTEGER NOT NULL,
+    ayahStart INTEGER,
+    ayahEnd INTEGER,
+    position INTEGER NOT NULL,
+    addedAt INTEGER NOT NULL,
+    FOREIGN KEY (playlistId) REFERENCES Playlist(id) ON DELETE CASCADE,
+    FOREIGN KEY (reciterId) REFERENCES Reciter(id) ON DELETE CASCADE
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_playlist_item_playlist ON PlaylistItem(playlistId, position);
+CREATE INDEX IF NOT EXISTS idx_playlist_item_reciter ON PlaylistItem(reciterId);
+
+-- Queries
+selectPlaylistItems:
+SELECT * FROM PlaylistItem WHERE playlistId = ? ORDER BY position;
+
+selectPlaylistItemById:
+SELECT * FROM PlaylistItem WHERE id = ?;
+
+insertPlaylistItem:
+INSERT OR REPLACE INTO PlaylistItem(
+    id, playlistId, reciterId, surahNumber,
+    ayahStart, ayahEnd, position, addedAt
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+deletePlaylistItem:
+DELETE FROM PlaylistItem WHERE id = ?;
+
+deletePlaylistItems:
+DELETE FROM PlaylistItem WHERE playlistId = ?;
+
+updateItemPosition:
+UPDATE PlaylistItem SET position = ? WHERE id = ?;
+
+countPlaylistItems:
+SELECT COUNT(*) FROM PlaylistItem WHERE playlistId = ?;

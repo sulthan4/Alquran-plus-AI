@@ -1,0 +1,19 @@
+package com.alquranplusai.android.ui.components.common
+
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun SectionHeader(
+    title: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleLarge,
+        modifier = modifier.padding(vertical = 8.dp)
+    )
+}

@@ -1,0 +1,56 @@
+-- QuizSession table for in-progress quizzes
+CREATE TABLE IF NOT EXISTS QuizSession (
+    id TEXT PRIMARY KEY NOT NULL,
+    quizId TEXT NOT NULL,
+    userId TEXT NOT NULL,
+    currentQuestionIndex INTEGER NOT NULL DEFAULT 0,
+    startTime INTEGER NOT NULL,
+    timeRemaining INTEGER,
+    isPaused INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (quizId) REFERENCES Quiz(id) ON DELETE CASCADE
+);
+
+-- QuizSessionAnswer table
+CREATE TABLE IF NOT EXISTS QuizSessionAnswer (
+    sessionId TEXT NOT NULL,
+    questionId TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    PRIMARY KEY (sessionId, questionId),
+    FOREIGN KEY (sessionId) REFERENCES QuizSession(id) ON DELETE CASCADE
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_session_user ON QuizSession(userId);
+CREATE INDEX IF NOT EXISTS idx_session_answer ON QuizSessionAnswer(sessionId);
+
+-- QuizSession Queries
+selectQuizSession:
+SELECT * FROM QuizSession WHERE id = ?;
+
+selectActiveSession:
+SELECT * FROM QuizSession WHERE userId = ? LIMIT 1;
+
+insertQuizSession:
+INSERT OR REPLACE INTO QuizSession(
+    id, quizId, userId, currentQuestionIndex,
+    startTime, timeRemaining, isPaused
+) VALUES (?, ?, ?, ?, ?, ?, ?);
+
+updateQuizSession:
+UPDATE QuizSession 
+SET currentQuestionIndex = ?, timeRemaining = ?, isPaused = ?
+WHERE id = ?;
+
+deleteQuizSession:
+DELETE FROM QuizSession WHERE id = ?;
+
+-- QuizSessionAnswer Queries
+selectSessionAnswers:
+SELECT * FROM QuizSessionAnswer WHERE sessionId = ?;
+
+insertSessionAnswer:
+INSERT OR REPLACE INTO QuizSessionAnswer(sessionId, questionId, answer)
+VALUES (?, ?, ?);
+
+deleteSessionAnswers:
+DELETE FROM QuizSessionAnswer WHERE sessionId = ?;

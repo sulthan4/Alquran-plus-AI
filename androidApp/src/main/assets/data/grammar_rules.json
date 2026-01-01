@@ -1,0 +1,157 @@
+{
+  "grammar_categories": [
+    {
+      "id": 1,
+      "name": "Verb Forms (Awzan)",
+      "name_ar": "أوزان الأفعال",
+      "description": "The 10 main verb forms in Arabic",
+      "total_forms": 10
+    },
+    {
+      "id": 2,
+      "name": "Noun Types",
+      "name_ar": "أنواع الأسماء",
+      "description": "Different types of nouns in Arabic grammar",
+      "total_types": 8
+    },
+    {
+      "id": 3,
+      "name": "Grammatical States (I'rab)",
+      "name_ar": "الإعراب",
+      "description": "Nominative, Accusative, and Genitive cases",
+      "total_states": 3
+    }
+  ],
+  "verb_forms": [
+    {
+      "form": 1,
+      "pattern": "فَعَلَ",
+      "transliteration": "fa'ala",
+      "meaning": "Basic form - to do",
+      "example": {
+        "word": "كَتَبَ",
+        "transliteration": "kataba",
+        "meaning": "he wrote",
+        "root": "ك ت ب"
+      }
+    },
+    {
+      "form": 2,
+      "pattern": "فَعَّلَ",
+      "transliteration": "fa''ala",
+      "meaning": "Intensive/Causative",
+      "example": {
+        "word": "عَلَّمَ",
+        "transliteration": "'allama",
+        "meaning": "he taught",
+        "root": "ع ل م"
+      }
+    },
+    {
+      "form": 3,
+      "pattern": "فَاعَلَ",
+      "transliteration": "fa'ala",
+      "meaning": "Reciprocal",
+      "example": {
+        "word": "كَاتَبَ",
+        "transliteration": "kataba",
+        "meaning": "he corresponded with",
+        "root": "ك ت ب"
+      }
+    },
+    {
+      "form": 4,
+      "pattern": "أَفْعَلَ",
+      "transliteration": "af'ala",
+      "meaning": "Causative",
+      "example": {
+        "word": "أَنْزَلَ",
+        "transliteration": "anzala",
+        "meaning": "he sent down",
+        "root": "ن ز ل"
+      }
+    },
+    {
+      "form": 5,
+      "pattern": "تَفَعَّلَ",
+      "transliteration": "tafa''ala",
+      "meaning": "Reflexive of Form II",
+      "example": {
+        "word": "تَعَلَّمَ",
+        "transliteration": "ta'allama",
+        "meaning": "he learned",
+        "root": "ع ل م"
+      }
+    }
+  ],
+  "noun_types": [
+    {
+      "type": "ism_fa'il",
+      "name": "Active Participle",
+      "name_ar": "اسم الفاعل",
+      "pattern": "فَاعِل",
+      "example": {
+        "word": "كَاتِب",
+        "transliteration": "katib",
+        "meaning": "writer",
+        "root": "ك ت ب"
+      }
+    },
+    {
+      "type": "ism_maf'ul",
+      "name": "Passive Participle",
+      "name_ar": "اسم المفعول",
+      "pattern": "مَفْعُول",
+      "example": {
+        "word": "مَكْتُوب",
+        "transliteration": "maktub",
+        "meaning": "written",
+        "root": "ك ت ب"
+      }
+    },
+    {
+      "type": "masdar",
+      "name": "Verbal Noun",
+      "name_ar": "المصدر",
+      "pattern": "فَعْل / فِعَال",
+      "example": {
+        "word": "كِتَابَة",
+        "transliteration": "kitabah",
+        "meaning": "writing",
+        "root": "ك ت ب"
+      }
+    }
+  ],
+  "grammatical_states": [
+    {
+      "state": "raf'",
+      "name": "Nominative",
+      "name_ar": "الرفع",
+      "marker": "ُ (damma)",
+      "usage": "Subject of sentence",
+      "example": "الْكِتَابُ (the book - as subject)"
+    },
+    {
+      "state": "nasb",
+      "name": "Accusative",
+      "name_ar": "النصب",
+      "marker": "َ (fatha)",
+      "usage": "Direct object",
+      "example": "الْكِتَابَ (the book - as object)"
+    },
+    {
+      "state": "jarr",
+      "name": "Genitive",
+      "name_ar": "الجر",
+      "marker": "ِ (kasra)",
+      "usage": "After prepositions",
+      "example": "الْكِتَابِ (the book - after preposition)"
+    }
+  ],
+  "metadata": {
+    "total_verb_forms": 5,
+    "total_noun_types": 3,
+    "total_states": 3,
+    "note": "This is a sample file. Complete grammar rules should include all 10 verb forms and comprehensive rules"
+  }
+}

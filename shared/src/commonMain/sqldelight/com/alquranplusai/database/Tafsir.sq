@@ -1,0 +1,99 @@
+-- Tafsir (Quranic Commentary) table
+CREATE TABLE IF NOT EXISTS Tafsir (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    nameArabic TEXT NOT NULL,
+    author TEXT NOT NULL,
+    authorArabic TEXT NOT NULL,
+    language TEXT NOT NULL,
+    languageCode TEXT NOT NULL,
+    description TEXT NOT NULL,
+    source TEXT NOT NULL,
+    isDownloaded INTEGER NOT NULL DEFAULT 0,
+    downloadSize INTEGER NOT NULL DEFAULT 0,
+    version TEXT NOT NULL DEFAULT '1.0',
+    lastUpdated INTEGER NOT NULL DEFAULT 0
+);
+
+-- TafsirText table - stores the actual tafsir content for each ayah
+CREATE TABLE IF NOT EXISTS TafsirText (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    tafsirId TEXT NOT NULL,
+    surahNumber INTEGER NOT NULL,
+    ayahNumber INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    footnotes TEXT, -- JSON array of footnotes
+    refs TEXT, -- JSON array of references (renamed from 'references' which is reserved)
+    FOREIGN KEY (tafsirId) REFERENCES Tafsir(id) ON DELETE CASCADE,
+    UNIQUE(tafsirId, surahNumber, ayahNumber)
+);
+
+-- Indexes for efficient querying
+CREATE INDEX IF NOT EXISTS idx_tafsir_downloaded ON Tafsir(isDownloaded);
+CREATE INDEX IF NOT EXISTS idx_tafsir_language ON Tafsir(languageCode);
+CREATE INDEX IF NOT EXISTS idx_tafsir_text_lookup ON TafsirText(tafsirId, surahNumber, ayahNumber);
+CREATE INDEX IF NOT EXISTS idx_tafsir_text_surah ON TafsirText(tafsirId, surahNumber);
+CREATE INDEX IF NOT EXISTS idx_tafsir_text_search ON TafsirText(text);
+
+-- Queries
+selectAll:
+SELECT * FROM Tafsir ORDER BY name;
+
+selectById:
+SELECT * FROM Tafsir WHERE id = ?;
+
+selectDownloaded:
+SELECT * FROM Tafsir WHERE isDownloaded = 1 ORDER BY name;
+
+selectByLanguage:
+SELECT * FROM Tafsir WHERE languageCode = ? ORDER BY name;
+
+insertTafsir:
+INSERT OR REPLACE INTO Tafsir(
+    id, name, nameArabic, author, authorArabic, language, languageCode,
+    description, source, isDownloaded, downloadSize, version, lastUpdated
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateDownloadStatus:
+UPDATE Tafsir SET isDownloaded = ?, lastUpdated = ? WHERE id = ?;
+
+deleteTafsir:
+DELETE FROM Tafsir WHERE id = ?;
+
+count:
+SELECT count(*) FROM Tafsir;
+
+deleteAll:
+DELETE FROM Tafsir;
+
+-- TafsirText Queries
+selectTafsirForAyah:
+SELECT * FROM TafsirText 
+WHERE tafsirId = ? AND surahNumber = ? AND ayahNumber = ?;
+
+selectTafsirForAyahRange:
+SELECT * FROM TafsirText 
+WHERE tafsirId = ? AND surahNumber = ? 
+AND ayahNumber BETWEEN ? AND ?
+ORDER BY ayahNumber;
+
+selectTafsirForSurah:
+SELECT * FROM TafsirText 
+WHERE tafsirId = ? AND surahNumber = ?
+ORDER BY ayahNumber;
+
+insertTafsirText:
+INSERT OR REPLACE INTO TafsirText(
+    tafsirId, surahNumber, ayahNumber, text, footnotes, refs
+) VALUES (?, ?, ?, ?, ?, ?);
+
+deleteTafsirTexts:
+DELETE FROM TafsirText WHERE tafsirId = ?;
+
+searchTafsirText:
+SELECT * FROM TafsirText 
+WHERE tafsirId = ? AND text LIKE '%' || ? || '%'
+ORDER BY surahNumber, ayahNumber;
+
+countTafsirTexts:
+SELECT count(*) FROM TafsirText WHERE tafsirId = ?;

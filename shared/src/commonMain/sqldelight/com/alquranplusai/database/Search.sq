@@ -1,0 +1,46 @@
+CREATE TABLE SearchHistory (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    query TEXT NOT NULL,
+    type TEXT NOT NULL,
+    resultCount INTEGER NOT NULL DEFAULT 0,
+    timestamp INTEGER NOT NULL,
+    isFavorite INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE INDEX index_search_history_query ON SearchHistory(query);
+CREATE INDEX index_search_history_timestamp ON SearchHistory(timestamp);
+
+insertSearchHistory:
+INSERT INTO SearchHistory (query, type, resultCount, timestamp, isFavorite)
+VALUES (?, ?, ?, ?, ?);
+
+selectAllSearchHistory:
+SELECT * FROM SearchHistory ORDER BY timestamp DESC LIMIT ?;
+
+deleteSearchHistoryByQuery:
+DELETE FROM SearchHistory WHERE query = ?;
+
+clearSearchHistory:
+DELETE FROM SearchHistory;
+
+CREATE TABLE SavedSearch (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    query TEXT NOT NULL,
+    filters TEXT NOT NULL, -- Serialized JSON
+    createdAt INTEGER NOT NULL,
+    lastUsed INTEGER NOT NULL
+);
+
+insertSavedSearch:
+INSERT INTO SavedSearch (name, query, filters, createdAt, lastUsed)
+VALUES (?, ?, ?, ?, ?);
+
+selectAllSavedSearches:
+SELECT * FROM SavedSearch ORDER BY lastUsed DESC;
+
+deleteSavedSearch:
+DELETE FROM SavedSearch WHERE id = ?;
+
+updateSavedSearchLastUsed:
+UPDATE SavedSearch SET lastUsed = ? WHERE id = ?;

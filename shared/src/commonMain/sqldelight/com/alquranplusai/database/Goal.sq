@@ -1,0 +1,62 @@
+-- Goal table
+CREATE TABLE IF NOT EXISTS Goal (
+    id TEXT PRIMARY KEY NOT NULL,
+    userId TEXT NOT NULL,
+    type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT,
+    target INTEGER NOT NULL,
+    current INTEGER NOT NULL DEFAULT 0,
+    startDate INTEGER NOT NULL,
+    endDate INTEGER NOT NULL,
+    isCompleted INTEGER NOT NULL DEFAULT 0,
+    completedAt INTEGER,
+    reminder INTEGER NOT NULL DEFAULT 0,
+    reminderTime TEXT,
+    FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_goal_user ON Goal(userId);
+CREATE INDEX IF NOT EXISTS idx_goal_completed ON Goal(isCompleted);
+CREATE INDEX IF NOT EXISTS idx_goal_end_date ON Goal(endDate);
+
+-- Goal Queries
+selectUserGoals:
+SELECT * FROM Goal WHERE userId = ? ORDER BY endDate;
+
+selectGoalById:
+SELECT * FROM Goal WHERE id = ?;
+
+selectActiveGoals:
+SELECT * FROM Goal 
+WHERE userId = ? AND isCompleted = 0 AND endDate >= ?
+ORDER BY endDate;
+
+selectCompletedGoals:
+SELECT * FROM Goal 
+WHERE userId = ? AND isCompleted = 1
+ORDER BY completedAt DESC;
+
+insertGoal:
+INSERT OR REPLACE INTO Goal(
+    id, userId, type, title, description, target, current,
+    startDate, endDate, isCompleted, completedAt, reminder, reminderTime
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateGoal:
+UPDATE Goal 
+SET title = ?, description = ?, target = ?, endDate = ?,
+    reminder = ?, reminderTime = ?
+WHERE id = ?;
+
+updateGoalProgress:
+UPDATE Goal SET current = ? WHERE id = ?;
+
+completeGoal:
+UPDATE Goal 
+SET isCompleted = 1, completedAt = ?
+WHERE id = ?;
+
+deleteGoal:
+DELETE FROM Goal WHERE id = ?;

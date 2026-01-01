@@ -1,0 +1,55 @@
+{
+  "reciters": [
+    {
+      "id": 1,
+      "name": "Abdul Basit Abdul Samad",
+      "name_ar": "عبد الباسط عبد الصمد",
+      "style": "Murattal",
+      "bitrate": "128kbps",
+      "format": "mp3",
+      "url_pattern": "https://cdn.islamic.network/quran/audio/128/ar.abdulbasitmurattal/{surah}.mp3"
+    },
+    {
+      "id": 2,
+      "name": "Mishary Rashid Alafasy",
+      "name_ar": "مشاري بن راشد العفاسي",
+      "style": "Murattal",
+      "bitrate": "128kbps",
+      "format": "mp3",
+      "url_pattern": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/{surah}.mp3"
+    },
+    {
+      "id": 3,
+      "name": "Saad Al-Ghamdi",
+      "name_ar": "سعد الغامدي",
+      "style": "Murattal",
+      "bitrate": "128kbps",
+      "format": "mp3",
+      "url_pattern": "https://cdn.islamic.network/quran/audio/128/ar.saadalghamadi/{surah}.mp3"
+    },
+    {
+      "id": 4,
+      "name": "Mahmoud Khalil Al-Hussary",
+      "name_ar": "محمود خليل الحصري",
+      "style": "Murattal",
+      "bitrate": "128kbps",
+      "format": "mp3",
+      "url_pattern": "https://cdn.islamic.network/quran/audio/128/ar.husary/{surah}.mp3"
+    },
+    {
+      "id": 5,
+      "name": "Ahmed ibn Ali al-Ajamy",
+      "name_ar": "أحمد بن علي العجمي",
+      "style": "Murattal",
+      "bitrate": "128kbps",
+      "format": "mp3",
+      "url_pattern": "https://cdn.islamic.network/quran/audio/128/ar.ahmedajamy/{surah}.mp3"
+    }
+  ],
+  "metadata": {
+    "total_reciters": 5,
+    "default_reciter_id": 2,
+    "supported_formats": ["mp3"],
+    "supported_bitrates": ["64kbps", "128kbps", "192kbps"]
+  }
+}

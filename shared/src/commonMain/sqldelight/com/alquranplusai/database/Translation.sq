@@ -1,0 +1,103 @@
+-- Translation metadata table
+CREATE TABLE IF NOT EXISTS Translation (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    author TEXT NOT NULL,
+    language TEXT NOT NULL,
+    languageCode TEXT NOT NULL,
+    direction TEXT NOT NULL DEFAULT 'LTR',
+    type TEXT NOT NULL DEFAULT 'TRANSLATION',
+    isDownloaded INTEGER NOT NULL DEFAULT 0,
+    downloadSize INTEGER NOT NULL DEFAULT 0,
+    version TEXT NOT NULL DEFAULT '1.0',
+    lastUpdated INTEGER NOT NULL DEFAULT 0,
+    description TEXT,
+    source TEXT,
+    copyright TEXT,
+    website TEXT,
+    completeness INTEGER NOT NULL DEFAULT 100
+);
+
+-- AyahTranslation table
+CREATE TABLE IF NOT EXISTS AyahTranslation (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    translationId TEXT NOT NULL,
+    surahNumber INTEGER NOT NULL,
+    ayahNumber INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    FOREIGN KEY (translationId) REFERENCES Translation(id) ON DELETE CASCADE,
+    UNIQUE(translationId, surahNumber, ayahNumber)
+);
+
+-- WordTranslation table
+CREATE TABLE IF NOT EXISTS WordTranslation (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    wordId INTEGER NOT NULL,
+    translationId TEXT NOT NULL,
+    translation TEXT NOT NULL,
+    transliteration TEXT,
+    FOREIGN KEY (wordId) REFERENCES Word(id) ON DELETE CASCADE,
+    FOREIGN KEY (translationId) REFERENCES Translation(id) ON DELETE CASCADE,
+    UNIQUE(wordId, translationId)
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_translation_language ON Translation(languageCode);
+CREATE INDEX IF NOT EXISTS idx_translation_downloaded ON Translation(isDownloaded);
+CREATE INDEX IF NOT EXISTS idx_ayah_translation_ref ON AyahTranslation(surahNumber, ayahNumber);
+CREATE INDEX IF NOT EXISTS idx_ayah_translation_id ON AyahTranslation(translationId);
+CREATE INDEX IF NOT EXISTS idx_word_translation_word ON WordTranslation(wordId);
+CREATE INDEX IF NOT EXISTS idx_word_translation_id ON WordTranslation(translationId);
+
+-- Translation Queries
+selectAllTranslations:
+SELECT * FROM Translation ORDER BY name;
+
+selectTranslationById:
+SELECT * FROM Translation WHERE id = ?;
+
+selectTranslationsByLanguage:
+SELECT * FROM Translation WHERE languageCode = ? ORDER BY name;
+
+selectDownloadedTranslations:
+SELECT * FROM Translation WHERE isDownloaded = 1 ORDER BY name;
+
+insertTranslation:
+INSERT OR REPLACE INTO Translation(
+    id, name, author, language, languageCode, direction, type,
+    isDownloaded, downloadSize, version, lastUpdated,
+    description, source, copyright, website, completeness
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateTranslationDownloaded:
+UPDATE Translation SET isDownloaded = ? WHERE id = ?;
+
+deleteTranslation:
+DELETE FROM Translation WHERE id = ?;
+
+-- AyahTranslation Queries
+selectAyahTranslations:
+SELECT * FROM AyahTranslation 
+WHERE surahNumber = ? AND ayahNumber = ? AND translationId IN ?;
+
+selectAyahTranslation:
+SELECT * FROM AyahTranslation 
+WHERE surahNumber = ? AND ayahNumber = ? AND translationId = ?;
+
+insertAyahTranslation:
+INSERT OR REPLACE INTO AyahTranslation(translationId, surahNumber, ayahNumber, text)
+VALUES (?, ?, ?, ?);
+
+deleteAyahTranslationsByTranslationId:
+DELETE FROM AyahTranslation WHERE translationId = ?;
+
+-- WordTranslation Queries
+selectWordTranslations:
+SELECT * FROM WordTranslation WHERE wordId = ? AND translationId IN ?;
+
+insertWordTranslation:
+INSERT OR REPLACE INTO WordTranslation(wordId, translationId, translation, transliteration)
+VALUES (?, ?, ?, ?);
+
+deleteWordTranslationsByTranslationId:
+DELETE FROM WordTranslation WHERE translationId = ?;

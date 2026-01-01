@@ -1,0 +1,178 @@
+{
+  "quiz_categories": [
+    {
+      "id": 1,
+      "name": "Surah Names",
+      "name_ar": "أسماء السور",
+      "description": "Test your knowledge of Surah names and their meanings",
+      "difficulty": "easy",
+      "total_questions": 20
+    },
+    {
+      "id": 2,
+      "name": "Prophets in Quran",
+      "name_ar": "الأنبياء في القرآن",
+      "description": "Questions about the prophets mentioned in the Quran",
+      "difficulty": "medium",
+      "total_questions": 15
+    },
+    {
+      "id": 3,
+      "name": "Quran Facts",
+      "name_ar": "حقائق القرآن",
+      "description": "General facts about the Quran",
+      "difficulty": "easy",
+      "total_questions": 25
+    }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "category_id": 1,
+      "question": "What is the first Surah in the Quran?",
+      "question_ar": "ما هي أول سورة في القرآن؟",
+      "options": [
+        "Al-Fatihah",
+        "Al-Baqarah",
+        "Al-Ikhlas",
+        "An-Nas"
+      ],
+      "options_ar": [
+        "الفاتحة",
+        "البقرة",
+        "الإخلاص",
+        "الناس"
+      ],
+      "correct_answer": 0,
+      "explanation": "Al-Fatihah (The Opening) is the first chapter of the Quran",
+      "explanation_ar": "الفاتحة (الافتتاحية) هي السورة الأولى من القرآن",
+      "difficulty": "easy",
+      "points": 10
+    },
+    {
+      "id": 2,
+      "category_id": 1,
+      "question": "Which is the longest Surah in the Quran?",
+      "question_ar": "ما هي أطول سورة في القرآن؟",
+      "options": [
+        "Al-Fatihah",
+        "Al-Baqarah",
+        "Ali 'Imran",
+        "An-Nisa"
+      ],
+      "options_ar": [
+        "الفاتحة",
+        "البقرة",
+        "آل عمران",
+        "النساء"
+      ],
+      "correct_answer": 1,
+      "explanation": "Al-Baqarah (The Cow) is the longest chapter with 286 verses",
+      "explanation_ar": "البقرة هي أطول سورة بـ 286 آية",
+      "difficulty": "easy",
+      "points": 10
+    },
+    {
+      "id": 3,
+      "category_id": 1,
+      "question": "Which Surah is known as the 'Heart of the Quran'?",
+      "question_ar": "أي سورة تُعرف بـ 'قلب القرآن'؟",
+      "options": [
+        "Ya-Sin",
+        "Ar-Rahman",
+        "Al-Mulk",
+        "Al-Kahf"
+      ],
+      "options_ar": [
+        "يس",
+        "الرحمن",
+        "الملك",
+        "الكهف"
+      ],
+      "correct_answer": 0,
+      "explanation": "Surah Ya-Sin is often referred to as the 'Heart of the Quran'",
+      "explanation_ar": "سورة يس غالباً ما يُشار إليها بـ 'قلب القرآن'",
+      "difficulty": "medium",
+      "points": 15
+    },
+    {
+      "id": 4,
+      "category_id": 2,
+      "question": "Who was the first prophet mentioned in the Quran?",
+      "question_ar": "من هو أول نبي ذُكر في القرآن؟",
+      "options": [
+        "Prophet Adam",
+        "Prophet Noah",
+        "Prophet Ibrahim",
+        "Prophet Muhammad"
+      ],
+      "options_ar": [
+        "النبي آدم",
+        "النبي نوح",
+        "النبي إبراهيم",
+        "النبي محمد"
+      ],
+      "correct_answer": 0,
+      "explanation": "Prophet Adam (AS) was the first prophet and the first human",
+      "explanation_ar": "النبي آدم عليه السلام كان أول نبي وأول إنسان",
+      "difficulty": "easy",
+      "points": 10
+    },
+    {
+      "id": 5,
+      "category_id": 3,
+      "question": "How many Surahs are in the Quran?",
+      "question_ar": "كم عدد السور في القرآن؟",
+      "options": [
+        "100",
+        "114",
+        "120",
+        "99"
+      ],
+      "options_ar": [
+        "100",
+        "114",
+        "120",
+        "99"
+      ],
+      "correct_answer": 1,
+      "explanation": "The Quran contains 114 Surahs (chapters)",
+      "explanation_ar": "يحتوي القرآن على 114 سورة",
+      "difficulty": "easy",
+      "points": 10
+    },
+    {
+      "id": 6,
+      "category_id": 3,
+      "question": "In how many years was the Quran revealed?",
+      "question_ar": "في كم سنة نزل القرآن؟",
+      "options": [
+        "10 years",
+        "15 years",
+        "23 years",
+        "30 years"
+      ],
+      "options_ar": [
+        "10 سنوات",
+        "15 سنة",
+        "23 سنة",
+        "30 سنة"
+      ],
+      "correct_answer": 2,
+      "explanation": "The Quran was revealed over a period of 23 years",
+      "explanation_ar": "نزل القرآن على مدى 23 سنة",
+      "difficulty": "medium",
+      "points": 15
+    }
+  ],
+  "metadata": {
+    "total_categories": 3,
+    "total_questions": 6,
+    "difficulty_levels": ["easy", "medium", "hard"],
+    "points_per_difficulty": {
+      "easy": 10,
+      "medium": 15,
+      "hard": 20
+    }
+  }
+}

@@ -1,0 +1,66 @@
+-- Note table for verse notes
+CREATE TABLE IF NOT EXISTS Note (
+    id TEXT PRIMARY KEY NOT NULL,
+    surahNumber INTEGER NOT NULL,
+    ayahNumber INTEGER NOT NULL,
+    title TEXT,
+    content TEXT NOT NULL,
+    isPrivate INTEGER NOT NULL DEFAULT 1,
+    createdAt INTEGER NOT NULL,
+    updatedAt INTEGER NOT NULL
+);
+
+-- NoteTag table (many-to-many)
+CREATE TABLE IF NOT EXISTS NoteTag (
+    noteId TEXT NOT NULL,
+    tag TEXT NOT NULL,
+    PRIMARY KEY (noteId, tag),
+    FOREIGN KEY (noteId) REFERENCES Note(id) ON DELETE CASCADE
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_note_surah_ayah ON Note(surahNumber, ayahNumber);
+CREATE INDEX IF NOT EXISTS idx_note_created ON Note(createdAt DESC);
+CREATE INDEX IF NOT EXISTS idx_note_tag_note ON NoteTag(noteId);
+
+-- Note Queries
+selectAllNotes:
+SELECT * FROM Note ORDER BY createdAt DESC;
+
+selectNoteById:
+SELECT * FROM Note WHERE id = ?;
+
+selectNotesByAyah:
+SELECT * FROM Note WHERE surahNumber = ? AND ayahNumber = ? ORDER BY createdAt DESC;
+
+searchNotes:
+SELECT * FROM Note 
+WHERE title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%'
+ORDER BY createdAt DESC;
+
+insertNote:
+INSERT OR REPLACE INTO Note(
+    id, surahNumber, ayahNumber, title, content,
+    isPrivate, createdAt, updatedAt
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+updateNote:
+UPDATE Note 
+SET title = ?, content = ?, updatedAt = ?
+WHERE id = ?;
+
+deleteNote:
+DELETE FROM Note WHERE id = ?;
+
+-- NoteTag Queries
+selectTagsByNote:
+SELECT tag FROM NoteTag WHERE noteId = ? ORDER BY tag;
+
+insertNoteTag:
+INSERT OR IGNORE INTO NoteTag(noteId, tag) VALUES (?, ?);
+
+deleteNoteTag:
+DELETE FROM NoteTag WHERE noteId = ? AND tag = ?;
+
+deleteNoteTagsByNote:
+DELETE FROM NoteTag WHERE noteId = ?;

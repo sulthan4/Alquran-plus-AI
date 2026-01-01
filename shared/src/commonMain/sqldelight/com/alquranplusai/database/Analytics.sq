@@ -1,0 +1,95 @@
+-- Analytics/ReadingSession table
+CREATE TABLE IF NOT EXISTS ReadingSession (
+    id TEXT PRIMARY KEY NOT NULL,
+    userId TEXT NOT NULL,
+    startTime INTEGER NOT NULL,
+    endTime INTEGER,
+    duration INTEGER NOT NULL DEFAULT 0,
+    surahNumber INTEGER NOT NULL,
+    startAyah INTEGER NOT NULL,
+    endAyah INTEGER,
+    ayahsRead INTEGER NOT NULL DEFAULT 0,
+    readingMode TEXT NOT NULL,
+    date TEXT NOT NULL,
+    FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
+);
+
+-- SessionInteraction table
+CREATE TABLE IF NOT EXISTS SessionInteraction (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sessionId TEXT NOT NULL,
+    type TEXT NOT NULL,
+    timestamp INTEGER NOT NULL,
+    surahNumber INTEGER NOT NULL,
+    ayahNumber INTEGER NOT NULL,
+    FOREIGN KEY (sessionId) REFERENCES ReadingSession(id) ON DELETE CASCADE
+);
+
+-- Milestone table
+CREATE TABLE IF NOT EXISTS Milestone (
+    id TEXT PRIMARY KEY NOT NULL,
+    userId TEXT NOT NULL,
+    type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    achievedAt INTEGER NOT NULL,
+    value INTEGER NOT NULL,
+    icon TEXT NOT NULL,
+    FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_session_user ON ReadingSession(userId);
+CREATE INDEX IF NOT EXISTS idx_session_date ON ReadingSession(date DESC);
+CREATE INDEX IF NOT EXISTS idx_session_interaction ON SessionInteraction(sessionId);
+CREATE INDEX IF NOT EXISTS idx_milestone_user ON Milestone(userId);
+CREATE INDEX IF NOT EXISTS idx_milestone_achieved ON Milestone(achievedAt DESC);
+
+-- ReadingSession Queries
+selectReadingSession:
+SELECT * FROM ReadingSession WHERE id = ?;
+
+selectUserReadingSessions:
+SELECT * FROM ReadingSession WHERE userId = ? ORDER BY startTime DESC LIMIT ?;
+
+selectSessionsByDateRange:
+SELECT * FROM ReadingSession 
+WHERE userId = ? AND date >= ? AND date <= ?
+ORDER BY startTime DESC;
+
+selectSessionsByDate:
+SELECT * FROM ReadingSession WHERE userId = ? AND date = ?;
+
+insertReadingSession:
+INSERT INTO ReadingSession(
+    id, userId, startTime, endTime, duration,
+    surahNumber, startAyah, endAyah, ayahsRead, readingMode, date
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateReadingSession:
+UPDATE ReadingSession 
+SET endTime = ?, duration = ?, endAyah = ?, ayahsRead = ?
+WHERE id = ?;
+
+deleteReadingSession:
+DELETE FROM ReadingSession WHERE id = ?;
+
+-- SessionInteraction Queries
+selectSessionInteractions:
+SELECT * FROM SessionInteraction WHERE sessionId = ? ORDER BY timestamp;
+
+insertSessionInteraction:
+INSERT INTO SessionInteraction(sessionId, type, timestamp, surahNumber, ayahNumber)
+VALUES (?, ?, ?, ?, ?);
+
+-- Milestone Queries
+selectUserMilestones:
+SELECT * FROM Milestone WHERE userId = ? ORDER BY achievedAt DESC;
+
+insertMilestone:
+INSERT OR REPLACE INTO Milestone(
+    id, userId, type, title, description, achievedAt, value, icon
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteMilestone:
+DELETE FROM Milestone WHERE id = ?;

@@ -1,0 +1,61 @@
+-- Question table
+CREATE TABLE IF NOT EXISTS Question (
+    id TEXT PRIMARY KEY NOT NULL,
+    quizId TEXT NOT NULL,
+    type TEXT NOT NULL,
+    question TEXT NOT NULL,
+    surahNumber INTEGER,
+    ayahNumber INTEGER,
+    correctAnswer TEXT NOT NULL,
+    explanation TEXT,
+    hint TEXT,
+    points INTEGER NOT NULL DEFAULT 1,
+    timeLimit INTEGER,
+    difficulty TEXT NOT NULL DEFAULT 'MEDIUM',
+    position INTEGER NOT NULL,
+    FOREIGN KEY (quizId) REFERENCES Quiz(id) ON DELETE CASCADE
+);
+
+-- QuestionOption table for multiple choice
+CREATE TABLE IF NOT EXISTS QuestionOption (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    questionId TEXT NOT NULL,
+    optionText TEXT NOT NULL,
+    position INTEGER NOT NULL,
+    FOREIGN KEY (questionId) REFERENCES Question(id) ON DELETE CASCADE
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_question_quiz ON Question(quizId, position);
+CREATE INDEX IF NOT EXISTS idx_question_option ON QuestionOption(questionId);
+
+-- Question Queries
+selectQuestionsByQuiz:
+SELECT * FROM Question WHERE quizId = ? ORDER BY position;
+
+selectQuestionById:
+SELECT * FROM Question WHERE id = ?;
+
+insertQuestion:
+INSERT OR REPLACE INTO Question(
+    id, quizId, type, question, surahNumber, ayahNumber,
+    correctAnswer, explanation, hint, points, timeLimit,
+    difficulty, position
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteQuestion:
+DELETE FROM Question WHERE id = ?;
+
+deleteQuestionsByQuiz:
+DELETE FROM Question WHERE quizId = ?;
+
+-- QuestionOption Queries
+selectOptionsByQuestion:
+SELECT * FROM QuestionOption WHERE questionId = ? ORDER BY position;
+
+insertQuestionOption:
+INSERT INTO QuestionOption(questionId, optionText, position)
+VALUES (?, ?, ?);
+
+deleteOptionsByQuestion:
+DELETE FROM QuestionOption WHERE questionId = ?;

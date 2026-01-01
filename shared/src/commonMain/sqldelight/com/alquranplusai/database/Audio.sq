@@ -1,0 +1,130 @@
+-- Reciter table
+CREATE TABLE IF NOT EXISTS Reciter (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    nameArabic TEXT NOT NULL,
+    style TEXT NOT NULL,
+    bitrate INTEGER NOT NULL DEFAULT 128,
+    format TEXT NOT NULL DEFAULT 'MP3',
+    isDownloaded INTEGER NOT NULL DEFAULT 0,
+    downloadSize INTEGER NOT NULL DEFAULT 0,
+    imageUrl TEXT,
+    bio TEXT,
+    country TEXT,
+    hasWordTiming INTEGER NOT NULL DEFAULT 0
+);
+
+-- Audio file table
+CREATE TABLE IF NOT EXISTS Audio (
+    id TEXT PRIMARY KEY NOT NULL,
+    reciterId TEXT NOT NULL,
+    surahNumber INTEGER NOT NULL,
+    ayahNumber INTEGER,
+    url TEXT NOT NULL,
+    localPath TEXT,
+    duration INTEGER NOT NULL DEFAULT 0,
+    fileSize INTEGER NOT NULL DEFAULT 0,
+    isDownloaded INTEGER NOT NULL DEFAULT 0,
+    downloadProgress INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (reciterId) REFERENCES Reciter(id) ON DELETE CASCADE,
+    UNIQUE(reciterId, surahNumber, ayahNumber)
+);
+
+-- WordTiming table for synchronized highlighting
+CREATE TABLE IF NOT EXISTS WordTiming (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    audioId TEXT NOT NULL,
+    verseNumber INTEGER NOT NULL,
+    wordPosition INTEGER NOT NULL,
+    startTime INTEGER NOT NULL,
+    endTime INTEGER NOT NULL,
+    duration INTEGER NOT NULL,
+    FOREIGN KEY (audioId) REFERENCES Audio(id) ON DELETE CASCADE,
+    UNIQUE(audioId, verseNumber, wordPosition)
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_reciter_style ON Reciter(style);
+CREATE INDEX IF NOT EXISTS idx_reciter_downloaded ON Reciter(isDownloaded);
+CREATE INDEX IF NOT EXISTS idx_audio_reciter ON Audio(reciterId);
+CREATE INDEX IF NOT EXISTS idx_audio_surah ON Audio(surahNumber);
+CREATE INDEX IF NOT EXISTS idx_audio_downloaded ON Audio(isDownloaded);
+CREATE INDEX IF NOT EXISTS idx_word_timing_audio ON WordTiming(audioId);
+
+-- Reciter Queries
+selectAllReciters:
+SELECT * FROM Reciter ORDER BY name;
+
+selectReciterById:
+SELECT * FROM Reciter WHERE id = ?;
+
+selectRecitersByStyle:
+SELECT * FROM Reciter WHERE style = ? ORDER BY name;
+
+selectRecitersByLanguage:
+SELECT * FROM Reciter WHERE country = ? ORDER BY name;
+
+selectDownloadedReciters:
+SELECT * FROM Reciter WHERE isDownloaded = 1 ORDER BY name;
+
+searchReciters:
+SELECT * FROM Reciter 
+WHERE name LIKE '%' || ? || '%' OR nameArabic LIKE '%' || ? || '%'
+ORDER BY name;
+
+insertReciter:
+INSERT OR REPLACE INTO Reciter(
+    id, name, nameArabic, style, bitrate, format,
+    isDownloaded, downloadSize, imageUrl, bio, country, hasWordTiming
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateReciterDownloaded:
+UPDATE Reciter SET isDownloaded = ? WHERE id = ?;
+
+updateReciterSyncStatus:
+UPDATE Reciter SET hasWordTiming = ? WHERE id = ?;
+
+deleteReciter:
+DELETE FROM Reciter WHERE id = ?;
+
+-- Audio Queries
+selectAudioFile:
+SELECT * FROM Audio WHERE reciterId = ? AND surahNumber = ? AND ayahNumber IS ?;
+
+selectAudioFilesBySurah:
+SELECT * FROM Audio WHERE reciterId = ? AND surahNumber = ? ORDER BY ayahNumber;
+
+selectDownloadedAudioFiles:
+SELECT * FROM Audio WHERE reciterId = ? AND isDownloaded = 1 ORDER BY surahNumber;
+
+isAudioDownloaded:
+SELECT isDownloaded FROM Audio WHERE reciterId = ? AND surahNumber = ? AND ayahNumber IS NULL;
+
+insertAudio:
+INSERT OR REPLACE INTO Audio(
+    id, reciterId, surahNumber, ayahNumber, url, localPath,
+    duration, fileSize, isDownloaded, downloadProgress
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateAudioDownloaded:
+UPDATE Audio SET isDownloaded = ?, localPath = ? WHERE id = ?;
+
+updateAudioProgress:
+UPDATE Audio SET downloadProgress = ? WHERE id = ?;
+
+deleteAudio:
+DELETE FROM Audio WHERE reciterId = ? AND surahNumber = ?;
+
+deleteAllAudioByReciter:
+DELETE FROM Audio WHERE reciterId = ?;
+
+-- WordTiming Queries
+selectWordTimings:
+SELECT * FROM WordTiming WHERE audioId = ? ORDER BY verseNumber, wordPosition;
+
+insertWordTiming:
+INSERT OR REPLACE INTO WordTiming(audioId, verseNumber, wordPosition, startTime, endTime, duration)
+VALUES (?, ?, ?, ?, ?, ?);
+
+deleteWordTimingsByAudio:
+DELETE FROM WordTiming WHERE audioId = ?;

@@ -1,0 +1,78 @@
+-- Ayah table
+CREATE TABLE IF NOT EXISTS Ayah (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    surahNumber INTEGER NOT NULL,
+    ayahNumber INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    textUthmani TEXT NOT NULL,
+    textSimple TEXT NOT NULL,
+    juzNumber INTEGER NOT NULL,
+    hizbNumber INTEGER NOT NULL,
+    rukuNumber INTEGER NOT NULL,
+    manzilNumber INTEGER NOT NULL,
+    pageNumber INTEGER NOT NULL,
+    sajdaType TEXT,
+    sajdaNumber INTEGER,
+    FOREIGN KEY (surahNumber) REFERENCES Surah(number) ON DELETE CASCADE,
+    UNIQUE(surahNumber, ayahNumber)
+);
+
+-- Indexes for Ayah
+CREATE INDEX IF NOT EXISTS idx_ayah_surah ON Ayah(surahNumber);
+CREATE INDEX IF NOT EXISTS idx_ayah_juz ON Ayah(juzNumber);
+CREATE INDEX IF NOT EXISTS idx_ayah_page ON Ayah(pageNumber);
+CREATE INDEX IF NOT EXISTS idx_ayah_manzil ON Ayah(manzilNumber);
+CREATE INDEX IF NOT EXISTS idx_ayah_hizb ON Ayah(hizbNumber);
+CREATE INDEX IF NOT EXISTS idx_ayah_ruku ON Ayah(surahNumber, rukuNumber);
+CREATE INDEX IF NOT EXISTS idx_ayah_sajda ON Ayah(sajdaType) WHERE sajdaType IS NOT NULL;
+
+-- Queries
+selectAll:
+SELECT * FROM Ayah ORDER BY surahNumber, ayahNumber;
+
+selectById:
+SELECT * FROM Ayah WHERE id = ?;
+
+selectBySurah:
+SELECT * FROM Ayah WHERE surahNumber = ? ORDER BY ayahNumber;
+
+selectByNumber:
+SELECT * FROM Ayah WHERE surahNumber = ? AND ayahNumber = ?;
+
+selectByJuz:
+SELECT * FROM Ayah WHERE juzNumber = ? ORDER BY surahNumber, ayahNumber;
+
+selectByPage:
+SELECT * FROM Ayah WHERE pageNumber = ? ORDER BY surahNumber, ayahNumber;
+
+selectByManzil:
+SELECT * FROM Ayah WHERE manzilNumber = ? ORDER BY surahNumber, ayahNumber;
+
+selectByHizb:
+SELECT * FROM Ayah WHERE hizbNumber = ? ORDER BY surahNumber, ayahNumber;
+
+selectByRuku:
+SELECT * FROM Ayah WHERE surahNumber = ? AND rukuNumber = ? ORDER BY ayahNumber;
+
+selectSajdaAyahs:
+SELECT * FROM Ayah WHERE sajdaType IS NOT NULL ORDER BY surahNumber, ayahNumber;
+
+searchInText:
+SELECT * FROM Ayah 
+WHERE text LIKE '%' || ? || '%' 
+   OR textUthmani LIKE '%' || ? || '%'
+   OR textSimple LIKE '%' || ? || '%'
+ORDER BY surahNumber, ayahNumber;
+
+insert:
+INSERT OR REPLACE INTO Ayah(
+    surahNumber, ayahNumber, text, textUthmani, textSimple,
+    juzNumber, hizbNumber, rukuNumber, manzilNumber, pageNumber,
+    sajdaType, sajdaNumber
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteAll:
+DELETE FROM Ayah;
+
+deleteBySurah:
+DELETE FROM Ayah WHERE surahNumber = ?;

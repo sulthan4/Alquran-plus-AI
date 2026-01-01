@@ -1,0 +1,396 @@
+# AlQuranPlusAI - Comprehensive Manual Test Plan (Extended)
+
+**Application**: AlQuran Plus AI
+**Version**: 1.0
+**Target OS**: Android (Primary), iOS (via Shared Logic verification)
+**Last Updated**: December 31, 2025
+**Total Test Cases**: 150+
+
+---
+
+## 🟢 Phase 1: Onboarding & Authentication
+
+### 1.1 Fresh Install & Launch
+- [ ] **TC-001**: Launch app for the first time. Verify **Splash Screen** appears with correct branding.
+- [ ] **TC-002**: Verify transition to **Onboarding Screen**.
+- [ ] **TC-003**: Swipe through Onboarding slides (Features intro: Reading, Audio, AI). Verify animations/text.
+- [ ] **TC-004**: Click "Get Started" on the final slide.
+
+### 1.2 Authentication Flow
+- [ ] **TC-005**: Verify **Auth/Welcome Screen** appears.
+- [ ] **TC-006**: Test **Sign Up** with valid email/password. Verify success and navigation to Profile Setup.
+- [ ] **TC-007**: Test **Sign Up** with invalid email (e.g., missing @). Verify error message.
+- [ ] **TC-008**: Test **Login** with valid credentials.
+- [ ] **TC-009**: Test **Login** with incorrect password. Verify error toast/dialog.
+- [ ] **TC-010**: Test **Skip/Guest Mode**. Verify access to Home Screen.
+
+### 1.3 Initial Setup (After Auth)
+- [ ] **TC-011**: Verify **Permissions Request** screen (Notification, Storage/Media).
+- [ ] **TC-012**: Deny permissions and verify app handling (graceful degradation explanation).
+- [ ] **TC-013**: Grant permissions.
+- [ ] **TC-014**: Verify **Setup Complete** / Loading Quran Data screen. Ensure loading bar progresses.
+
+---
+
+## 🟢 Phase 2: Home & Dashboard (NEW DESIGN)
+
+### 2.1 Home UI Elements - Design Specification
+- [ ] **TC-015**: Verify **Gradient Header** (Teal → Purple) displays correctly.
+- [ ] **TC-016**: Verify **App Branding** "AlQuran Plus AI" with user icon.
+- [ ] **TC-017**: Verify **Notification Bell** icon in header.
+- [ ] **TC-018**: Verify **Continue Reading Card** with:
+  - Teal gradient background
+  - Surah and Ayah reference
+  - Arabic text preview
+  - Progress bar with Gold color
+  - Verse count (e.g., "255 of 286")
+- [ ] **TC-019**: Tap Continue Reading card. Verify navigation to last read position.
+
+### 2.2 Quick Stats Row
+- [ ] **TC-020**: Verify **Streak Card** displays with 🔥 icon and days count.
+- [ ] **TC-021**: Verify **Ayahs Card** displays with 📖 icon and count.
+- [ ] **TC-022**: Verify **Time Card** displays with ⏱️ icon and minutes.
+- [ ] **TC-023**: Verify all stat cards have consistent elevation and spacing.
+
+### 2.3 Feature Grid (2×2)
+- [ ] **TC-024**: Verify **Browse Quran** card with Teal gradient.
+- [ ] **TC-025**: Verify **Audio Player** card with Purple gradient.
+- [ ] **TC-026**: Verify **Bookmarks** card with Orange gradient.
+- [ ] **TC-027**: Verify **Daily Quiz** card with Green gradient.
+- [ ] **TC-028**: Tap each feature card. Verify navigation to respective screens.
+
+### 2.4 Today's Challenge
+- [ ] **TC-029**: Verify **Challenge Card** displays with ⭐ icon.
+- [ ] **TC-030**: Verify challenge description (e.g., "Complete 5 verses from...").
+- [ ] **TC-031**: Tap "Start →" button. Verify navigation to quiz/challenge.
+
+### 2.5 Floating Action Button
+- [ ] **TC-032**: Verify **Gold FAB** with search icon in bottom-right.
+- [ ] **TC-033**: Tap FAB. Verify navigation to Search screen.
+
+---
+
+## 🟢 Phase 3: Quran Navigation & List
+
+### 3.1 Surah List Tab
+- [ ] **TC-034**: Scroll through **Surah List**. Verify all 114 Surahs are present.
+- [ ] **TC-035**: Verify details: Surah Number, Name (Arabic/English), Verses count, Makki/Madani icon.
+- [ ] **TC-036**: Verify **Primary Color** (Deep Teal) used for headers.
+- [ ] **TC-037**: Use **Fast Scroll** (if implemented) or specific scroll to end.
+- [ ] **TC-038**: Tap a Surah (e.g., Al-Fatiha). Verify navigation to Reading Screen.
+
+### 3.2 Juz & Page Tabs
+- [ ] **TC-039**: Switch to **Juz/Para** tab. Verify list of 30 Juz.
+- [ ] **TC-040**: Tap a Juz. Verify navigation to the start of that Juz.
+- [ ] **TC-041**: Switch to **Page** tab. Verify grid/list of pages (Standard 604 pages).
+
+### 3.3 List Search
+- [ ] **TC-042**: Type "Kahf" in the top bar search. Verify list filters to Surah Al-Kahf.
+- [ ] **TC-043**: Type "2" or "Baqarah". Verify filtering works for number/name.
+
+---
+
+## 🟢 Phase 4: Reading Experience (Core)
+
+### 4.1 Rendering
+- [ ] **TC-044**: Open Surah Al-Baqarah. Verify **Arabic Text** renders clearly.
+- [ ] **TC-045**: Verify **Translation** (e.g., English) appears below/beside Arabic.
+- [ ] **TC-046**: Verify **Page scrolling** (Vertical or Horizontal pagination).
+- [ ] **TC-047**: Verify **Bismillah** header at start of Surah (except Tawbah).
+- [ ] **TC-048**: Verify **Primary Color** used for controls and highlights.
+
+### 4.2 Word-by-Word Interaction
+- [ ] **TC-049**: Tap on a specific **Word**. Verify popup/bottom sheet with:
+  - Transliteration
+  - Translation (Word level)
+  - Grammar/Root info
+- [ ] **TC-050**: Play audio for that specific word (if supported).
+
+### 4.3 Reading Settings (Quick Menu)
+- [ ] **TC-051**: Open Appearance Settings (Aa icon).
+- [ ] **TC-052**: Increase **Font Size**. Verify text scales immediately.
+- [ ] **TC-053**: Change **Font Style** (e.g., IndoPak vs Uthmani). Verify script change.
+- [ ] **TC-054**: Toggle **Translation Visibility** off/on.
+- [ ] **TC-055**: Switch **Translation Language** (e.g., select Urdu). Verify content updates.
+- [ ] **TC-056**: Toggle **Night Mode** / Sepia theme. Verify dark color scheme applies.
+
+### 4.4 Ayah Actions
+- [ ] **TC-057**: Long press an Ayah. Verify Action Menu appears.
+- [ ] **TC-058**: Select **Bookmark**. Verify "Saved" toast with Gold accent.
+- [ ] **TC-059**: Select **Copy**. Verify text copied to clipboard.
+- [ ] **TC-060**: Select **Share**. Verify system share sheet opens with text/image option.
+- [ ] **TC-061**: Select **Play**. Verify audio starts from this Ayah.
+
+---
+
+## 🟢 Phase 5: Audio & Playback
+
+### 5.1 Player Controls
+- [ ] **TC-062**: Start playback of a Surah.
+- [ ] **TC-063**: Verify **Bottom Mini Player** appears.
+- [ ] **TC-064**: Verify **Purple gradient** on audio player controls.
+- [ ] **TC-065**: Pause/Resume playback.
+- [ ] **TC-066**: Expand to **Full Player**. Verify Cover Art/Reciter info.
+- [ ] **TC-067**: Test **Next/Prev** buttons (Skip Ayah).
+- [ ] **TC-068**: Use **Seek Bar** with Gold progress indicator. Verify audio jumps.
+
+### 5.2 Reciter & Downloads
+- [ ] **TC-069**: Open Reciter List. Select a different Reciter (e.g., Mishary).
+- [ ] **TC-070**: Verify audio re-loads/downloads for the new reciter.
+- [ ] **TC-071**: Tap **Download** icon for a specific Surah. Verify progress bar.
+- [ ] **TC-072**: Turn on **Airplane Mode**. Play the downloaded Surah. Verify it plays.
+
+### 5.3 Advanced Audio
+- [ ] **TC-073**: Test **Repeat Ayah** (Loop 3 times).
+- [ ] **TC-074**: Test **Background Play**. Minimize app. Audio should continue.
+- [ ] **TC-075**: Verify **Notification Controls** (Play/Pause from lock screen).
+- [ ] **TC-076**: Test **Playback Speed** control (0.5x, 1x, 1.5x, 2x).
+- [ ] **TC-077**: Test **Equalizer** settings (if implemented).
+
+---
+
+## 🟢 Phase 6: Search & AI (HYBRID SEARCH)
+
+### 6.1 Search UI
+- [ ] **TC-078**: Open Search screen. Verify **Search Bar** with clear button.
+- [ ] **TC-079**: Verify **Search Mode Tabs**: Text, Semantic, Root, Topic.
+- [ ] **TC-080**: Verify **Blue gradient** theme for search (as per design spec).
+
+### 6.2 Text Search
+- [ ] **TC-081**: Search for "Patience". Verify results show Ayahs containing "Patience" in translation.
+- [ ] **TC-082**: Verify **Highlighted Text** in results (HTML parsing working).
+- [ ] **TC-083**: Verify **Match Type Badge** shows "EXACT" with appropriate color.
+- [ ] **TC-084**: Search for Arabic "الله". Verify Arabic results.
+- [ ] **TC-085**: Tap a result. Verify navigation to that specific Ayah in Reading Screen.
+
+### 6.3 Semantic Search (AI)
+- [ ] **TC-086**: Switch to **Semantic** tab.
+- [ ] **TC-087**: Search query: "patience in hardship".
+- [ ] **TC-088**: Verify results are relevant even if exact words don't match (concept matching).
+- [ ] **TC-089**: Verify **Match Type Badge** shows "SEMANTIC" with secondary color.
+- [ ] **TC-090**: Verify **Relevance Score** indicator displays.
+
+### 6.4 Root Search
+- [ ] **TC-091**: Switch to **Root** tab.
+- [ ] **TC-092**: Search for Arabic root "ك ت ب".
+- [ ] **TC-093**: Verify results show all derivatives (كتب, كاتب, مكتوب, etc.).
+- [ ] **TC-094**: Verify **Match Type Badge** shows "ROOT" with tertiary color.
+
+### 6.5 Topic Search
+- [ ] **TC-095**: Switch to **Topic** tab.
+- [ ] **TC-096**: Search for "prayer".
+- [ ] **TC-097**: Verify all prayer-related verses appear.
+
+### 6.6 Recent Searches
+- [ ] **TC-098**: With empty search, verify **Recent Searches** section displays.
+- [ ] **TC-099**: Verify previously searched terms appear.
+- [ ] **TC-100**: Tap a recent search. Verify it re-executes the search.
+- [ ] **TC-101**: Delete a recent search. Verify it's removed.
+- [ ] **TC-102**: Tap "Clear All". Verify all recent searches are removed.
+
+### 6.7 Search Filters
+- [ ] **TC-103**: Tap **Filter** icon. Verify filter dialog opens.
+- [ ] **TC-104**: Select specific Surahs (e.g., Al-Baqarah, Al-Imran).
+- [ ] **TC-105**: Apply filters. Verify results only from selected Surahs.
+
+### 6.8 Offline Search
+- [ ] **TC-106**: Turn off internet. Perform text search.
+- [ ] **TC-107**: Verify **local database fallback** works.
+- [ ] **TC-108**: Verify "Offline Mode" indicator if shown.
+
+---
+
+## 🟢 Phase 7: Study Tools (Bookmarks & Notes)
+
+### 7.1 Bookmarks
+- [ ] **TC-109**: Go to **Bookmarks** Tab. Verify previously bookmarked Ayah is listed.
+- [ ] **TC-110**: Verify **Orange gradient** theme for bookmarks screen.
+- [ ] **TC-111**: Create a **New Folder** (e.g., "Favorites").
+- [ ] **TC-112**: Move bookmark to "Favorites" folder.
+- [ ] **TC-113**: Delete a bookmark. Verify removal.
+- [ ] **TC-114**: Verify bookmark cards have proper elevation.
+
+### 7.2 Notes
+- [ ] **TC-115**: Go to an Ayah → Add Note.
+- [ ] **TC-116**: Write "Reflect on this". Save.
+- [ ] **TC-117**: Verify Note icon appears next to Ayah.
+- [ ] **TC-118**: Go to Bookmarks/Notes tab. Open the note. Edit and Save again.
+
+---
+
+## 🟢 Phase 8: Gamification (Quizzes)
+
+### 8.1 Quiz UI
+- [ ] **TC-119**: Navigate to **Quiz** section.
+- [ ] **TC-120**: Verify **Green gradient** theme for quiz screens.
+- [ ] **TC-121**: Verify quiz categories: Memorization, Translation, Tafsir, General, Surah Info.
+
+### 8.2 Quiz Flow
+- [ ] **TC-122**: Start **Daily Challenge**.
+- [ ] **TC-123**: Verify question displays with timer.
+- [ ] **TC-124**: Answer Question 1 Correctly. Verify Green highlight/Score increase.
+- [ ] **TC-125**: Answer Question 2 Incorrectly. Verify Red highlight/Correct answer shown.
+- [ ] **TC-126**: Complete Quiz. Verify **Results Screen** (Score, Time, Accuracy).
+- [ ] **TC-127**: Verify "Review Answers" allows checking mistakes.
+- [ ] **TC-128**: Verify **Gold color** used for achievements/badges.
+
+### 8.3 Quiz Types
+- [ ] **TC-129**: Test **Complete the Verse** question type.
+- [ ] **TC-130**: Test **Identify Surah** question type.
+- [ ] **TC-131**: Test **Translation Matching** question type.
+- [ ] **TC-132**: Test **Surah Information** question type.
+- [ ] **TC-133**: Test **General Knowledge** question type.
+
+### 8.4 Difficulty Levels
+- [ ] **TC-134**: Start **Easy** quiz. Verify appropriate difficulty.
+- [ ] **TC-135**: Start **Medium** quiz. Verify increased difficulty.
+- [ ] **TC-136**: Start **Hard** quiz. Verify challenging questions.
+
+### 8.5 Stats
+- [ ] **TC-137**: Check **Leaderboard**. Verify user position.
+- [ ] **TC-138**: Check **Profile Stats**. Updates to "Quizzes Taken" count.
+
+---
+
+## 🟢 Phase 9: Analytics & Profile
+
+### 9.1 Analytics Dashboard
+- [ ] **TC-139**: Open **Analytics** Dashboard.
+- [ ] **TC-140**: Verify **Indigo gradient** theme for analytics.
+- [ ] **TC-141**: Verify "Time Read" has increased after reading session.
+- [ ] **TC-142**: Check **Weekly Graph**. Today's bar should be visible.
+- [ ] **TC-143**: Verify **Streak Calculation** is accurate.
+- [ ] **TC-144**: Verify **Ayahs Read** count is displayed.
+- [ ] **TC-145**: Verify **Reading Sessions** are tracked.
+
+### 9.2 Profile Settings
+- [ ] **TC-146**: **Edit Profile**. Change display name. Save.
+- [ ] **TC-147**: Verify name update on Home/Profile.
+- [ ] **TC-148**: Upload profile picture. Verify it displays.
+
+---
+
+## 🟢 Phase 10: Settings (15+ Screens)
+
+### 10.1 Main Settings
+- [ ] **TC-149**: Open **Settings** from menu.
+- [ ] **TC-150**: Verify all categories: General, Reading, Audio, Notifications, Privacy, Data, Display, Account, About.
+- [ ] **TC-151**: Verify **Primary Color** (Deep Teal) used for headers.
+
+### 10.2 Theme Settings
+- [ ] **TC-152**: Open **Theme** settings.
+- [ ] **TC-153**: Select **Light** theme. Verify app switches to light colors.
+- [ ] **TC-154**: Select **Dark** theme. Verify app switches to dark colors with appropriate adjustments.
+- [ ] **TC-155**: Select **System** theme. Verify app follows system setting.
+- [ ] **TC-156**: Verify **Dark Mode** uses light teal, light purple, light gold.
+
+### 10.3 Language Settings
+- [ ] **TC-157**: Open **Language** settings.
+- [ ] **TC-158**: Change app language. Verify UI updates.
+- [ ] **TC-159**: Verify RTL support for Arabic.
+
+### 10.4 Reading Preferences
+- [ ] **TC-160**: Open **Reading Preferences**.
+- [ ] **TC-161**: Adjust font size. Verify it persists.
+- [ ] **TC-162**: Select translation preference. Verify it applies.
+
+### 10.5 Audio Settings
+- [ ] **TC-163**: Open **Audio Settings**.
+- [ ] **TC-164**: Select default reciter. Verify it's used.
+- [ ] **TC-165**: Adjust playback speed. Verify it persists.
+
+### 10.6 Notification Settings
+- [ ] **TC-166**: Open **Notification Settings**.
+- [ ] **TC-167**: Enable daily verse notification. Verify setting saves.
+- [ ] **TC-168**: Enable prayer reminders. Verify setting saves.
+
+### 10.7 Data & Storage
+- [ ] **TC-169**: Open **Data & Storage** settings.
+- [ ] **TC-170**: View cache size. Verify accurate display.
+- [ ] **TC-171**: Clear cache. Verify confirmation dialog.
+
+### 10.8 Backup & Restore
+- [ ] **TC-172**: Initiate **Backup**. Verify success message.
+- [ ] **TC-173**: Initiate **Restore**. Verify data restoration.
+
+---
+
+## 🟢 Phase 11: Edge Cases & Stability
+
+### 11.1 Network Handling
+- [ ] **TC-174**: Turn off internet. Open app. Verify "Offline Mode" banner/snackbar.
+- [ ] **TC-175**: Try to stream audio without internet. Verify error message "Connect to internet".
+- [ ] **TC-176**: Try to search (AI mode) without internet. Verify fallback to local text search.
+- [ ] **TC-177**: Turn internet back on. Verify app resumes normal operation.
+
+### 11.2 Lifecycle & State
+- [ ] **TC-178**: Background Play → Kill App from Recents. Verify Audio stops.
+- [ ] **TC-179**: Rotate Screen. Verify Layout adapts (especially Reading Screen).
+- [ ] **TC-180**: Change System Language (e.g., to Arabic). Verify App UI mirrors (RTL) if supported.
+- [ ] **TC-181**: Low memory scenario. Verify app doesn't crash.
+
+### 11.3 Data Persistence
+- [ ] **TC-182**: Close app. Reopen. Verify last read position is saved.
+- [ ] **TC-183**: Close app. Reopen. Verify bookmarks are persisted.
+- [ ] **TC-184**: Close app. Reopen. Verify settings are persisted.
+- [ ] **TC-185**: Close app. Reopen. Verify quiz progress is saved.
+
+### 11.4 Performance
+- [ ] **TC-186**: Scroll through long Surah (Al-Baqarah). Verify smooth scrolling.
+- [ ] **TC-187**: Search with many results. Verify results load efficiently.
+- [ ] **TC-188**: Open app cold start. Verify reasonable launch time.
+
+### 11.5 Error Handling
+- [ ] **TC-189**: Invalid search query. Verify graceful error handling.
+- [ ] **TC-190**: Corrupted audio file. Verify error message.
+- [ ] **TC-191**: Database error. Verify app doesn't crash.
+
+---
+
+## 🟢 Phase 12: Design Consistency
+
+### 12.1 Color Verification
+- [ ] **TC-192**: Verify **Deep Teal (#006064)** used for primary elements throughout.
+- [ ] **TC-193**: Verify **Purple (#5E35B1)** used for secondary elements.
+- [ ] **TC-194**: Verify **Gold (#FFB300)** used for highlights and achievements.
+- [ ] **TC-195**: Verify feature-specific gradients are consistent.
+
+### 12.2 Spacing & Elevation
+- [ ] **TC-196**: Verify consistent spacing (xs, sm, md, lg, xl) throughout.
+- [ ] **TC-197**: Verify consistent elevation (low, medium, high) on cards.
+- [ ] **TC-198**: Verify proper padding and margins.
+
+### 12.3 Typography
+- [ ] **TC-199**: Verify Arabic text uses proper font (Uthmanic Hafs).
+- [ ] **TC-200**: Verify UI text uses Roboto font.
+- [ ] **TC-201**: Verify font sizes are consistent.
+
+---
+
+**End of Test Plan**
+**Total Test Cases: 201**
+
+## Test Execution Guidelines
+
+### Priority Levels
+- **P0 (Critical)**: Core reading, audio, search functionality
+- **P1 (High)**: Bookmarks, quiz, analytics, settings
+- **P2 (Medium)**: Advanced features, edge cases
+- **P3 (Low)**: UI polish, minor features
+
+### Test Environment
+- **Device**: Android 8.0+ (API 26+)
+- **Network**: WiFi, Mobile Data, Offline
+- **Storage**: Sufficient space for downloads
+
+### Expected Results
+- All P0 tests must pass for release
+- 95%+ P1 tests must pass
+- Known issues documented for P2/P3 failures
+
+### Bug Reporting
+- Include test case ID
+- Steps to reproduce
+- Expected vs actual result
+- Screenshots/videos
+- Device and OS version
