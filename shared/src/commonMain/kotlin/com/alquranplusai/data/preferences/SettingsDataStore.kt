@@ -22,10 +22,43 @@ class SettingsDataStore(
         try {
             val exists = database.settingsQueries.selectUserSettings(currentUserId).executeAsOneOrNull()
             if (exists == null) {
-                 // Insert defaults handled by catch or Auth
+                // Insert default settings
+                database.settingsQueries.insertSettings(
+                    userId = currentUserId,
+                    defaultReadingMode = "CONTINUOUS",
+                    defaultTextType = "UTHMANI",
+                    arabicFontFamily = "uthmanic_hafs",
+                    arabicFontSize = 24,
+                    translationFontSize = 16,
+                    lineSpacing = 1.5,
+                    showTajweed = 1,
+                    showTransliteration = 0,
+                    showWordByWord = 0,
+                    defaultReciterId = null,
+                    autoPlayAudio = 0,
+                    audioPlaybackSpeed = 1.0,
+                    wordByWordAudio = 0,
+                    theme = "SYSTEM",
+                    language = "en",
+                    enableAnimations = 1,
+                    enableHapticFeedback = 1,
+                    enableNotifications = 1,
+                    dailyReminderEnabled = 0,
+                    dailyReminderTime = "09:00",
+                    quizReminderEnabled = 0,
+                    achievementNotifications = 1,
+                    shareStatistics = 0,
+                    showOnLeaderboard = 1,
+                    biometricLockEnabled = 0,
+                    autoDownloadAudio = 0,
+                    downloadOnWifiOnly = 1,
+                    autoBackup = 1,
+                    backupFrequency = "WEEKLY"
+                )
             }
         } catch (e: Exception) {
-            // Ignore
+            // Log error but don't crash
+            println("Error initializing default settings: ${e.message}")
         }
     }
     
