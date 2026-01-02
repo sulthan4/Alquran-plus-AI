@@ -33,6 +33,8 @@ object SupportedLanguages {
     val DUTCH = AppLanguage("nl", "Nederlands", "Dutch")
     val JAPANESE = AppLanguage("ja", "日本語", "Japanese")
     val KOREAN = AppLanguage("ko", "한국어", "Korean")
+    val TAMIL = AppLanguage("ta", "தமிழ்", "Tamil")
+    val MALAYALAM = AppLanguage("ml", "മലയാളം", "Malayalam")
     
     /**
      * All supported languages ordered by relevance for Muslim users
@@ -47,18 +49,20 @@ object SupportedLanguages {
         PERSIAN,      // 7. Iran, Afghanistan
         FRENCH,       // 8. North/West Africa
         MALAY,        // 9. Malaysia, Singapore
-        GERMAN,       // 10. Germany (large Muslim community)
-        SPANISH,      // 11. Growing Muslim population
-        RUSSIAN,      // 12. Central Asia
-        HINDI,        // 13. India
-        PASHTO,       // 14. Afghanistan, Pakistan
-        HAUSA,        // 15. Nigeria, West Africa
-        SWAHILI,      // 16. East Africa
-        PORTUGUESE,   // 17. Brazil, Portugal
-        CHINESE,      // 18. China
-        DUTCH,        // 19. Netherlands
-        JAPANESE,     // 20. Japan
-        KOREAN        // 21. South Korea
+        TAMIL,        // 10. India, Sri Lanka, Singapore, Malaysia
+        MALAYALAM,    // 11. Kerala (India), Gulf diaspora
+        GERMAN,       // 12. Germany (large Muslim community)
+        SPANISH,      // 13. Growing Muslim population
+        RUSSIAN,      // 14. Central Asia
+        HINDI,        // 15. India
+        PASHTO,       // 16. Afghanistan, Pakistan
+        HAUSA,        // 17. Nigeria, West Africa
+        SWAHILI,      // 18. East Africa
+        PORTUGUESE,   // 19. Brazil, Portugal
+        CHINESE,      // 20. China
+        DUTCH,        // 21. Netherlands
+        JAPANESE,     // 22. Japan
+        KOREAN        // 23. South Korea
     )
     
     /**
