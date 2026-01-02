@@ -7,11 +7,11 @@
     <string name="nav_home">الرئيسية</string>
     <string name="nav_quran">القرآن</string>
     <string name="nav_audio">الصوت</string>
-    <string name="nav_bookmarks">العلامات</string>
+    <string name="nav_bookmarks">المحفوظات</string>
     <string name="nav_more">المزيد</string>
     
     <!-- Common -->
-    <string name="loading">جاري التحميل…</string>
+    <string name="loading">جار التحميل...</string>
     <string name="error">خطأ</string>
     <string name="retry">إعادة المحاولة</string>
     <string name="cancel">إلغاء</string>
@@ -23,22 +23,72 @@
     <string name="search">بحث</string>
     <string name="settings">الإعدادات</string>
     
+    <!-- Onboarding -->
+    <string name="onboarding_welcome_title">مرحبا بك في القرآن بلس AI</string>
+    <string name="onboarding_welcome_desc">رفيقك الشامل للقرآن مع ميزات الذكاء الاصطناعي</string>
+    <string name="onboarding_features_title">ميزات قوية</string>
+    <string name="onboarding_features_desc">ترجمة كلمة بكلمة، تلاوة صوتية، بحث ذكي والمزيد</string>
+    <string name="onboarding_get_started">ابدأ الآن</string>
+    <string name="onboarding_skip">تخطي</string>
+    
+    <!-- Auth -->
+    <string name="auth_login">تسجيل الدخول</string>
+    <string name="auth_register">تسجيل جديد</string>
+    <string name="auth_email">البريد الإلكتروني</string>
+    <string name="auth_password">كلمة المرور</string>
+    <string name="auth_forgot_password">نسيت كلمة المرور؟</string>
+    <string name="auth_or_continue_with">أو تابع باستخدام</string>
+    
     <!-- Quran -->
     <string name="quran_surah">سورة</string>
     <string name="quran_juz">جزء</string>
     <string name="quran_page">صفحة</string>
     <string name="quran_ayah">آية</string>
-    <string name="quran_reading">القراءة</string>
+    <string name="quran_reading">قراءة</string>
     <string name="quran_continue_reading">متابعة القراءة</string>
     <string name="quran_last_read">آخر قراءة</string>
     
     <!-- Audio -->
     <string name="audio_reciter">القارئ</string>
     <string name="audio_play">تشغيل</string>
-    <string name="audio_pause">إيقاف مؤقت</string>
+    <string name="audio_pause">إيقاف</string>
     <string name="audio_next">التالي</string>
     <string name="audio_previous">السابق</string>
     <string name="audio_repeat">تكرار</string>
     <string name="audio_download">تحميل</string>
     <string name="audio_playlist">قائمة التشغيل</string>
+    
+    <!-- Bookmarks -->
+    <string name="bookmark_add">إضافة إشارة</string>
+    <string name="bookmark_remove">إزالة الإشارة</string>
+    <string name="bookmark_folder">مجلد</string>
+    <string name="bookmark_note">ملاحظة</string>
+    <string name="bookmark_tag">وسم</string>
+    
+    <!-- Quiz -->
+    <string name="quiz_start">بدء الاختبار</string>
+    <string name="quiz_question">السؤال</string>
+    <string name="quiz_answer">الإجابة</string>
+    <string name="quiz_score">النتيجة</string>
+    <string name="quiz_result">النتيجة النهائية</string>
+    <string name="quiz_daily_challenge">تحدي يومي</string>
+    
+    <!-- Analytics -->
+    <string name="analytics_streak">التتابع</string>
+    <string name="analytics_goal">الهدف</string>
+    <string name="analytics_achievement">الإنجاز</string>
+    <string name="analytics_progress">التقدم</string>
+    
+    <!-- Settings -->
+    <string name="settings_reading">إعدادات القراءة</string>
+    <string name="settings_audio">إعدادات الصوت</string>
+    <string name="settings_notifications">الإشعارات</string>
+    <string name="settings_theme">المظهر</string>
+    <string name="settings_language">اللغة</string>
+    <string name="settings_about">حول التطبيق</string>
+    
+    <!-- Errors -->
+    <string name="error_network">خطأ في الشبكة. يرجى التحقق من اتصالك.</string>
+    <string name="error_generic">حدث خطأ ما. يرجى المحاولة مرة أخرى.</string>
+    <string name="error_no_data">لا توجد بيانات</string>
 </resources>

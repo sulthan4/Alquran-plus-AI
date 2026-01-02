@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Base Application Theme for Compose -->
-    <style name="Theme.AlQuranPlusAI" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.AlQuranPlusAI" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Primary colors -->
         <item name="android:colorPrimary">@color/primary</item>
+        <item name="colorPrimary">@color/primary</item>
         
         <!-- Background colors -->
         <item name="android:colorBackground">@color/background</item>

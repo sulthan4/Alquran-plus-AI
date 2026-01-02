@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">அல்குர்ஆன் பிளஸ் AI</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">முகப்பு</string>
+    <string name="nav_quran">குர்ஆன்</string>
+    <string name="nav_audio">ஆடியோ</string>
+    <string name="nav_bookmarks">குறிப்புகள்</string>
+    <string name="nav_more">மேலும்</string>
+    
+    <!-- Common -->
+    <string name="loading">ஏற்றுகிறது…</string>
+    <string name="error">பிழை</string>
+    <string name="retry">மீண்டும் முயற்சி</string>
+    <string name="cancel">ரத்துசெய்</string>
+    <string name="ok">சரி</string>
+    <string name="save">சேமி</string>
+    <string name="delete">நீக்கு</string>
+    <string name="edit">திருத்து</string>
+    <string name="share">பகிர்</string>
+    <string name="search">தேடு</string>
+    <string name="settings">அமைப்புகள்</string>
+    
+    <!-- Onboarding -->
+    <string name="onboarding_welcome_title">அல்குர்ஆன் பிளஸ் AI-க்கு வரவேற்கிறோம்</string>
+    <string name="onboarding_welcome_desc">AI-ஆற்றல் அம்சங்களுடன் உங்கள் முழுமையான குர்ஆன் துணை</string>
+    <string name="onboarding_features_title">சக்திவாய்ந்த அம்சங்கள்</string>
+    <string name="onboarding_features_desc">வார்த்தைக்கு வார்த்தை மொழிபெயர்ப்பு, ஆடியோ ஓதுதல், ஸ்மார்ட் தேடல் மற்றும் பல</string>
+    <string name="onboarding_get_started">தொடங்குங்கள்</string>
+    <string name="onboarding_skip">தவிர்</string>
+    
+    <!-- Auth -->
+    <string name="auth_login">உள்நுழைக</string>
+    <string name="auth_register">பதிவுசெய்க</string>
+    <string name="auth_email">மின்னஞ்சல்</string>
+    <string name="auth_password">கடவுச்சொல்</string>
+    <string name="auth_forgot_password">கடவுச்சொல்லை மறந்துவிட்டீர்களா?</string>
+    <string name="auth_or_continue_with">அல்லது இதன் மூலம் தொடரவும்</string>
+    
+    <!-- Quran -->
+    <string name="quran_surah">அத்தியாயம்</string>
+    <string name="quran_juz">ஜூஸ்</string>
+    <string name="quran_page">பக்கம்</string>
+    <string name="quran_ayah">வசனம்</string>
+    <string name="quran_reading">ஓதுதல்</string>
+    <string name="quran_continue_reading">தொடர்ந்து படிக்கவும்</string>
+    <string name="quran_last_read">கடைசியாக படித்தது</string>
+    
+    <!-- Audio -->
+    <string name="audio_reciter">ஓதுபவர்</string>
+    <string name="audio_play">விளையாடு</string>
+    <string name="audio_pause">நிறுத்து</string>
+    <string name="audio_next">அடுத்தது</string>
+    <string name="audio_previous">முந்தையது</string>
+    <string name="audio_repeat">மீண்டும்</string>
+    <string name="audio_download">பதிவிறக்கு</string>
+    <string name="audio_playlist">பாடல் பட்டியல்</string>
+    
+    <!-- Bookmarks -->
+    <string name="bookmark_add">குறிப்பை சேர்</string>
+    <string name="bookmark_remove">குறிப்பை நீக்கு</string>
+    <string name="bookmark_folder">கோப்புறை</string>
+    <string name="bookmark_note">குறிப்பு</string>
+    <string name="bookmark_tag">குறிச்சொல்</string>
+    
+    <!-- Quiz -->
+    <string name="quiz_start">வினாடி வினாவைத் தொடங்கு</string>
+    <string name="quiz_question">கேள்வி</string>
+    <string name="quiz_answer">பதில்</string>
+    <string name="quiz_score">மதிப்பெண்</string>
+    <string name="quiz_result">முடிவு</string>
+    <string name="quiz_daily_challenge">தினசரி சவால்</string>
+    
+    <!-- Analytics -->
+    <string name="analytics_streak">தொடர்ச்சி</string>
+    <string name="analytics_goal">இலக்கு</string>
+    <string name="analytics_achievement">சாதனை</string>
+    <string name="analytics_progress">முன்னேற்றம்</string>
+    
+    <!-- Settings -->
+    <string name="settings_reading">வாசிப்பு அமைப்புகள்</string>
+    <string name="settings_audio">ஆடியோ அமைப்புகள்</string>
+    <string name="settings_notifications">அறிவிப்புகள்</string>
+    <string name="settings_theme">தீம்</string>
+    <string name="settings_language">மொழி</string>
+    <string name="settings_about">பற்றி</string>
+    
+    <!-- Errors -->
+    <string name="error_network">பிணைய பிழை. உங்கள் இணைப்பைச் சரிபார்க்கவும்.</string>
+    <string name="error_generic">ஏதோ தவறு நடந்துள்ளது. மீண்டும் முயற்சிக்கவும்.</string>
+    <string name="error_no_data">தரவு இல்லை</string>
+</resources>

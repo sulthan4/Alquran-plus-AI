@@ -41,7 +41,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                title = { Text(stringResource(com.alquranplusai.android.R.string.settings)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
@@ -58,113 +58,113 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // General
-            item { SectionHeader("General") }
+            item { SectionHeader(stringResource(com.alquranplusai.android.R.string.settings_section_general)) }
             
             item {
                 SettingsNavigationItem(
-                    title = "Theme",
+                    title = stringResource(com.alquranplusai.android.R.string.settings_theme),
                     subtitle = uiState.theme,
                     onClick = { showThemeDialog = true }
                 )
             }
              item {
                 SettingsNavigationItem(
-                    title = "Language",
-                    subtitle = "English", // Placeholder for now
+                    title = stringResource(com.alquranplusai.android.R.string.settings_language),
+                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_language),
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.LANGUAGE_SETTINGS) }
                 )
             }
 
             // Reading
-            item { SectionHeader("Reading") }
+            item { SectionHeader(stringResource(com.alquranplusai.android.R.string.settings_section_reading)) }
             item {
                 SettingsNavigationItem(
-                    title = "Reading Preferences",
-                    subtitle = "Font size, translation",
+                    title = stringResource(com.alquranplusai.android.R.string.settings_reading_title),
+                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_reading_title),
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.READING_PREFERENCES) }
                 )
             }
 
             // Audio
-            item { SectionHeader("Audio") }
+            item { SectionHeader(stringResource(com.alquranplusai.android.R.string.settings_section_audio)) }
             item {
                  SettingsNavigationItem(
-                    title = "Audio Settings",
-                    subtitle = "Reciter, playback speed",
+                    title = stringResource(com.alquranplusai.android.R.string.settings_audio_title),
+                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_audio_desc),
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.AUDIO_SETTINGS) }
                 )
             }
 
             // Notifications
-            item { SectionHeader("Notifications") }
+            item { SectionHeader(stringResource(com.alquranplusai.android.R.string.settings_section_notifications)) }
             item {
                 SettingsNavigationItem(
-                    title = "Notifications",
-                    subtitle = "Daily reminders, updates",
+                    title = stringResource(com.alquranplusai.android.R.string.settings_notifications_title),
+                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_notifications_desc),
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.NOTIFICATION_SETTINGS) }
                 )
             }
             
             // Privacy & Security
-            item { SectionHeader("Privacy & Security") }
+            item { SectionHeader(stringResource(com.alquranplusai.android.R.string.settings_section_privacy)) }
             item {
                 SettingsNavigationItem(
-                    title = "Privacy",
-                    subtitle = "Data collection, analytics",
+                    title = stringResource(com.alquranplusai.android.R.string.settings_privacy_title),
+                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_privacy_desc),
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.PRIVACY_SETTINGS) }
                 )
             }
             item {
                 SettingsNavigationItem(
-                    title = "Security",
-                    subtitle = "Biometric lock, PIN",
+                    title = stringResource(com.alquranplusai.android.R.string.settings_security_title),
+                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_security_desc),
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.SECURITY_SETTINGS) }
                 )
             }
             
             // Data & Storage
-            item { SectionHeader("Data & Storage") }
+            item { SectionHeader(stringResource(com.alquranplusai.android.R.string.settings_section_data)) }
             item {
                 SettingsNavigationItem(
-                    title = "Backup & Sync",
-                    subtitle = "Cloud backup, auto-sync",
+                    title = stringResource(com.alquranplusai.android.R.string.settings_backup_title),
+                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_backup_desc),
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.BACKUP_SETTINGS) }
                 )
             }
             item {
                 SettingsNavigationItem(
-                    title = "Downloads",
-                    subtitle = "WiFi only, cache",
+                    title = stringResource(com.alquranplusai.android.R.string.settings_download_title),
+                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_download_desc),
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.DOWNLOAD_SETTINGS) }
                 )
             }
             
             // Display
-            item { SectionHeader("Display") }
+            item { SectionHeader(stringResource(com.alquranplusai.android.R.string.settings_section_display)) }
             item {
                 SettingsNavigationItem(
-                    title = "Display & Reading",
-                    subtitle = "Font, size, screen options",
+                    title = stringResource(com.alquranplusai.android.R.string.settings_display_title),
+                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_display_desc),
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.DISPLAY_SETTINGS) }
                 )
             }
             
             // Account
-            item { SectionHeader("Account") }
+            item { SectionHeader(stringResource(com.alquranplusai.android.R.string.settings_section_account)) }
             item {
                 SettingsNavigationItem(
-                    title = "Account",
-                    subtitle = "Profile, preferences",
+                    title = stringResource(com.alquranplusai.android.R.string.settings_account_title),
+                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_account_desc),
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.ACCOUNT_SETTINGS) }
                 )
             }
             
             // About
-            item { SectionHeader("About") }
+            item { SectionHeader(stringResource(com.alquranplusai.android.R.string.settings_section_about)) }
             item {
                  SettingsNavigationItem(
-                    title = "About",
-                    subtitle = "Version 1.0.0",
+                    title = stringResource(com.alquranplusai.android.R.string.settings_about_title),
+                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_about_desc),
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.ABOUT) }
                 )
             }
@@ -242,7 +242,7 @@ fun ThemeSelectionDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Select Theme") },
+        title = { Text(stringResource(com.alquranplusai.android.R.string.settings_select_theme)) },
         text = {
             Column(Modifier.selectableGroup()) {
                 val themes = listOf("SYSTEM", "LIGHT", "DARK")
@@ -274,7 +274,7 @@ fun ThemeSelectionDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(com.alquranplusai.android.R.string.cancel))
             }
         }
     )

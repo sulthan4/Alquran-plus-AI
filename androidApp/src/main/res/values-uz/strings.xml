@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">AlQuran Plus AI [uz]</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Home [uz]</string>
+    <string name="nav_quran">Quran [uz]</string>
+    <string name="nav_audio">Audio [uz]</string>
+    <string name="nav_bookmarks">Bookmarks [uz]</string>
+    <string name="nav_more">More [uz]</string>
+    
+    <!-- Common -->
+    <string name="loading">Loading… [uz]</string>
+    <string name="error">Error [uz]</string>
+    <string name="retry">Retry [uz]</string>
+    <string name="cancel">Cancel [uz]</string>
+    <string name="ok">OK [uz]</string>
+    <string name="save">Save [uz]</string>
+    <string name="delete">Delete [uz]</string>
+    <string name="edit">Edit [uz]</string>
+    <string name="share">Share [uz]</string>
+    <string name="search">Search [uz]</string>
+    <string name="settings">Settings [uz]</string>
+    
+    <!-- Onboarding -->
+    <string name="onboarding_welcome_title">Welcome to AlQuran Plus AI [uz]</string>
+    <string name="onboarding_welcome_desc">Your comprehensive Quran companion with AI-powered features [uz]</string>
+    <string name="onboarding_features_title">Powerful Features [uz]</string>
+    <string name="onboarding_features_desc">Word-by-word translation, audio recitation, smart search, and more [uz]</string>
+    <string name="onboarding_get_started">Get Started [uz]</string>
+    <string name="onboarding_skip">Skip [uz]</string>
+    
+    <!-- Auth -->
+    <string name="auth_login">Login [uz]</string>
+    <string name="auth_register">Register [uz]</string>
+    <string name="auth_email">Email [uz]</string>
+    <string name="auth_password">Password [uz]</string>
+    <string name="auth_forgot_password">Forgot Password? [uz]</string>
+    <string name="auth_or_continue_with">Or continue with [uz]</string>
+    
+    <!-- Quran -->
+    <string name="quran_surah">Surah [uz]</string>
+    <string name="quran_juz">Juz [uz]</string>
+    <string name="quran_page">Page [uz]</string>
+    <string name="quran_ayah">Ayah [uz]</string>
+    <string name="quran_reading">Reading [uz]</string>
+    <string name="quran_continue_reading">Continue Reading [uz]</string>
+    <string name="quran_last_read">Last Read [uz]</string>
+    
+    <!-- Audio -->
+    <string name="audio_reciter">Reciter [uz]</string>
+    <string name="audio_play">Play [uz]</string>
+    <string name="audio_pause">Pause [uz]</string>
+    <string name="audio_next">Next [uz]</string>
+    <string name="audio_previous">Previous [uz]</string>
+    <string name="audio_repeat">Repeat [uz]</string>
+    <string name="audio_download">Download [uz]</string>
+    <string name="audio_playlist">Playlist [uz]</string>
+    
+    <!-- Bookmarks -->
+    <string name="bookmark_add">Add Bookmark [uz]</string>
+    <string name="bookmark_remove">Remove Bookmark [uz]</string>
+    <string name="bookmark_folder">Folder [uz]</string>
+    <string name="bookmark_note">Note [uz]</string>
+    <string name="bookmark_tag">Tag [uz]</string>
+    
+    <!-- Quiz -->
+    <string name="quiz_start">Start Quiz [uz]</string>
+    <string name="quiz_question">Question [uz]</string>
+    <string name="quiz_answer">Answer [uz]</string>
+    <string name="quiz_score">Score [uz]</string>
+    <string name="quiz_result">Result [uz]</string>
+    <string name="quiz_daily_challenge">Daily Challenge [uz]</string>
+    
+    <!-- Analytics -->
+    <string name="analytics_streak">Streak [uz]</string>
+    <string name="analytics_goal">Goal [uz]</string>
+    <string name="analytics_achievement">Achievement [uz]</string>
+    <string name="analytics_progress">Progress [uz]</string>
+    
+    <!-- Settings -->
+    <string name="settings_reading">Reading Settings [uz]</string>
+    <string name="settings_audio">Audio Settings [uz]</string>
+    <string name="settings_notifications">Notifications [uz]</string>
+    <string name="settings_theme">Theme [uz]</string>
+    <string name="settings_language">Language [uz]</string>
+    <string name="settings_about">About [uz]</string>
+    
+    <!-- Errors -->
+    <string name="error_network">Network error. Please check your connection. [uz]</string>
+    <string name="error_generic">Something went wrong. Please try again. [uz]</string>
+    <string name="error_no_data">No data available [uz]</string>
+</resources>

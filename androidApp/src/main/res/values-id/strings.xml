@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">AlQuran Plus AI</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Beranda</string>
+    <string name="nav_quran">Quran</string>
+    <string name="nav_audio">Audio</string>
+    <string name="nav_bookmarks">Penanda</string>
+    <string name="nav_more">Lainnya</string>
+    
+    <!-- Common -->
+    <string name="loading">Memuat...</string>
+    <string name="error">Kesalahan</string>
+    <string name="retry">Coba Lagi</string>
+    <string name="cancel">Batal</string>
+    <string name="ok">OK</string>
+    <string name="save">Simpan</string>
+    <string name="delete">Hapus</string>
+    <string name="edit">Ubah</string>
+    <string name="share">Bagikan</string>
+    <string name="search">Cari</string>
+    <string name="settings">Pengaturan</string>
+    
+    <!-- Onboarding -->
+    <string name="onboarding_welcome_title">Selamat Datang di AlQuran Plus AI</string>
+    <string name="onboarding_welcome_desc">Pendamping Quran lengkap dengan fitur AI</string>
+    <string name="onboarding_features_title">Powerful Features [id]</string>
+    <string name="onboarding_features_desc">Word-by-word translation, audio recitation, smart search, and more [id]</string>
+    <string name="onboarding_get_started">Mulai</string>
+    <string name="onboarding_skip">Lewati</string>
+    
+    <!-- Auth -->
+    <string name="auth_login">Masuk</string>
+    <string name="auth_register">Daftar</string>
+    <string name="auth_email">Email [id]</string>
+    <string name="auth_password">Password [id]</string>
+    <string name="auth_forgot_password">Forgot Password? [id]</string>
+    <string name="auth_or_continue_with">Or continue with [id]</string>
+    
+    <!-- Quran -->
+    <string name="quran_surah">Surah</string>
+    <string name="quran_juz">Juz</string>
+    <string name="quran_page">Page [id]</string>
+    <string name="quran_ayah">Ayat</string>
+    <string name="quran_reading">Membaca</string>
+    <string name="quran_continue_reading">Continue Reading [id]</string>
+    <string name="quran_last_read">Last Read [id]</string>
+    
+    <!-- Audio -->
+    <string name="audio_reciter">Reciter [id]</string>
+    <string name="audio_play">Putar</string>
+    <string name="audio_pause">Jeda</string>
+    <string name="audio_next">Next [id]</string>
+    <string name="audio_previous">Previous [id]</string>
+    <string name="audio_repeat">Repeat [id]</string>
+    <string name="audio_download">Download [id]</string>
+    <string name="audio_playlist">Playlist [id]</string>
+    
+    <!-- Bookmarks -->
+    <string name="bookmark_add">Add Bookmark [id]</string>
+    <string name="bookmark_remove">Remove Bookmark [id]</string>
+    <string name="bookmark_folder">Folder [id]</string>
+    <string name="bookmark_note">Note [id]</string>
+    <string name="bookmark_tag">Tag [id]</string>
+    
+    <!-- Quiz -->
+    <string name="quiz_start">Start Quiz [id]</string>
+    <string name="quiz_question">Question [id]</string>
+    <string name="quiz_answer">Answer [id]</string>
+    <string name="quiz_score">Score [id]</string>
+    <string name="quiz_result">Result [id]</string>
+    <string name="quiz_daily_challenge">Daily Challenge [id]</string>
+    
+    <!-- Analytics -->
+    <string name="analytics_streak">Streak [id]</string>
+    <string name="analytics_goal">Goal [id]</string>
+    <string name="analytics_achievement">Achievement [id]</string>
+    <string name="analytics_progress">Progress [id]</string>
+    
+    <!-- Settings -->
+    <string name="settings_reading">Reading Settings [id]</string>
+    <string name="settings_audio">Audio Settings [id]</string>
+    <string name="settings_notifications">Notifications [id]</string>
+    <string name="settings_theme">Theme [id]</string>
+    <string name="settings_language">Bahasa</string>
+    <string name="settings_about">About [id]</string>
+    
+    <!-- Errors -->
+    <string name="error_network">Network error. Please check your connection. [id]</string>
+    <string name="error_generic">Something went wrong. Please try again. [id]</string>
+    <string name="error_no_data">No data available [id]</string>
+</resources>

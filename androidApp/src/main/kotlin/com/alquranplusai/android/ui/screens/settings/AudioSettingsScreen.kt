@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 
+import androidx.compose.ui.res.stringResource
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AudioSettingsScreen(
@@ -23,7 +25,7 @@ fun AudioSettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Audio Settings") },
+                title = { Text(stringResource(com.alquranplusai.android.R.string.settings_audio_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -39,11 +41,11 @@ fun AudioSettingsScreen(
                 .padding(16.dp)
         ) {
             item {
-                Text("Default Reciter ID: $defaultReciter")
+                Text("${stringResource(com.alquranplusai.android.R.string.audio_default_reciter)}: $defaultReciter")
                 OutlinedTextField(
                     value = defaultReciter,
                     onValueChange = { viewModel.setDefaultReciter(it) },
-                    label = { Text("Enter Reciter ID") },
+                    label = { Text(stringResource(com.alquranplusai.android.R.string.audio_enter_reciter_id)) },
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                 )
             }
@@ -54,7 +56,7 @@ fun AudioSettingsScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("Auto Play")
+                    Text(stringResource(com.alquranplusai.android.R.string.audio_auto_play))
                     Switch(
                         checked = autoPlay,
                         onCheckedChange = { viewModel.setAutoPlay(it) }
@@ -64,7 +66,7 @@ fun AudioSettingsScreen(
             
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("Playback Speed: ${playbackSpeed}x")
+                Text("${stringResource(com.alquranplusai.android.R.string.audio_playback_speed)}: ${playbackSpeed}x")
                 Slider(
                     value = playbackSpeed,
                     onValueChange = { viewModel.setPlaybackSpeed(it) },

@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import com.alquranplusai.android.ui.viewmodels.LanguageSettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 
+import androidx.compose.ui.res.stringResource
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanguageSettingsScreen(
@@ -26,7 +28,7 @@ fun LanguageSettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Language Settings") },
+                title = { Text(stringResource(com.alquranplusai.android.R.string.settings_language)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")

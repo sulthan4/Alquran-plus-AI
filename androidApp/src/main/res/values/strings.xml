@@ -80,6 +80,55 @@
     <string name="analytics_progress">Progress</string>
     
     <!-- Settings -->
+    
+    <!-- Settings Sections -->
+    <string name="settings_section_general">General</string>
+    <string name="settings_section_reading">Reading</string>
+    <string name="settings_section_audio">Audio</string>
+    <string name="settings_section_notifications">Notifications</string>
+    <string name="settings_section_privacy">Privacy &amp; Security</string>
+    <string name="settings_section_data">Data &amp; Storage</string>
+    <string name="settings_section_display">Display</string>
+    <string name="settings_section_account">Account</string>
+    <string name="settings_section_about">About</string>
+
+    <!-- Settings Items -->
+    <string name="settings_reading_title">Reading Preferences</string>
+    <string name="settings_reading_desc">Font size, translation</string>
+    <string name="settings_audio_title">Audio Settings</string>
+    <string name="settings_audio_desc">Reciter, playback speed</string>
+    <string name="settings_notifications_title">Notifications</string>
+    <string name="settings_notifications_desc">Daily reminders, updates</string>
+    <string name="settings_privacy_title">Privacy</string>
+    <string name="settings_privacy_desc">Data collection, analytics</string>
+    <string name="settings_security_title">Security</string>
+    <string name="settings_security_desc">Biometric lock, PIN</string>
+    <string name="settings_backup_title">Backup &amp; Sync</string>
+    <string name="settings_backup_desc">Cloud backup, auto-sync</string>
+    <string name="settings_download_title">Downloads</string>
+    <string name="settings_download_desc">WiFi only, cache</string>
+    <string name="settings_display_title">Display &amp; Reading</string>
+    <string name="settings_display_desc">Font, size, screen options</string>
+    <string name="settings_account_title">Account</string>
+    <string name="settings_account_desc">Profile, preferences</string>
+    <string name="settings_about_title">About</string>
+    <string name="settings_about_desc">Version 1.0.0</string>
+    <string name="settings_select_theme">Select Theme</string>
+    
+    <!-- Reading Settings Detail -->
+    <string name="reading_font_size">Font Size</string>
+    <string name="reading_mode">Reading Mode</string>
+    <string name="reading_mode_continuous">Continuous</string>
+    <string name="reading_mode_page">Page</string>
+    <string name="reading_show_wbw">Show Word by Word</string>
+    <string name="reading_sample_text">Bismillah...</string>
+    
+    <!-- Audio Settings Detail -->
+    <string name="audio_default_reciter">Default Reciter ID</string>
+    <string name="audio_enter_reciter_id">Enter Reciter ID</string>
+    <string name="audio_auto_play">Auto Play</string>
+    <string name="audio_playback_speed">Playback Speed</string>
+    
     <string name="settings_reading">Reading Settings</string>
     <string name="settings_audio">Audio Settings</string>
     <string name="settings_notifications">Notifications</string>
