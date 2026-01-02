@@ -20,15 +20,8 @@ fun LanguageSettingsScreen(
     onNavigateBack: () -> Unit,
     viewModel: LanguageSettingsViewModel = koinViewModel()
 ) {
-    val currentLanguage by viewModel.currentLanguage.collectAsState()
-    
-    val languages = listOf(
-        LanguageItem("English", "en"),
-        LanguageItem("Arabic", "ar"),
-        LanguageItem("French", "fr"),
-        LanguageItem("Urdu", "ur"),
-        LanguageItem("Turkish", "tr")
-    )
+    val selectedLanguage by viewModel.selectedLanguage.collectAsState()
+    val availableLanguages by viewModel.availableLanguages.collectAsState()
     
     Scaffold(
         topBar = {
@@ -47,17 +40,26 @@ fun LanguageSettingsScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            items(languages) { language ->
-                val isSelected = currentLanguage == language.code
+            items(availableLanguages) { language ->
+                val isSelected = selectedLanguage == language.code
                 
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp),
-                    onClick = { viewModel.setLanguage(language.code) }
+                    onClick = { viewModel.selectLanguage(language.code) }
                 ) {
                     ListItem(
-                        headlineContent = { Text(language.name) },
+                        headlineContent = { 
+                            Column {
+                                Text(language.name)
+                                Text(
+                                    text = language.englishName,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        },
                         trailingContent = {
                             if (isSelected) {
                                 Icon(
@@ -73,5 +75,3 @@ fun LanguageSettingsScreen(
         }
     }
 }
-
-data class LanguageItem(val name: String, val code: String)
