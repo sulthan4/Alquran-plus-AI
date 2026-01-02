@@ -188,6 +188,20 @@ class AnalyticsRepositoryImpl(private val database: AlQuranDatabaseWrapper) : An
     override fun getStreakChart(userId: String, days: Int): Flow<List<ChartDataPoint>> = flow {
         emit(emptyList())
     }
+    
+    override fun getActivityHistory(userId: String, days: Int): Flow<List<Boolean>> = flow {
+        // Query database for last N days of activity
+        // For now, return stub data based on current streak
+        val currentStreak = getCurrentStreak(userId).first()
+        val history = mutableListOf<Boolean>()
+        for (i in 0 until days) {
+            // Mark days as active if they're within the current streak
+            history.add(i < currentStreak)
+        }
+        // Reverse so most recent day is last
+        emit(history.reversed())
+    }
+    
     override fun compareWithPreviousPeriod(
             userId: String,
             range: AnalyticsTimeRange

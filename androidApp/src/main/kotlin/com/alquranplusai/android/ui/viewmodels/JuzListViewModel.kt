@@ -22,6 +22,9 @@ class JuzListViewModel(
     private val _completedJuz = MutableStateFlow<List<Int>>(emptyList())
     val completedJuz: StateFlow<List<Int>> = _completedJuz.asStateFlow()
     
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
+    
     init {
         loadJuzList()
         loadProgress()
@@ -35,7 +38,8 @@ class JuzListViewModel(
                     _juzList.value = juzzes
                 }
             } catch (e: Exception) {
-                // TODO: Handle error
+                _error.value = "Failed to load Juz list: ${e.message}"
+                e.printStackTrace()
             } finally {
                 _isLoading.value = false
             }

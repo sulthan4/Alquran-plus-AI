@@ -81,9 +81,6 @@ val androidAppModule = module {
     viewModel { SplashViewModel(get()) }
     viewModel { OnboardingViewModel(get()) }
     
-    // Player ViewModel
-    viewModel { PlayerViewModel(get()) }
-    
     // Android-specific managers
     single { AlQuranNotificationManager(get()) }
 }

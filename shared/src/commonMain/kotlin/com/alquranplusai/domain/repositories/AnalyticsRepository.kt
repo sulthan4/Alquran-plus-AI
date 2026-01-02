@@ -58,6 +58,7 @@ interface AnalyticsRepository {
     fun getAyahsReadChart(userId: String, range: AnalyticsTimeRange): Flow<List<ChartDataPoint>>
     fun getSurahCompletionChart(userId: String): Flow<List<ChartDataPoint>>
     fun getStreakChart(userId: String, days: Int = 30): Flow<List<ChartDataPoint>>
+    fun getActivityHistory(userId: String, days: Int): Flow<List<Boolean>>
 
     // Comparisons
     fun compareWithPreviousPeriod(userId: String, range: AnalyticsTimeRange): Flow<ComparisonData>

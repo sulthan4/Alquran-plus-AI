@@ -57,14 +57,17 @@ class StreakViewModel(
     private fun loadStreakHistory() {
         viewModelScope.launch {
             try {
-                // Generate last 30 days history
+                // Fetch actual activity data from repository for last 30 days
+                analyticsRepository.getActivityHistory("user_1", days = 30).collect { activityData ->
+                    _streakHistory.value = activityData
+                }
+            } catch (e: Exception) {
+                // Fallback to mock data if repository method not available yet
                 val history = mutableListOf<Boolean>()
                 for (i in 0 until 30) {
-                    // TODO: Get actual activity data from repository
                     history.add(i < _currentStreak.value)
                 }
                 _streakHistory.value = history.reversed()
-            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }

@@ -28,7 +28,16 @@ class BackupSettingsViewModel(
     }
 
     private fun loadLastBackupTime() {
-        // TODO: Implement loading last backup time
+        viewModelScope.launch {
+            try {
+                userRepository.getLastSyncTime().collect { timestamp ->
+                    _lastBackupTime.value = timestamp
+                }
+            } catch (e: Exception) {
+                _error.value = "Failed to load backup time: ${e.message}"
+                e.printStackTrace()
+            }
+        }
     }
 
     fun createBackup() {

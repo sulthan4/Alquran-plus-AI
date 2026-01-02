@@ -22,6 +22,9 @@ class SurahDetailViewModel(
     private val _isCompleted = MutableStateFlow(false)
     val isCompleted: StateFlow<Boolean> = _isCompleted.asStateFlow()
     
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
+    
     fun loadSurah(surahNumber: Int) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -34,7 +37,8 @@ class SurahDetailViewModel(
                     _isCompleted.value = completed.contains(surahNumber)
                 }
             } catch (e: Exception) {
-                // TODO: Handle error
+                _error.value = "Failed to load Surah details: ${e.message}"
+                e.printStackTrace()
             } finally {
                 _isLoading.value = false
             }
@@ -46,7 +50,8 @@ class SurahDetailViewModel(
             try {
                 quranRepository.markSurahAsCompleted(surahNumber)
             } catch (e: Exception) {
-                // TODO: Handle error
+                _error.value = "Failed to mark Surah as completed: ${e.message}"
+                e.printStackTrace()
             }
         }
     }
