@@ -20,11 +20,11 @@ interface AudioRepository {
     
     // Playlist operations
     suspend fun getAllPlaylists(): Flow<List<Playlist>>
-    suspend fun getPlaylistById(id: Long): Flow<Playlist?>
-    suspend fun createPlaylist(name: String, description: String?): Flow<Long>
-    suspend fun updatePlaylist(id: Long, name: String, description: String?)
-    suspend fun deletePlaylist(id: Long)
-    suspend fun addToPlaylist(playlistId: Long, surahNumber: Int, ayahNumber: Int?)
-    suspend fun removeFromPlaylist(playlistId: Long, itemId: Long)
-    suspend fun getPlaylistItems(playlistId: Long): Flow<List<PlaylistItem>>
+    suspend fun getPlaylistById(id: String): Flow<Playlist?>
+    suspend fun createPlaylist(name: String, description: String?): Flow<String>
+    suspend fun updatePlaylist(id: String, name: String, description: String?)
+    suspend fun deletePlaylist(id: String)
+    suspend fun addToPlaylist(playlistId: String, reciterId: String, surahNumber: Int, ayahNumber: Int?)
+    suspend fun removeFromPlaylist(playlistId: String, itemId: String)
+    suspend fun getPlaylistItems(playlistId: String): Flow<List<PlaylistItem>>
 }

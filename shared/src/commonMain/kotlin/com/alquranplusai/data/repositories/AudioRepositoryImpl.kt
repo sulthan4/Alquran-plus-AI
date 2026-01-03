@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import com.alquranplusai.data.network.dto.ReciterDto
 import com.alquranplusai.domain.models.*
+import kotlinx.datetime.Clock
 
 class AudioRepositoryImpl(
     private val database: AlQuranDatabaseWrapper,
@@ -180,23 +181,14 @@ class AudioRepositoryImpl(
                 )
 
                 // Insert Word Timings if available
-                println("AlQuranPlusAI: Found ${remoteAudio.verseTimings.size} verse timings for remote audio")
-                
                 if (remoteAudio.verseTimings.any { it.segments.isNotEmpty() }) {
-                    println("AlQuranPlusAI: Reciter $reciterId supports Word Timing! Updating database...")
                     database.audioQueries.updateReciterSyncStatus(1L, reciterId)
                 }
 
                 remoteAudio.verseTimings.forEach { vt ->
-                    // Parse verseKey (format "surah:ayah") to get ayahNumber
                     val ayahNum = vt.verseKey.split(":").lastOrNull()?.toIntOrNull() ?: 0
                     
-                    if (vt.segments.isNotEmpty()) {
-                        println("AlQuranPlusAI: Syncing ${vt.segments.size} segments for verse ${vt.verseKey}")
-                    }
-                    
                     vt.segments.forEach { segment ->
-                        // segment format: [word_index, start_time, end_time]
                         if (segment.size >= 3) {
                             database.audioQueries.insertWordTiming(
                                 audioId = entityId,
@@ -213,13 +205,13 @@ class AudioRepositoryImpl(
                 // Fetch and emit
                  val fresh = database.audioQueries.selectAudioFile(reciterId, surahNumber.toLong(), ayahNumber?.toLong()).executeAsOneOrNull()
                  emit(fresh?.let {
-                     val wordTimings = database.audioQueries.selectWordTimings(it.id).executeAsList().map {
+                     val wordTimings = database.audioQueries.selectWordTimings(it.id).executeAsList().map { wt ->
                         WordTiming(
-                            verseNumber = it.verseNumber.toInt(),
-                            wordPosition = it.wordPosition.toInt(),
-                            startTime = it.startTime,
-                            endTime = it.endTime,
-                            duration = it.duration
+                            verseNumber = wt.verseNumber.toInt(),
+                            wordPosition = wt.wordPosition.toInt(),
+                            startTime = wt.startTime,
+                            endTime = wt.endTime,
+                            duration = wt.duration
                         )
                     }
                      AudioFile(
@@ -238,7 +230,6 @@ class AudioRepositoryImpl(
                  })
 
             } catch (e: Exception) {
-                println("AlQuranPlusAI: Error fetching audio file for reciter $reciterId, surah $surahNumber: ${e.message}")
                 emit(null)
             }
         }
@@ -270,16 +261,131 @@ class AudioRepositoryImpl(
         emit(files)
     }
 
+    // Playlist Implementation
     override suspend fun getAllPlaylists(): Flow<List<Playlist>> = flow {
-        emit(emptyList())
+        val playlists = database.playlistQueries.selectAllPlaylists().executeAsList().map { entity ->
+            Playlist(
+                id = entity.id,
+                name = entity.name,
+                description = entity.description,
+                createdAt = entity.createdAt,
+                updatedAt = entity.updatedAt,
+                itemCount = entity.itemCount.toInt(),
+                totalDuration = entity.totalDuration,
+                coverImageUrl = entity.coverImageUrl,
+                isDefault = entity.isDefault == 1L
+            )
+        }
+        emit(playlists)
+    }
+
+    override suspend fun getPlaylistById(id: String): Flow<Playlist?> = flow {
+        val entity = database.playlistQueries.selectPlaylistById(id).executeAsOneOrNull()
+        emit(entity?.let {
+            Playlist(
+                id = it.id,
+                name = it.name,
+                description = it.description,
+                createdAt = it.createdAt,
+                updatedAt = it.updatedAt,
+                itemCount = it.itemCount.toInt(),
+                totalDuration = it.totalDuration,
+                coverImageUrl = it.coverImageUrl,
+                isDefault = it.isDefault == 1L
+            )
+        })
+    }
+
+    override suspend fun createPlaylist(name: String, description: String?): Flow<String> = flow {
+        val now = Clock.System.now().toEpochMilliseconds()
+        val id = "playlist_$now" // Simple ID generation
+        
+        database.playlistQueries.insertPlaylist(
+            id = id,
+            name = name,
+            description = description,
+            createdAt = now,
+            updatedAt = now,
+            itemCount = 0,
+            totalDuration = 0,
+            coverImageUrl = null,
+            isDefault = 0
+        )
+        emit(id)
+    }
+
+    override suspend fun updatePlaylist(id: String, name: String, description: String?) {
+        val now = Clock.System.now().toEpochMilliseconds()
+        // We preserve the existing cover image for now
+        val existing = database.playlistQueries.selectPlaylistById(id).executeAsOneOrNull()
+        if (existing != null) {
+            database.playlistQueries.updatePlaylist(
+                name = name,
+                description = description,
+                updatedAt = now,
+                coverImageUrl = existing.coverImageUrl,
+                id = id
+            )
+        }
+    }
+
+    override suspend fun deletePlaylist(id: String) {
+        database.playlistQueries.deletePlaylist(id)
+    }
+
+    override suspend fun addToPlaylist(playlistId: String, reciterId: String, surahNumber: Int, ayahNumber: Int?) {
+        val now = Clock.System.now().toEpochMilliseconds()
+        val itemId = "item_${now}_${surahNumber}_${ayahNumber ?: 0}"
+        
+        // Get current max position
+        val currentCount = database.playlistItemQueries.countPlaylistItems(playlistId).executeAsOne()
+        
+        database.playlistItemQueries.insertPlaylistItem(
+            id = itemId,
+            playlistId = playlistId,
+            reciterId = reciterId,
+            surahNumber = surahNumber.toLong(),
+            ayahStart = ayahNumber?.toLong(),
+            ayahEnd = ayahNumber?.toLong(), // For single ayah usage
+            position = currentCount,
+            addedAt = now
+        )
+        
+        // Update playlist count
+        updatePlaylistCount(playlistId)
+    }
+
+    override suspend fun removeFromPlaylist(playlistId: String, itemId: String) {
+        database.playlistItemQueries.deletePlaylistItem(itemId)
+        updatePlaylistCount(playlistId)
+    }
+
+    override suspend fun getPlaylistItems(playlistId: String): Flow<List<PlaylistItem>> = flow {
+        val items = database.playlistItemQueries.selectPlaylistItems(playlistId).executeAsList().map { entity ->
+            PlaylistItem(
+                id = entity.id,
+                playlistId = entity.playlistId,
+                reciterId = entity.reciterId,
+                surahNumber = entity.surahNumber.toInt(),
+                ayahStart = entity.ayahStart?.toInt(),
+                ayahEnd = entity.ayahEnd?.toInt(),
+                position = entity.position.toInt(),
+                addedAt = entity.addedAt
+            )
+        }
+        emit(items)
     }
     
-    // Unimplemented methods stubbed
-    override suspend fun getPlaylistById(id: Long) = flow { emit(null) }
-    override suspend fun createPlaylist(name: String, description: String?) = flow { emit(0L) }
-    override suspend fun updatePlaylist(id: Long, name: String, description: String?) {}
-    override suspend fun deletePlaylist(id: Long) {}
-    override suspend fun addToPlaylist(playlistId: Long, surahNumber: Int, ayahNumber: Int?) {}
-    override suspend fun removeFromPlaylist(playlistId: Long, itemId: Long) {}
-    override suspend fun getPlaylistItems(playlistId: Long) = flow { emit(emptyList<PlaylistItem>()) }
+    private fun updatePlaylistCount(playlistId: String) {
+        val count = database.playlistItemQueries.countPlaylistItems(playlistId).executeAsOne()
+        // Duration calculation would require summing up tracks, for now setting to 0 or keeping existing logic if we had it.
+        // Simplified: just update count and timestamp
+        val now = Clock.System.now().toEpochMilliseconds()
+        database.playlistQueries.updatePlaylistCounts(
+            itemCount = count,
+            totalDuration = 0, // TODO: Calculate actual duration
+            updatedAt = now,
+            id = playlistId
+        )
+    }
 }
