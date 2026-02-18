@@ -24,8 +24,13 @@ fun SearchFilterSheet(
     initialSelectedSurahs: List<Int> = emptyList(),
     initialSelectedTranslations: List<String> = emptyList()
 ) {
-    var selectedSurahs by remember { mutableStateOf(initialSelectedSurahs.toMutableSet()) }
-    var selectedTranslations by remember { mutableStateOf(initialSelectedTranslations.toMutableSet()) }
+    // Use mutableStateListOf for reliable Compose updates
+    val selectedSurahs = remember { 
+        mutableStateListOf<Int>().apply { addAll(initialSelectedSurahs) } 
+    }
+    val selectedTranslations = remember { 
+        mutableStateListOf<String>().apply { addAll(initialSelectedTranslations) } 
+    }
     
     // Tab state for "Surahs" vs "Translations"
     var selectedTab by remember { mutableStateOf(0) }
@@ -53,6 +58,7 @@ fun SearchFilterSheet(
                 TextButton(onClick = {
                     selectedSurahs.clear()
                     selectedTranslations.clear()
+                    onApplyFilters(emptyList(), emptyList())
                 }) {
                     Text("Reset")
                 }
@@ -85,20 +91,18 @@ fun SearchFilterSheet(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable { 
-                                            if (selectedSurahs.isEmpty()) {
-                                                // Select all? No, empty means "All" usually.
-                                                // But UI might require explicit "All".
-                                                // Let's say Empty = All.
-                                            } else {
-                                                selectedSurahs.clear()
-                                            }
+                                            selectedSurahs.clear()
+                                            onApplyFilters(emptyList(), selectedTranslations.toList())
                                         }
                                         .padding(vertical = 8.dp)
                                 ) {
                                     Checkbox(
                                         checked = selectedSurahs.isEmpty(),
                                         onCheckedChange = { 
-                                            if (it) selectedSurahs.clear() 
+                                            if (it) {
+                                                selectedSurahs.clear()
+                                                onApplyFilters(emptyList(), selectedTranslations.toList())
+                                            }
                                         }
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
@@ -108,24 +112,27 @@ fun SearchFilterSheet(
                             }
                             
                             items(availableSurahs) { surah ->
+                                val isSelected = selectedSurahs.contains(surah.number)
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable {
-                                            if (selectedSurahs.contains(surah.number)) {
+                                            if (isSelected) {
                                                 selectedSurahs.remove(surah.number)
                                             } else {
                                                 selectedSurahs.add(surah.number)
                                             }
+                                            onApplyFilters(selectedSurahs.toList(), selectedTranslations.toList())
                                         }
                                         .padding(vertical = 8.dp)
                                 ) {
                                     Checkbox(
-                                        checked = selectedSurahs.contains(surah.number),
+                                        checked = isSelected,
                                         onCheckedChange = {
                                             if (it) selectedSurahs.add(surah.number)
                                             else selectedSurahs.remove(surah.number)
+                                            onApplyFilters(selectedSurahs.toList(), selectedTranslations.toList())
                                         }
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
@@ -140,24 +147,27 @@ fun SearchFilterSheet(
                             modifier = Modifier.fillMaxSize()
                         ) {
                              items(availableTranslations) { padding ->
+                                val isSelected = selectedTranslations.contains(padding)
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable {
-                                            if (selectedTranslations.contains(padding)) {
+                                            if (isSelected) {
                                                 selectedTranslations.remove(padding)
                                             } else {
                                                 selectedTranslations.add(padding)
                                             }
+                                            onApplyFilters(selectedSurahs.toList(), selectedTranslations.toList())
                                         }
                                         .padding(vertical = 8.dp)
                                 ) {
                                     Checkbox(
-                                        checked = selectedTranslations.contains(padding),
+                                        checked = isSelected,
                                         onCheckedChange = {
                                             if (it) selectedTranslations.add(padding)
                                             else selectedTranslations.remove(padding)
+                                            onApplyFilters(selectedSurahs.toList(), selectedTranslations.toList())
                                         }
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
@@ -169,15 +179,7 @@ fun SearchFilterSheet(
                 }
             }
             
-            // Apply Button
-            Button(
-                onClick = { onApplyFilters(selectedSurahs.toList(), selectedTranslations.toList()) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text("Apply Filters")
-            }
+            // Apply Button Removed - Filters apply immediately
         }
     }
 }

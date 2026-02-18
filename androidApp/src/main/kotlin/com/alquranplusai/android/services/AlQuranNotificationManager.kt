@@ -92,12 +92,54 @@ class AlQuranNotificationManager(private val context: Context) {
             .setContentTitle("Downloading $fileName")
             .setProgress(100, progress, false)
             .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
         
         notificationManager.notify(NOTIFICATION_DOWNLOAD, notification)
     }
+
+    fun showDownloadProgress(downloadId: String, title: String, progress: Int) {
+        val notification = NotificationCompat.Builder(context, CHANNEL_DOWNLOADS)
+            .setSmallIcon(android.R.drawable.stat_sys_download)
+            .setContentTitle(title)
+            .setContentText("Downloading...")
+            .setProgress(100, progress, false)
+            .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+        
+        notificationManager.notify(downloadId.hashCode(), notification)
+    }
+
+    fun showDownloadComplete(downloadId: String, title: String) {
+        val notification = NotificationCompat.Builder(context, CHANNEL_DOWNLOADS)
+            .setSmallIcon(android.R.drawable.stat_sys_download_done)
+            .setContentTitle(title)
+            .setContentText("Download complete")
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+        
+        notificationManager.notify(downloadId.hashCode(), notification)
+    }
+
+    fun showDownloadFailed(downloadId: String, title: String, error: String) {
+        val notification = NotificationCompat.Builder(context, CHANNEL_DOWNLOADS)
+            .setSmallIcon(android.R.drawable.stat_notify_error)
+            .setContentTitle(title)
+            .setContentText("Download failed: $error")
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+        
+        notificationManager.notify(downloadId.hashCode(), notification)
+    }
     
-    fun cancelDownloadNotification() {
-        notificationManager.cancel(NOTIFICATION_DOWNLOAD)
+    fun cancelDownloadNotification(downloadId: String? = null) {
+        if (downloadId != null) {
+            notificationManager.cancel(downloadId.hashCode())
+        } else {
+            notificationManager.cancel(NOTIFICATION_DOWNLOAD)
+        }
     }
 }

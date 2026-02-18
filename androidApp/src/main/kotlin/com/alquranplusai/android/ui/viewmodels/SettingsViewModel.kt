@@ -13,11 +13,22 @@ data class SettingsUiState(
     val theme: String = "SYSTEM",
     val language: String = "en",
     val fontSize: Int = 24,
+    val readingMode: String = "CONTINUOUS",
+    val showWordByWord: Boolean = true,
     val autoPlay: Boolean = false,
     val notificationsEnabled: Boolean = true,
     val isLoading: Boolean = false,
     val error: String? = null
-)
+) {
+    val languageDisplayName: String
+        get() = com.alquranplusai.domain.models.SupportedLanguages.getByCode(language)?.name ?: language
+    
+    val readingSummary: String
+        get() = "Font: ${fontSize}sp, Mode: ${readingMode.lowercase()}"
+    
+    val audioSummary: String
+        get() = "${if (autoPlay) "Auto-play: On" else "Auto-play: Off"}"
+}
 
 class SettingsViewModel(
     private val preferencesManager: PreferencesManager
@@ -33,8 +44,23 @@ class SettingsViewModel(
             }
         }
         viewModelScope.launch {
+            preferencesManager.language.collect { language ->
+                _uiState.update { it.copy(language = language) }
+            }
+        }
+        viewModelScope.launch {
             preferencesManager.fontSize.collect { size ->
                 _uiState.update { it.copy(fontSize = size) }
+            }
+        }
+        viewModelScope.launch {
+            preferencesManager.readingMode.collect { mode ->
+                _uiState.update { it.copy(readingMode = mode) }
+            }
+        }
+        viewModelScope.launch {
+            preferencesManager.showWordByWord.collect { show ->
+                _uiState.update { it.copy(showWordByWord = show) }
             }
         }
         viewModelScope.launch {

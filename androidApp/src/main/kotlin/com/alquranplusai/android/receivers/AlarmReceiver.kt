@@ -8,7 +8,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.alquranplusai.android.MainActivity
 import com.alquranplusai.android.R
-import com.alquranplusai.android.services.NotificationService
+import com.alquranplusai.android.services.AlQuranNotificationManager
 import com.alquranplusai.android.services.ReminderService
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -86,7 +86,7 @@ class AlarmReceiver : BroadcastReceiver() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         
-        val notification = NotificationCompat.Builder(context, NotificationService.CHANNEL_ID_REMINDERS)
+        val notification = NotificationCompat.Builder(context, AlQuranNotificationManager.CHANNEL_REMINDERS)
             .setContentTitle(title)
             .setContentText(message)
             .setSmallIcon(R.drawable.ic_launcher_foreground)

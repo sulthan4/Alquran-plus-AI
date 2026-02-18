@@ -22,7 +22,7 @@ object NotificationBuilder {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         
-        return NotificationCompat.Builder(context, NotificationService.CHANNEL_ID_REMINDERS)
+        return NotificationCompat.Builder(context, AlQuranNotificationManager.CHANNEL_REMINDERS)
             .setContentTitle(title)
             .setContentText(message)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -36,7 +36,7 @@ object NotificationBuilder {
         title: String,
         progress: Int
     ): NotificationCompat.Builder {
-        return NotificationCompat.Builder(context, NotificationService.CHANNEL_ID_DOWNLOADS)
+        return NotificationCompat.Builder(context, AlQuranNotificationManager.CHANNEL_DOWNLOADS)
             .setContentTitle(title)
             .setContentText("Downloading...")
             .setSmallIcon(android.R.drawable.stat_sys_download)
@@ -51,7 +51,7 @@ object NotificationBuilder {
         actionText: String? = null,
         actionIntent: PendingIntent? = null
     ): NotificationCompat.Builder {
-        val builder = NotificationCompat.Builder(context, NotificationService.CHANNEL_ID_GENERAL)
+        val builder = NotificationCompat.Builder(context, AlQuranNotificationManager.CHANNEL_GENERAL)
             .setContentTitle(title)
             .setContentText(message)
             .setSmallIcon(R.drawable.ic_launcher_foreground)

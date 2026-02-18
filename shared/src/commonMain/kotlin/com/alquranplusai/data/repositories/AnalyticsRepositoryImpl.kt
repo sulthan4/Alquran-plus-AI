@@ -141,24 +141,29 @@ class AnalyticsRepositoryImpl(private val database: AlQuranDatabaseWrapper) : An
     }
     override suspend fun updateUserStatistics(userId: String) {}
     override fun getTotalReadingTime(userId: String): Flow<Long> = flow {
-        val totalTime = activeSessions.values.sumOf { startTime ->
-            Clock.System.now().toEpochMilliseconds() - startTime
-        }
-        emit(totalTime)
+        val stats = database.userQueries.selectUserStatistics(userId).executeAsOneOrNull()
+        emit(stats?.totalReadingTime ?: 0L)
     }
+
     override fun getTotalAyahsRead(userId: String): Flow<Int> = flow {
-        // Estimate based on session duration (average 30 seconds per ayah)
-        val totalTime = getTotalReadingTime(userId).first()
-        val estimatedAyahs = (totalTime / 30000).toInt()
-        emit(estimatedAyahs)
+        val stats = database.userQueries.selectUserStatistics(userId).executeAsOneOrNull()
+        emit(stats?.totalAyahsRead?.toInt() ?: 0)
     }
+
     override fun getCurrentStreak(userId: String): Flow<Int> = flow {
-        // Simple implementation: count consecutive days with sessions
-        val streak = if (activeSessions.isNotEmpty()) 1 else 0
-        emit(streak)
+        val stats = database.userQueries.selectUserStatistics(userId).executeAsOneOrNull()
+        emit(stats?.currentStreak?.toInt() ?: 0)
     }
-    override fun getLongestStreak(userId: String): Flow<Int> = flow { emit(0) }
-    override fun getQuranCompletionCount(userId: String): Flow<Int> = flow { emit(0) }
+
+    override fun getLongestStreak(userId: String): Flow<Int> = flow {
+        val stats = database.userQueries.selectUserStatistics(userId).executeAsOneOrNull()
+        emit(stats?.longestStreak?.toInt() ?: 0)
+    }
+
+    override fun getQuranCompletionCount(userId: String): Flow<Int> = flow {
+        val stats = database.userQueries.selectUserStatistics(userId).executeAsOneOrNull()
+        emit(stats?.quranCompletions?.toInt() ?: 0)
+    }
     override fun getUserMilestones(userId: String): Flow<List<Milestone>> = flow {
         emit(emptyList())
     }

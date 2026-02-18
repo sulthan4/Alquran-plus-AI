@@ -32,6 +32,10 @@ class ReadingViewModel(
     private val _bookmarksMap = MutableStateFlow<Map<String, String>>(emptyMap())
     val bookmarksMap: StateFlow<Map<String, String>> = _bookmarksMap.asStateFlow()
     
+    // Translation metadata map (translationId -> Translation object)
+    private val _translationsMap = MutableStateFlow<Map<String, Translation>>(emptyMap())
+    val translationsMap: StateFlow<Map<String, Translation>> = _translationsMap.asStateFlow()
+    
     // New Preferences
     private val _readingMode = MutableStateFlow(ReadingMode.CONTINUOUS)
     val readingMode: StateFlow<ReadingMode> = _readingMode.asStateFlow()
@@ -42,6 +46,7 @@ class ReadingViewModel(
     init {
         observeBookmarks()
         observePreferences()
+        loadTranslationMetadata()
     }
     
     private fun observeBookmarks() {
@@ -113,6 +118,20 @@ class ReadingViewModel(
         }
     }
     
+    private fun loadTranslationMetadata() {
+        viewModelScope.launch {
+            _selectedTranslations.value.forEach { translationId ->
+                translationRepository.getTranslationById(translationId).collect { translation ->
+                    translation?.let {
+                        _translationsMap.update { current ->
+                            current + (translationId to it)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     fun increaseFontSize() {
         val newSize = (_fontSize.value + 2).coerceAtMost(48)
         viewModelScope.launch { preferencesManager.updateFontSize(newSize) }
@@ -142,6 +161,12 @@ class ReadingViewModel(
             } catch (e: Exception) {
                 // Ignore
             }
+        }
+    }
+    fun toggleWordByWord() {
+        val newValue = !_isWordByWordEnabled.value
+        viewModelScope.launch {
+            preferencesManager.updateShowWordByWord(newValue)
         }
     }
 }

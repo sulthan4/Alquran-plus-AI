@@ -18,6 +18,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.alquranplusai.database.SearchHistory as SearchHistoryDb
 import com.alquranplusai.database.SavedSearch as SavedSearchDb
+import com.alquranplusai.data.network.dto.QuranFoundationSearchResultDto
 
 /**
  * Hybrid Search Repository combining:
@@ -41,6 +42,7 @@ class SearchRepositoryImpl(
         query: String,
         options: SearchOptions
     ): Flow<List<SearchResult>> = flow {
+        println("SearchRepo: searchText called with query='$query'")
         val mergedResults = mutableMapOf<String, SearchResult>()
         
         // STRATEGY CHANGE: Prioritize local database (guaranteed to work)
@@ -48,29 +50,63 @@ class SearchRepositoryImpl(
         
         // 1. Local Database Search (Primary - Always Works)
         try {
-            database.ayahQueries
+            val dbResults = database.ayahQueries
                 .searchInText(query, query, query)
                 .executeAsList()
-                .forEach { ayah ->
-                    val key = "${ayah.surahNumber}:${ayah.ayahNumber}"
-                    mergedResults[key] = SearchResult(
-                        id = "ayah_${ayah.id}",
-                        surahNumber = ayah.surahNumber.toInt(),
-                        ayahNumber = ayah.ayahNumber.toInt(),
-                        text = ayah.text,
-                        relevanceScore = 0.8f,
-                        matchType = MatchType.PARTIAL
-                    )
-                }
+            println("SearchRepo: Database returned ${dbResults.size} results")
+            dbResults.forEach { ayah ->
+                val key = "${ayah.surahNumber}:${ayah.ayahNumber}"
+                mergedResults[key] = SearchResult(
+                    id = "ayah_${ayah.id}",
+                    surahNumber = ayah.surahNumber.toInt(),
+                    ayahNumber = ayah.ayahNumber.toInt(),
+                    text = ayah.text,
+                    relevanceScore = 0.8f,
+                    matchType = MatchType.PARTIAL
+                )
+            }
         } catch (e: Exception) {
-            println("Database search error: ${e.message}")
+            println("SearchRepo: Database search error: ${e.message}")
             e.printStackTrace()
         }
         
         // 2. API Search (Enhancement - May Fail)
         try {
-            val apiResults = api.searchText(query, "ar")
-            apiResults.forEach {
+            println("SearchRepo: Calling API search...")
+            
+            // Determine search languages based on filters
+            val languagesToSearch = mutableListOf<String>()
+            
+            if (options.translationIds.isNotEmpty()) {
+                if (options.translationIds.any { it.contains("Sahih", ignoreCase = true) || it.contains("English", ignoreCase = true) }) {
+                    languagesToSearch.add("en")
+                }
+                if (options.translationIds.any { it.contains("Urdu", ignoreCase = true) }) {
+                    languagesToSearch.add("ur")
+                }
+            }
+            
+            // Default fallback if no specific language selected or if only Surah filter applied
+            if (languagesToSearch.isEmpty()) {
+                languagesToSearch.add("en")
+            }
+            
+            val allApiResults = mutableListOf<QuranFoundationSearchResultDto>()
+            
+            for (lang in languagesToSearch) {
+                val results = api.searchText(query, lang)
+                println("SearchRepo: API ($lang) returned ${results.size} results")
+                allApiResults.addAll(results)
+            }
+            
+            // If explicit filters yielded nothing, or defaults yielded nothing, try Arabic as fallback
+            if (allApiResults.isEmpty() && languagesToSearch.contains("en") && options.translationIds.isEmpty()) {
+                 val arResults = api.searchText(query, "ar")
+                 println("SearchRepo: Fallback Arabic API returned ${arResults.size} results")
+                 allApiResults.addAll(arResults)
+            }
+            
+            allApiResults.forEach {
                 val verseKeyParts = it.verseKey.split(":")
                 val s = verseKeyParts[0].toInt()
                 val a = verseKeyParts[1].toInt()
@@ -88,7 +124,8 @@ class SearchRepositoryImpl(
                 )
             }
         } catch (e: Exception) {
-            println("API search error (non-critical): ${e.message}")
+            println("SearchRepo: API search error (non-critical): ${e.message}")
+            e.printStackTrace()
             // Continue with database results
         }
 
@@ -112,7 +149,7 @@ class SearchRepositoryImpl(
                     }
                 }
             } catch (e: Exception) {
-                println("Semantic search error (non-critical): ${e.message}")
+                println("SearchRepo: Semantic search error (non-critical): ${e.message}")
                 // Continue with existing results
             }
         }
@@ -124,14 +161,16 @@ class SearchRepositoryImpl(
             finalResults = finalResults.filter { it.surahNumber in options.surahNumbers }
         }
 
-        saveSearchQuery(query)
+        println("SearchRepo: Emitting ${finalResults.size} total results")
         emit(finalResults.sortedByDescending { it.relevanceScore })
     }
 
     override suspend fun searchByRoot(root: String): Flow<List<SearchResult>> = flow {
-        // Root search uses local database (morphological analysis)
+        // Root search - use API with root as query, fallback to text search
+        // True root search requires morphological analysis not available here
         try {
-            val results = database.ayahQueries
+            // Try local database first
+            val dbResults = database.ayahQueries
                 .searchInText(root, root, root)
                 .executeAsList()
                 .map { ayah ->
@@ -144,11 +183,23 @@ class SearchRepositoryImpl(
                         matchType = MatchType.ROOT
                     )
                 }
-            emit(results)
+            
+            if (dbResults.isNotEmpty()) {
+                emit(dbResults)
+                return@flow
+            }
+            
+            // Fallback to API text search with ROOT label
+            searchText(root, SearchOptions()).collect { list ->
+                emit(list.map { it.copy(matchType = MatchType.ROOT) })
+            }
         } catch (e: Exception) {
             println("Root search error: ${e.message}")
             e.printStackTrace()
-            emit(emptyList())
+            // Last resort - API search
+            searchText(root, SearchOptions()).collect { list ->
+                emit(list.map { it.copy(matchType = MatchType.ROOT) })
+            }
         }
     }
 
@@ -158,7 +209,7 @@ class SearchRepositoryImpl(
             try {
                 val results = semanticSearch.searchByTopic(topic)
                 if (results.isNotEmpty()) {
-                    emit(results)
+                    emit(results.map { it.copy(matchType = MatchType.TOPIC) })
                     return@flow
                 }
             } catch (e: Exception) {
@@ -167,26 +218,18 @@ class SearchRepositoryImpl(
             }
         }
         
-        // Fallback to regular text search
+        // Fallback to regular text search with TOPIC label
         searchText(topic, SearchOptions()).collect { list ->
-            emit(list.map { it.copy(matchType = MatchType.SEMANTIC) })
+            emit(list.map { it.copy(matchType = MatchType.TOPIC) })
         }
     }
 
-    override suspend fun semanticSearch(query: String, limit: Int): Flow<List<SearchResult>> = flow {
-        if (semanticSearch != null) {
-            try {
-                val results = semanticSearch.searchSemantic(query).take(limit)
-                emit(results)
-                return@flow
-            } catch (e: Exception) {
-                // Fallback
-            }
+    override suspend fun semanticSearch(query: String, limit: Int): Flow<List<SearchResult>> {
+        // Fallback to text search since AI semantic search is not ready
+        // We reuse the working searchInQuran flow and just retag the results
+        return searchInQuran(query).map { list ->
+            list.map { it.copy(matchType = MatchType.SEMANTIC) }.take(limit)
         }
-        
-        // Fallback to text search
-        val results = searchText(query, SearchOptions()).first().take(limit)
-        emit(results)
     }
 
     override suspend fun search(query: SearchQuery): Flow<List<SearchResult>> = flow {

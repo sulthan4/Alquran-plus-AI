@@ -7,6 +7,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -71,7 +72,7 @@ fun SettingsScreen(
              item {
                 SettingsNavigationItem(
                     title = stringResource(com.alquranplusai.android.R.string.settings_language),
-                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_language),
+                    subtitle = uiState.languageDisplayName,
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.LANGUAGE_SETTINGS) }
                 )
             }
@@ -81,7 +82,7 @@ fun SettingsScreen(
             item {
                 SettingsNavigationItem(
                     title = stringResource(com.alquranplusai.android.R.string.settings_reading_title),
-                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_reading_title),
+                    subtitle = uiState.readingSummary,
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.READING_PREFERENCES) }
                 )
             }
@@ -91,7 +92,7 @@ fun SettingsScreen(
             item {
                  SettingsNavigationItem(
                     title = stringResource(com.alquranplusai.android.R.string.settings_audio_title),
-                    subtitle = stringResource(com.alquranplusai.android.R.string.settings_audio_desc),
+                    subtitle = uiState.audioSummary,
                     onClick = { onNavigateTo(com.alquranplusai.android.navigation.NavRoutes.AUDIO_SETTINGS) }
                 )
             }
@@ -179,14 +180,18 @@ fun SettingsNavigationItem(
     subtitle: String,
     onClick: () -> Unit
 ) {
-    Card(
+    Surface(
         modifier = Modifier.fillMaxWidth(),
-        onClick = onClick
+        onClick = onClick,
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 1.dp
     ) {
         ListItem(
             headlineContent = { Text(title) },
             supportingContent = { Text(subtitle) },
-            trailingContent = { Text("→") } // Simple arrow
+            trailingContent = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null) },
+            colors = ListItemDefaults.colors(containerColor = androidx.compose.ui.graphics.Color.Transparent)
         )
     }
 }

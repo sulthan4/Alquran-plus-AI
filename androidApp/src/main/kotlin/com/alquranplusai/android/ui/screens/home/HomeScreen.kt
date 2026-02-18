@@ -1,6 +1,7 @@
 package com.alquranplusai.android.ui.screens.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -44,26 +45,32 @@ fun HomeScreen(
     val lastReadUiState by viewModel.lastReadUiState.collectAsState()
     val dailyVerse by viewModel.dailyVerse.collectAsState()
     val userName by viewModel.userName.collectAsState()
+    val streak by viewModel.readingStreak.collectAsState()
+    val totalTime by viewModel.totalReadingTime.collectAsState()
+    val completedSurahs by viewModel.completedSurahs.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.refresh()
     }
 
     Scaffold(
-        containerColor = Background,
+        containerColor = Color(0xFFFAFAFA),
         topBar = {
-            // Header with gradient (Teal → Purple)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
-                    .background(HeaderGradient)
+                    .height(140.dp)
+                    .background(
+                        Brush.horizontalGradient(
+                            colors = listOf(Color(0xFF0277BD), Color(0xFF673AB7))
+                        )
+                    )
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(Spacing.md)
-                        .padding(top = Spacing.lg),
+                        .padding(horizontal = Spacing.md)
+                        .padding(top = 48.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -72,7 +79,7 @@ fun HomeScreen(
                             imageVector = Icons.Default.Person,
                             contentDescription = "Profile",
                             tint = Color.White,
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.size(36.dp)
                         )
                         Spacer(modifier = Modifier.width(Spacing.sm))
                         Text(
@@ -86,7 +93,8 @@ fun HomeScreen(
                         Icon(
                             imageVector = Icons.Default.Notifications,
                             contentDescription = "Notifications",
-                            tint = Color.White
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
                         )
                     }
                 }
@@ -95,11 +103,19 @@ fun HomeScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onNavigateToSearch,
-                containerColor = Gold,
+                modifier = Modifier
+                    .padding(bottom = 16.dp, end = 8.dp)
+                    .size(64.dp),
+                containerColor = Color(0xFFFFB300),
                 contentColor = Color.White,
-                shape = CircleShape
+                shape = CircleShape,
+                elevation = FloatingActionButtonDefaults.elevation(8.dp)
             ) {
-                Icon(Icons.Default.Search, contentDescription = "Search")
+                Icon(
+                    Icons.Default.Search, 
+                    contentDescription = "Search",
+                    modifier = Modifier.size(28.dp)
+                )
             }
         }
     ) { paddingValues ->
@@ -107,54 +123,68 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            contentPadding = PaddingValues(bottom = 80.dp),
-            verticalArrangement = Arrangement.spacedBy(Spacing.md)
+            contentPadding = PaddingValues(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Continue Reading Card
             item {
-                GradientCard(
-                    gradient = ContinueReadingGradient,
-                    onClick = {
-                        lastReadPosition?.let { (surah, ayah) ->
-                            onNavigateToReading(surah, ayah)
-                        } ?: onNavigateToSurahList()
-                    },
-                    modifier = Modifier.padding(horizontal = Spacing.md)
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Spacing.md)
+                        .clickable {
+                            lastReadPosition?.let { (surah, ayah) ->
+                                onNavigateToReading(surah, ayah)
+                            } ?: onNavigateToSurahList()
+                        },
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF006064))
                 ) {
-                    val state = lastReadUiState ?: HomeViewModel.LastReadUiState("Surah Al-Fatiha", 1, 1, 7)
-                    
-                    Text(
-                        text = "Continue Reading",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(Spacing.sm))
-                    Text(
-                        text = "${state.surahName}, Ayah ${state.ayahNumber}",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.White.copy(alpha = 0.9f)
-                    )
-                    Spacer(modifier = Modifier.height(Spacing.sm))
-                    Text(
-                        text = "ﷺ",  // Placeholder for Arabic decoration/text
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = Color.White,
-                        fontSize = 24.sp
-                    )
-                    Spacer(modifier = Modifier.height(Spacing.md))
-                    LinearProgressIndicator(
-                        progress = { state.ayahNumber.toFloat() / state.totalAyahs.toFloat() },
-                        modifier = Modifier.fillMaxWidth(),
-                        color = Gold,
-                        trackColor = Color.White.copy(alpha = 0.3f)
-                    )
-                    Spacer(modifier = Modifier.height(Spacing.xs))
-                    Text(
-                        text = "Verse ${state.ayahNumber} of ${state.totalAyahs}",
-                        fontSize = 12.sp,
-                        color = Color.White.copy(alpha = 0.8f)
-                    )
+                    Column(
+                        modifier = Modifier.padding(20.dp)
+                    ) {
+                        Text(
+                            text = "Continue Reading",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.height(Spacing.xs))
+                        val state = lastReadUiState ?: HomeViewModel.LastReadUiState("Al-Fatiha", 1, 1, 7)
+                        Text(
+                            text = if (lastReadUiState != null) "${state.surahName}, Ayah ${state.ayahNumber}" else "Start your journey",
+                            fontSize = 16.sp,
+                            color = Color.White.copy(alpha = 0.9f)
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "ﷺ", 
+                            fontSize = 48.sp,
+                            color = Color.White,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        
+                        // Thin Yellow Progress Bar
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(3.dp)
+                                .background(Color.White.copy(alpha = 0.2f), RoundedCornerShape(1.5.dp))
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(state.ayahNumber.toFloat() / state.totalAyahs.toFloat())
+                                    .fillMaxHeight()
+                                    .background(Color(0xFFFFB300), RoundedCornerShape(1.5.dp))
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(Spacing.sm))
+                        Text(
+                            text = "Verse ${state.ayahNumber} of ${state.totalAyahs}",
+                            fontSize = 13.sp,
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+                    }
                 }
             }
 
@@ -164,24 +194,28 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = Spacing.md),
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.md)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    val statBg = Color(0xFFF5F5F5)
                     StatCard(
                         icon = "🔥",
-                        value = "7",
+                        value = streak.toString(),
                         label = "Days",
+                        backgroundColor = statBg,
                         modifier = Modifier.weight(1f)
                     )
                     StatCard(
                         icon = "📖",
-                        value = "12",
-                        label = "Ayahs",
+                        value = completedSurahs.toString(),
+                        label = "Surahs",
+                        backgroundColor = statBg,
                         modifier = Modifier.weight(1f)
                     )
                     StatCard(
                         icon = "⏱️",
-                        value = "25",
+                        value = (totalTime / 60).toString(), // Convert seconds to minutes
                         label = "min",
+                        backgroundColor = statBg,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -192,97 +226,47 @@ fun HomeScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = Spacing.md),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.md)
+                        .padding(horizontal = Spacing.md)
+                        .padding(bottom = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(Spacing.md)
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         FeatureCard(
                             title = "Browse Quran",
                             icon = Icons.Default.MenuBook,
-                            gradient = BrowseQuranGradient,
+                            background = Color(0xFF00ACC1),
                             onClick = onNavigateToSurahList,
                             modifier = Modifier.weight(1f)
                         )
                         FeatureCard(
                             title = "Audio Player",
                             icon = Icons.Default.Headphones,
-                            gradient = AudioPlayerGradient,
+                            background = Color(0xFF7E57C2),
                             onClick = onNavigateToAudio,
                             modifier = Modifier.weight(1f)
                         )
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(Spacing.md)
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         FeatureCard(
                             title = "Bookmarks",
                             icon = Icons.Default.Bookmark,
-                            gradient = BookmarksGradient,
+                            background = Color(0xFFFB8C00),
                             onClick = onNavigateToBookmarks,
                             modifier = Modifier.weight(1f)
                         )
                         FeatureCard(
-                            title = "Daily Quiz",
+                            title = "Daily Challenge",
                             icon = Icons.Default.EmojiEvents,
-                            gradient = DailyQuizGradient,
+                            background = Color(0xFF00B248),
                             onClick = onNavigateToDailyQuiz,
                             modifier = Modifier.weight(1f)
                         )
-                    }
-                }
-            }
-
-            // Today's Challenge
-            item {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Spacing.md),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Surface),
-                    elevation = CardDefaults.cardElevation(defaultElevation = Elevation.medium)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(Spacing.md),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "⭐",
-                            fontSize = 32.sp
-                        )
-                        Spacer(modifier = Modifier.width(Spacing.md))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = "Daily Verse",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                            
-                            val verseText = dailyVerse?.let { (surah, ayah) ->
-                                "Surah ${surah.nameTransliteration}, Ayah $ayah"
-                            } ?: "Loading daily verse..."
-                            
-                            Text(
-                                text = verseText,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = TextSecondary
-                            )
-                        }
-                        TextButton(
-                            onClick = {
-                                dailyVerse?.let { (surah, ayah) ->
-                                    onNavigateToReading(surah.number, ayah)
-                                }
-                            }
-                        ) {
-                            Text("Read →")
-                        }
                     }
                 }
             }

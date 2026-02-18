@@ -53,15 +53,20 @@ data class QuranFoundationVerseDto(
 @Serializable
 data class QuranFoundationWordDto(
     val id: Int? = null, // Pause marks might not have IDs in some versions
-    val position: Int,
+    val position: Int? = null, // Not present in search results
     @SerialName("audio_url") val audioUrl: String? = null,
-    @SerialName("char_type_name") val charTypeName: String,
+    @SerialName("char_type_name") val charTypeName: String? = null, // Used in verse endpoint
+    @SerialName("char_type") val charType: String? = null, // Used in search endpoint
     @SerialName("code_v1") val codeV1: String? = null,
     @SerialName("text_uthmani") val textUthmani: String? = null,
     val text: String? = null,
     val translation: TranslatedNameDto? = null,
     val transliteration: TranslatedNameDto? = null
-)
+) {
+    // Helper to get the char type from whichever field is present
+    val resolvedCharType: String
+        get() = charTypeName ?: charType ?: "word"
+}
 
 @Serializable
 data class PaginationDto(

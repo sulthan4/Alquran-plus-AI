@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.alquranplusai.domain.models.TafsirText
+import com.alquranplusai.android.ui.components.HtmlText
 
 /**
  * Component to display tafsir (commentary) for an ayah
@@ -31,7 +32,8 @@ import com.alquranplusai.domain.models.TafsirText
 fun TafsirView(
     tafsirTexts: List<TafsirText>,
     modifier: Modifier = Modifier,
-    initiallyExpanded: Boolean = false
+    initiallyExpanded: Boolean = false,
+    tafsirNameMap: Map<String, String> = emptyMap()
 ) {
     var isExpanded by remember { mutableStateOf(initiallyExpanded) }
 
@@ -96,7 +98,10 @@ fun TafsirView(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     tafsirTexts.forEach { tafsirText ->
-                        TafsirTextItem(tafsirText = tafsirText)
+                        TafsirTextItem(
+                            tafsirText = tafsirText,
+                            tafsirName = tafsirNameMap[tafsirText.tafsirId] ?: tafsirText.tafsirId
+                        )
                     }
                 }
             }
@@ -107,7 +112,8 @@ fun TafsirView(
 @Composable
 private fun TafsirTextItem(
     tafsirText: TafsirText,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tafsirName: String
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -115,18 +121,17 @@ private fun TafsirTextItem(
     ) {
         // Tafsir source name
         Text(
-            text = getTafsirDisplayName(tafsirText.tafsirId),
+            text = tafsirName,
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.secondary
         )
 
         // Tafsir text
-        Text(
+        HtmlText(
             text = tafsirText.text,
-            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface,
-            lineHeight = MaterialTheme.typography.bodyMedium.lineHeight * 1.5
+            modifier = Modifier.fillMaxWidth()
         )
 
         // Footnotes if available
@@ -179,35 +184,4 @@ private fun getTafsirDisplayName(tafsirId: String): String {
 /**
  * Compact tafsir view for inline display
  */
-@Composable
-fun CompactTafsirView(
-    tafsirText: TafsirText,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f),
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            Text(
-                text = getTafsirDisplayName(tafsirText.tafsirId),
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.secondary
-            )
-            
-            Text(
-                text = tafsirText.text,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 3
-            )
-        }
-    }
-}
+

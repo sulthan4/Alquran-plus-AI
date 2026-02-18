@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.alquranplusai.android.R
-import com.alquranplusai.android.utils.NotificationHelper
 import java.util.*
 
 /**
@@ -27,7 +26,7 @@ class ReminderService {
             message: String = "Time for your daily Quran reading"
         ) {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val intent = Intent(context, ReminderReceiver::class.java).apply {
+            val intent = Intent(context, com.alquranplusai.android.receivers.ReminderReceiver::class.java).apply {
                 putExtra("message", message)
             }
             
@@ -64,7 +63,7 @@ class ReminderService {
          */
         fun cancelDailyReminder(context: Context) {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val intent = Intent(context, ReminderReceiver::class.java)
+            val intent = Intent(context, com.alquranplusai.android.receivers.ReminderReceiver::class.java)
             val pendingIntent = PendingIntent.getBroadcast(
                 context,
                 REMINDER_REQUEST_CODE,
@@ -79,7 +78,7 @@ class ReminderService {
          * Check if reminder is scheduled
          */
         fun isReminderScheduled(context: Context): Boolean {
-            val intent = Intent(context, ReminderReceiver::class.java)
+            val intent = Intent(context, com.alquranplusai.android.receivers.ReminderReceiver::class.java)
             val pendingIntent = PendingIntent.getBroadcast(
                 context,
                 REMINDER_REQUEST_CODE,
@@ -93,13 +92,5 @@ class ReminderService {
 }
 
 /**
- * Broadcast Receiver for reminders
+ * Reminder Receiver handled in com.alquranplusai.android.receivers.ReminderReceiver
  */
-class ReminderReceiver : android.content.BroadcastReceiver() {
-    override fun onReceive(context: Context, intent: Intent) {
-        val message = intent.getStringExtra("message") ?: "Time for your daily Quran reading"
-        val notificationHelper = NotificationHelper(context)
-        // Use generic notification method
-        notificationHelper.showDownloadComplete("reminder", message)
-    }
-}

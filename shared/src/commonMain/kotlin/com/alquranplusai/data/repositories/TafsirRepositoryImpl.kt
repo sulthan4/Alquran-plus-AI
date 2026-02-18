@@ -25,10 +25,12 @@ class TafsirRepositoryImpl(
     private val json = Json { ignoreUnknownKeys = true }
 
     override suspend fun getAllTafsirs(): Flow<List<Tafsir>> = flow {
-        // Check if we have all tafsirs in database (we have 25 total)
-        val count = database.tafsirQueries.count().executeAsOne()
-        if (count < 25L) {
-            // Clear and re-seed with all default tafsirs
+        // Check if we have the new ID format (numeric strings like "169")
+        // If not, we wipe and re-seed to migrate from old ID format (like "ibn_kathir")
+        val hasNewFormat = database.tafsirQueries.selectById("169").executeAsOneOrNull() != null
+        
+        if (!hasNewFormat) {
+            // Clear old data and re-seed with valid API IDs
             database.transaction {
                 database.tafsirQueries.deleteAll()
             }
@@ -284,7 +286,19 @@ class TafsirRepositoryImpl(
         val defaultTafsirs = listOf(
             // Arabic Tafsirs
             Tafsir(
-                id = "ibn_kathir",
+                id = "16",
+                name = "Tafsir Muyassar",
+                nameArabic = "تفسير الميسر",
+                author = "King Fahd Complex",
+                authorArabic = "مجمع الملك فهد",
+                language = "Arabic",
+                languageCode = "ar",
+                description = "Simple and clear tafsir",
+                source = "quran.com",
+                downloadSize = 25 * 1024 * 1024
+            ),
+            Tafsir(
+                id = "14",
                 name = "Tafsir Ibn Kathir",
                 nameArabic = "تفسير ابن كثير",
                 author = "Ibn Kathir",
@@ -293,46 +307,34 @@ class TafsirRepositoryImpl(
                 languageCode = "ar",
                 description = "One of the most famous and authentic tafsir books",
                 source = "quran.com",
-                downloadSize = 50 * 1024 * 1024 // 50 MB
+                downloadSize = 50 * 1024 * 1024
             ),
-            Tafsir(
-                id = "jalalayn",
-                name = "Tafsir al-Jalalayn",
-                nameArabic = "تفسير الجلالين",
-                author = "Jalal ad-Din al-Mahalli & Jalal ad-Din as-Suyuti",
-                authorArabic = "جلال الدين المحلي وجلال الدين السيوطي",
-                language = "Arabic",
-                languageCode = "ar",
-                description = "Concise and widely-read tafsir",
-                source = "quran.com",
-                downloadSize = 20 * 1024 * 1024 // 20 MB
-            ),
-            Tafsir(
-                id = "saadi",
-                name = "Tafsir As-Sa'di",
-                nameArabic = "تفسير السعدي",
-                author = "Abdur-Rahman as-Sa'di",
-                authorArabic = "عبد الرحمن السعدي",
-                language = "Arabic",
-                languageCode = "ar",
-                description = "Clear and easy to understand tafsir",
-                source = "quran.com",
-                downloadSize = 30 * 1024 * 1024 // 30 MB
-            ),
-            Tafsir(
-                id = "tabari",
+             Tafsir(
+                id = "15",
                 name = "Tafsir at-Tabari",
                 nameArabic = "تفسير الطبري",
-                author = "Muhammad ibn Jarir at-Tabari",
-                authorArabic = "محمد بن جرير الطبري",
+                author = "At-Tabari",
+                authorArabic = "الطبري",
                 language = "Arabic",
                 languageCode = "ar",
                 description = "Classical comprehensive tafsir",
                 source = "quran.com",
-                downloadSize = 60 * 1024 * 1024 // 60 MB
+                downloadSize = 60 * 1024 * 1024
             ),
             Tafsir(
-                id = "qurtubi",
+                id = "91",
+                name = "Tafsir As-Sa'di",
+                nameArabic = "تفسير السعدي",
+                author = "As-Sa'di",
+                authorArabic = "السعدي",
+                language = "Arabic",
+                languageCode = "ar",
+                description = "Clear and easy to understand tafsir",
+                source = "quran.com",
+                downloadSize = 30 * 1024 * 1024
+            ),
+             Tafsir(
+                id = "90",
                 name = "Tafsir al-Qurtubi",
                 nameArabic = "تفسير القرطبي",
                 author = "Al-Qurtubi",
@@ -341,271 +343,257 @@ class TafsirRepositoryImpl(
                 languageCode = "ar",
                 description = "Comprehensive tafsir with legal rulings",
                 source = "quran.com",
-                downloadSize = 55 * 1024 * 1024 // 55 MB
+                downloadSize = 55 * 1024 * 1024
             ),
-            Tafsir(
-                id = "baghawi",
+             Tafsir(
+                id = "94",
                 name = "Tafsir al-Baghawi",
                 nameArabic = "تفسير البغوي",
                 author = "Al-Baghawi",
                 authorArabic = "البغوي",
                 language = "Arabic",
                 languageCode = "ar",
-                description = "Ma'alim at-Tanzil - Clear and authentic",
+                description = "Ma'alim at-Tanzil",
                 source = "quran.com",
-                downloadSize = 35 * 1024 * 1024 // 35 MB
+                downloadSize = 35 * 1024 * 1024
             ),
-            
+
             // English Tafsirs
             Tafsir(
-                id = "maududi",
-                name = "Tafhim al-Qur'an",
-                nameArabic = "تفهيم القرآن",
-                author = "Abul A'la Maududi",
-                authorArabic = "أبو الأعلى المودودي",
-                language = "English",
-                languageCode = "en",
-                description = "Contemporary tafsir with modern context",
-                source = "quran.com",
-                downloadSize = 40 * 1024 * 1024 // 40 MB
-            ),
-            Tafsir(
-                id = "ibn_kathir_en",
-                name = "Tafsir Ibn Kathir (English)",
+                id = "169",
+                name = "Tafsir Ibn Kathir (Abridged)",
                 nameArabic = "تفسير ابن كثير",
-                author = "Ibn Kathir (Translated)",
+                author = "Hafiz Ibn Kathir",
                 authorArabic = "ابن كثير",
                 language = "English",
                 languageCode = "en",
                 description = "English translation of the famous Ibn Kathir tafsir",
                 source = "quran.com",
-                downloadSize = 45 * 1024 * 1024 // 45 MB
+                downloadSize = 45 * 1024 * 1024
             ),
             Tafsir(
-                id = "maarif",
-                name = "Ma'ariful Qur'an",
+                id = "168",
+                name = "Ma'arif al-Qur'an",
                 nameArabic = "معارف القرآن",
                 author = "Mufti Muhammad Shafi",
                 authorArabic = "مفتي محمد شفيع",
                 language = "English",
                 languageCode = "en",
-                description = "Comprehensive modern tafsir in English",
+                description = "Comprehensive modern tafsir",
                 source = "quran.com",
-                downloadSize = 50 * 1024 * 1024 // 50 MB
+                downloadSize = 50 * 1024 * 1024
             ),
             Tafsir(
-                id = "jalalayn_en",
-                name = "Tafsir al-Jalalayn (English)",
-                nameArabic = "تفسير الجلالين",
-                author = "Jalalayn (Translated)",
-                authorArabic = "الجلالين",
+                id = "817",
+                name = "Tazkirul Quran",
+                nameArabic = "تذكير القرآن",
+                author = "Maulana Wahid Uddin Khan",
+                authorArabic = "وحيد الدين خان",
                 language = "English",
                 languageCode = "en",
-                description = "English translation of concise Jalalayn tafsir",
+                description = "Contemporary commentary",
                 source = "quran.com",
-                downloadSize = 18 * 1024 * 1024 // 18 MB
+                downloadSize = 40 * 1024 * 1024
             ),
-            Tafsir(
-                id = "saadi_en",
-                name = "Tafsir As-Sa'di (English)",
-                nameArabic = "تفسير السعدي",
-                author = "As-Sa'di (Translated)",
-                authorArabic = "السعدي",
-                language = "English",
-                languageCode = "en",
-                description = "English translation of clear Sa'di tafsir",
-                source = "quran.com",
-                downloadSize = 28 * 1024 * 1024 // 28 MB
-            ),
-            Tafsir(
-                id = "quraish_shihab",
-                name = "Tafsir Al-Misbah",
-                nameArabic = "تفسير المصباح",
-                author = "M. Quraish Shihab",
-                authorArabic = "محمد قريش شهاب",
-                language = "Indonesian",
-                languageCode = "id",
-                description = "Popular Indonesian tafsir",
-                source = "quran.com",
-                downloadSize = 42 * 1024 * 1024 // 42 MB
-            ),
-            
-            // Tamil Tafsirs
-            Tafsir(
-                id = "tamil_bayan",
-                name = "Tamil Bayan ul-Quran",
-                nameArabic = "بيان القرآن",
-                author = "Maulana Ashraf Ali Thanvi (Tamil Translation)",
-                authorArabic = "أشرف علي التهانوي",
-                language = "Tamil",
-                languageCode = "ta",
-                description = "Popular Tamil translation and commentary",
-                source = "quran.com",
-                downloadSize = 38 * 1024 * 1024 // 38 MB
-            ),
-            Tafsir(
-                id = "tamil_mujahid",
-                name = "Tamil Tafsir Mujahid",
-                nameArabic = "تفسير مجاهد",
-                author = "Mujahid Abdul Hameed",
-                authorArabic = "مجاهد عبد الحميد",
-                language = "Tamil",
-                languageCode = "ta",
-                description = "Comprehensive Tamil tafsir",
-                source = "quran.com",
-                downloadSize = 35 * 1024 * 1024 // 35 MB
-            ),
-            
+
             // Urdu Tafsirs
             Tafsir(
-                id = "urdu_kanzul_iman",
-                name = "Kanz ul-Iman",
-                nameArabic = "كنز الإيمان",
-                author = "Ahmed Raza Khan Barelvi",
-                authorArabic = "أحمد رضا خان بريلوي",
+                id = "160",
+                name = "Tafsir Ibn Kathir",
+                nameArabic = "تفسير ابن كثير",
+                author = "Hafiz Ibn Kathir",
+                authorArabic = "ابن كثير",
                 language = "Urdu",
                 languageCode = "ur",
-                description = "Popular Urdu translation with commentary",
+                description = "Urdu translation of Ibn Kathir",
                 source = "quran.com",
-                downloadSize = 32 * 1024 * 1024 // 32 MB
+                downloadSize = 45 * 1024 * 1024
             ),
             Tafsir(
-                id = "urdu_tafheem",
-                name = "Tafheem ul-Quran (Urdu)",
-                nameArabic = "تفہیم القرآن",
-                author = "Abul A'la Maududi",
-                authorArabic = "أبو الأعلى المودودی",
+                id = "159",
+                name = "Bayan ul Quran",
+                nameArabic = "بيان القرآن",
+                author = "Dr. Israr Ahmad",
+                authorArabic = "د. إسرار أحمد",
                 language = "Urdu",
                 languageCode = "ur",
-                description = "Original Urdu version of Tafheem",
+                description = "Comprehensive Urdu tafsir",
                 source = "quran.com",
-                downloadSize = 48 * 1024 * 1024 // 48 MB
+                downloadSize = 48 * 1024 * 1024
+            ),
+            Tafsir(
+                id = "157",
+                name = "Fi Zilal al-Quran",
+                nameArabic = "في ظلال القرآن",
+                author = "Sayyid Qutb",
+                authorArabic = "سيد قطب",
+                language = "Urdu",
+                languageCode = "ur",
+                description = "In the Shade of the Quran",
+                source = "quran.com",
+                downloadSize = 50 * 1024 * 1024
             ),
             
-            // Turkish Tafsir
+             // Bengali Tafsirs
             Tafsir(
-                id = "turkish_diyanet",
-                name = "Diyanet İşleri Tefsiri",
-                nameArabic = "تفسير ديانت",
-                author = "Turkish Directorate of Religious Affairs",
-                authorArabic = "رئاسة الشؤون الدينية التركية",
-                language = "Turkish",
-                languageCode = "tr",
-                description = "Official Turkish government tafsir",
+                id = "165",
+                name = "Tafsir Ahsanul Bayaan",
+                nameArabic = "تفسير أحسن البيان",
+                author = "Bayaan Foundation",
+                authorArabic = "مؤسسة البيان",
+                language = "Bengali",
+                languageCode = "bn",
+                description = "Clear Bengali tafsir",
                 source = "quran.com",
-                downloadSize = 40 * 1024 * 1024 // 40 MB
+                downloadSize = 35 * 1024 * 1024
+            ),
+             Tafsir(
+                id = "166",
+                name = "Tafsir Abu Bakr Zakaria",
+                nameArabic = "تفسير أبو بكر زكريا",
+                author = "Abu Bakr Zakaria",
+                authorArabic = "أبو بكر زكريا",
+                language = "Bengali",
+                languageCode = "bn",
+                description = "Authentic Bengali tafsir",
+                source = "quran.com",
+                downloadSize = 38 * 1024 * 1024
+            ),
+            Tafsir(
+                id = "381",
+                name = "Tafsir Fathul Majid",
+                nameArabic = "تفسير فتح المجيد",
+                author = "AbdulRahman Bin Hasan",
+                authorArabic = "عبد الرحمن بن حسن",
+                language = "Bengali",
+                languageCode = "bn",
+                description = "Detailed Bengali commentary",
+                source = "quran.com",
+                downloadSize = 40 * 1024 * 1024
+            ),
+             Tafsir(
+                id = "164",
+                name = "Tafseer Ibn Kathir",
+                nameArabic = "تفسير ابن كثير",
+                author = "Tawheed Publication",
+                authorArabic = "توحيد",
+                language = "Bengali",
+                languageCode = "bn",
+                description = "Bengali translation of Ibn Kathir",
+                source = "quran.com",
+                downloadSize = 45 * 1024 * 1024
             ),
             
-            // French Tafsir
+            // Kurdish Tafsir
             Tafsir(
-                id = "french_hamidullah",
-                name = "Tafsir Muhammad Hamidullah",
+                id = "804",
+                name = "Rebar Kurdish Tafsir",
+                nameArabic = "تفسير ريبار",
+                author = "Rebar",
+                authorArabic = "ريبار",
+                language = "Kurdish",
+                languageCode = "ku",
+                description = "Kurdish commentary",
+                source = "quran.com",
+                downloadSize = 32 * 1024 * 1024
+            ),
+            
+            // Tamil (Using Translation ID 133 - Abdul Hameed Baqavi)
+            Tafsir(
+                id = "trans_133",
+                name = "Tamil Bayan ul-Quran",
+                nameArabic = "بيان القرآن (Translation)",
+                author = "Abdul Hameed Baqavi",
+                authorArabic = "عبد الحميد",
+                language = "Tamil",
+                languageCode = "ta",
+                description = "Tamil translation (No Tafsir available)",
+                source = "quran.com",
+                downloadSize = 35 * 1024 * 1024
+            ),
+            
+            // French (Using Translation ID 31 - Hamidullah)
+            Tafsir(
+                id = "trans_31",
+                name = "Tafseer Muhammad Hamidullah",
                 nameArabic = "تفسير محمد حميد الله",
                 author = "Muhammad Hamidullah",
                 authorArabic = "محمد حميد الله",
                 language = "French",
                 languageCode = "fr",
-                description = "Renowned French translation and commentary",
+                description = "French translation",
                 source = "quran.com",
-                downloadSize = 36 * 1024 * 1024 // 36 MB
+                downloadSize = 36 * 1024 * 1024
             ),
-            
-            // Spanish Tafsir
+
+            // Spanish (Using Translation ID 83 - Isa Garcia)
             Tafsir(
-                id = "spanish_cortes",
-                name = "Tafsir Julio Cortés",
-                nameArabic = "تفسير خوليو كورتيس",
-                author = "Julio Cortés",
-                authorArabic = "خوليو كورتيس",
+                id = "trans_83",
+                name = "Tafseer Isa Garcia",
+                nameArabic = "تفسير عيسى غارسيا",
+                author = "Sheikh Isa Garcia",
+                authorArabic = "عيسى غارسيا",
                 language = "Spanish",
                 languageCode = "es",
-                description = "Popular Spanish translation and commentary",
+                description = "Spanish translation",
                 source = "quran.com",
-                downloadSize = 34 * 1024 * 1024 // 34 MB
+                downloadSize = 34 * 1024 * 1024
             ),
             
-            // Bengali Tafsir
+            // German (Using Translation ID 27 - Frank Bubenheim)
             Tafsir(
-                id = "bengali_mujibur",
-                name = "Tafsir Mujibur Rahman",
-                nameArabic = "تفسير مجيب الرحمن",
-                author = "Maulana Mujibur Rahman",
-                authorArabic = "مولانا مجيب الرحمن",
-                language = "Bengali",
-                languageCode = "bn",
-                description = "Comprehensive Bengali tafsir",
-                source = "quran.com",
-                downloadSize = 37 * 1024 * 1024 // 37 MB
-            ),
-            
-            // Malay Tafsir
-            Tafsir(
-                id = "malay_pimpinan",
-                name = "Tafsir Pimpinan ar-Rahman",
-                nameArabic = "تفسير بمبينن الرحمن",
-                author = "Abdullah Abbas Nasution",
-                authorArabic = "عبد الله عباس ناسوتيون",
-                language = "Malay",
-                languageCode = "ms",
-                description = "Popular Malay tafsir",
-                source = "quran.com",
-                downloadSize = 33 * 1024 * 1024 // 33 MB
-            ),
-            
-            // Persian Tafsir
-            Tafsir(
-                id = "persian_makarem",
-                name = "Tafsir Nemooneh",
-                nameArabic = "تفسير نمونه",
-                author = "Ayatollah Makarem Shirazi",
-                authorArabic = "آية الله مكارم شيرازي",
-                language = "Persian",
-                languageCode = "fa",
-                description = "Contemporary Persian tafsir",
-                source = "quran.com",
-                downloadSize = 44 * 1024 * 1024 // 44 MB
-            ),
-            
-            // Hindi Tafsir
-            Tafsir(
-                id = "hindi_farooq",
-                name = "Tafsir Farooq Khan",
-                nameArabic = "تفسير فاروق خان",
-                author = "Maulana Farooq Khan",
-                authorArabic = "مولانا فاروق خان",
-                language = "Hindi",
-                languageCode = "hi",
-                description = "Popular Hindi translation and commentary",
-                source = "quran.com",
-                downloadSize = 36 * 1024 * 1024 // 36 MB
-            ),
-            
-            // German Tafsir
-            Tafsir(
-                id = "german_zaidan",
-                name = "Tafsir Amir Zaidan",
-                nameArabic = "تفسير أمير زيدان",
-                author = "Amir Zaidan",
-                authorArabic = "أمير زيدان",
+                id = "trans_27",
+                name = "Tafseer Bubenheim",
+                nameArabic = "تفسير بوبنهايم",
+                author = "Frank Bubenheim",
+                authorArabic = "فرانك بوبنهايم",
                 language = "German",
                 languageCode = "de",
-                description = "Modern German tafsir",
+                description = "German translation",
                 source = "quran.com",
-                downloadSize = 35 * 1024 * 1024 // 35 MB
+                downloadSize = 35 * 1024 * 1024
+            ),
+            
+            // Hindi (Using Translation ID 122 - Azizul Haque)
+            Tafsir(
+                id = "trans_122",
+                name = "Tafseer Azizul Haque",
+                nameArabic = "تفسير عزيز الحق",
+                author = "Maulana Azizul Haque",
+                authorArabic = "عزيز الحق",
+                language = "Hindi",
+                languageCode = "hi",
+                description = "Hindi translation",
+                source = "quran.com",
+                downloadSize = 36 * 1024 * 1024
+            ),
+            
+            // Malay (Using Translation ID 39 - Basmeih)
+            Tafsir(
+                id = "trans_39",
+                name = "Tafseer Basmeih",
+                nameArabic = "تفسير بسميه",
+                author = "Abdullah Muhammad Basmeih",
+                authorArabic = "عبد الله محمد بسميه",
+                language = "Malay",
+                languageCode = "ms",
+                description = "Malay translation",
+                source = "quran.com",
+                downloadSize = 33 * 1024 * 1024
             ),
             
             // Russian Tafsir
             Tafsir(
-                id = "russian_kuliev",
-                name = "Tafsir Elmir Kuliev",
-                nameArabic = "تفسير إلمير كولييف",
-                author = "Elmir Kuliev",
-                authorArabic = "إلمير كولييف",
+                id = "170",
+                name = "Tafsir As-Sa'di",
+                nameArabic = "تفسير السعدي",
+                author = "As-Sa'di",
+                authorArabic = "السعدي",
                 language = "Russian",
                 languageCode = "ru",
-                description = "Contemporary Russian tafsir",
+                description = "Russian translation of Sa'di",
                 source = "quran.com",
-                downloadSize = 39 * 1024 * 1024 // 39 MB
+                downloadSize = 30 * 1024 * 1024
             )
         )
 

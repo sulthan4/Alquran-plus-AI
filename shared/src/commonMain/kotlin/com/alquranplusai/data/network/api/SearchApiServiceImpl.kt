@@ -19,6 +19,7 @@ class SearchApiServiceImpl(
         page: Int,
         size: Int
     ): List<QuranFoundationSearchResultDto> {
+        println("SearchAPI: Starting search for '$query' in language '$language'")
         return try {
             val response = client.get("$baseUrl/search") {
                 parameter("q", query)
@@ -27,17 +28,22 @@ class SearchApiServiceImpl(
                 parameter("page", 1)
             }
             
+            println("SearchAPI: Response status = ${response.status}")
+            
             // Handle 204 No Content (no results found)
             if (response.status.value == 204) {
-                println("API returned 204 No Content for query: $query")
+                println("SearchAPI: API returned 204 No Content for query: $query")
                 return emptyList()
             }
             
             // Parse response body
             val searchResponse: QuranFoundationSearchResponse = response.body()
-            searchResponse.search.results ?: emptyList()
+            val results = searchResponse.search.results
+            println("SearchAPI: Found ${results.size} results for '$query'")
+            results
         } catch (e: Exception) {
-            println("API search failed: ${e.message}")
+            println("SearchAPI: API search FAILED: ${e.message}")
+            e.printStackTrace()
             emptyList()
         }
     }

@@ -11,7 +11,8 @@ import kotlinx.datetime.Clock
 
 class AudioRepositoryImpl(
     private val database: AlQuranDatabaseWrapper,
-    private val api: AudioApiService
+    private val api: AudioApiService,
+    private val quranComApi: com.alquranplusai.data.network.api.QuranComApiService
 ) : AudioRepository {
 
     override suspend fun getAllReciters(): Flow<List<Reciter>> = flow {

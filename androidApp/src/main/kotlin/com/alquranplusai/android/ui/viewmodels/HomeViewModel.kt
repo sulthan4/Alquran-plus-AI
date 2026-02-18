@@ -49,53 +49,59 @@ class HomeViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    // Init block MUST be after property declarations to avoid NullPointerException
+    init {
+        loadHomeData()
+    }
+
     private fun loadHomeData() {
-        // In a real app, userId would come from a SessionManager or AuthRepository
-        // For offline-first no-login scenario, we use a default persistent ID
-        val userId = "default_user" 
+        val userId = "current_user" 
         
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                // Load last read position and map to UI state
-                quranRepository.getLastReadingPosition().collect { position ->
-                    _lastReadPosition.value = position
-                    if (position != null) {
-                        quranRepository.getSurahByNumber(position.first).collect { surah ->
-                            if (surah != null) {
-                                _lastReadUiState.value = LastReadUiState(
-                                    surahName = surah.nameTransliteration, // Or name if prefer Arabic
-                                    surahNumber = surah.number,
-                                    ayahNumber = position.second,
-                                    totalAyahs = surah.numberOfAyahs
-                                )
+                // Launch separate collectors for each stat to avoid blocking
+                launch {
+                    quranRepository.getLastReadingPosition().collect { position ->
+                        _lastReadPosition.value = position
+                        if (position != null) {
+                            quranRepository.getSurahByNumber(position.first).collect { surah ->
+                                if (surah != null) {
+                                    _lastReadUiState.value = LastReadUiState(
+                                        surahName = surah.nameTransliteration,
+                                        surahNumber = surah.number,
+                                        ayahNumber = position.second,
+                                        totalAyahs = surah.numberOfAyahs
+                                    )
+                                }
                             }
+                        } else {
+                            _lastReadUiState.value = null
                         }
-                    } else {
-                        // Default fallback if no reading history
-                         _lastReadUiState.value = LastReadUiState("Surah Al-Fatiha", 1, 1, 7)
                     }
                 }
                 
-                // Load reading statistics
-                analyticsRepository.getCurrentStreak(userId).collect { streak ->
-                    _readingStreak.value = streak
+                launch {
+                    analyticsRepository.getCurrentStreak(userId).collect { streak ->
+                        _readingStreak.value = streak
+                    }
                 }
                 
-                analyticsRepository.getTotalReadingTime(userId).collect { time ->
-                    _totalReadingTime.value = time
+                launch {
+                    analyticsRepository.getTotalReadingTime(userId).collect { time ->
+                        _totalReadingTime.value = time
+                    }
                 }
                 
-                quranRepository.getCompletedSurahs().collect { completed ->
-                    _completedSurahs.value = completed.size
+                launch {
+                    quranRepository.getCompletedSurahs().collect { completed ->
+                        _completedSurahs.value = completed.size
+                    }
                 }
                 
-                // Load daily verse
                 loadDailyVerse()
             } catch (e: Exception) {
-                // Log error safely
                 println("Error loading home data: ${e.message}")
-                e.printStackTrace()
             } finally {
                 _isLoading.value = false
             }

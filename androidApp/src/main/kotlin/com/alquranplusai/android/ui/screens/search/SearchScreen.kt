@@ -202,12 +202,9 @@ fun SearchModeTabs(
     selectedType: com.alquranplusai.domain.models.SearchType,
     onTypeSelected: (com.alquranplusai.domain.models.SearchType) -> Unit
 ) {
-    val types = com.alquranplusai.domain.models.SearchType.entries.filter { 
-        it == com.alquranplusai.domain.models.SearchType.TEXT || 
-        it == com.alquranplusai.domain.models.SearchType.SEMANTIC || 
-        it == com.alquranplusai.domain.models.SearchType.ROOT || 
-        it == com.alquranplusai.domain.models.SearchType.TOPIC 
-    }
+    // Only show TEXT tab until other search types are properly implemented
+    // (Semantic, Root, and Topic currently all use the same text search)
+    val types = listOf(com.alquranplusai.domain.models.SearchType.TEXT)
     
     val selectedIndex = types.indexOf(selectedType).coerceAtLeast(0)
 

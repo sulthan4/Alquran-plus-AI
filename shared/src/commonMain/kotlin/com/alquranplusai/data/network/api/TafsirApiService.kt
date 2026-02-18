@@ -27,24 +27,23 @@ class TafsirApiService(private val client: HttpClient) {
      * Get tafsir data for all ayahs
      * MOCK IMPLEMENTATION - generates sample tafsir text for testing
      */
+    /**
+     * Get tafsir data for all ayahs (Full Download)
+     */
+    /**
+     * Get tafsir data for all ayahs (Full Download)
+     */
     suspend fun getTafsirData(tafsirId: String): List<TafsirTextDto> {
         val allTexts = mutableListOf<TafsirTextDto>()
         
-        // Generate mock tafsir for a subset of ayahs (first 10 surahs for faster download)
-        // In production, this would fetch from a real API
-        for (surahNumber in 1..10) {
-            val ayahCount = getAyahCountForSurah(surahNumber)
-            for (ayahNumber in 1..ayahCount) {
-                allTexts.add(
-                    TafsirTextDto(
-                        tafsirId = tafsirId,
-                        surahNumber = surahNumber,
-                        ayahNumber = ayahNumber,
-                        text = generateMockTafsirText(tafsirId, surahNumber, ayahNumber),
-                        footnotes = emptyList(),
-                        references = emptyList()
-                    )
-                )
+        // Loop through all 114 surahs
+        for (surahNumber in 1..114) {
+            try {
+                // Determine ayah count to properly size requests or just fetch by chapter
+                val surahTexts = getTafsirForSurah(tafsirId, surahNumber)
+                allTexts.addAll(surahTexts)
+            } catch (e: Exception) {
+                println("Failed to fetch tafsir $tafsirId for surah $surahNumber: ${e.message}")
             }
         }
         
@@ -52,60 +51,61 @@ class TafsirApiService(private val client: HttpClient) {
     }
 
     /**
-     * Get tafsir for a specific surah
-     * MOCK IMPLEMENTATION
+     * Get tafsir for a specific surah using real API
+     * Supports both Tafsir (Standard IDs) and Translation-as-Tafsir (ID prefix "trans_")
      */
     suspend fun getTafsirForSurah(tafsirId: String, surahNumber: Int): List<TafsirTextDto> {
-        val texts = mutableListOf<TafsirTextDto>()
-        val ayahCount = getAyahCountForSurah(surahNumber)
-        
-        for (ayahNumber in 1..ayahCount) {
-            texts.add(
+        return if (tafsirId.startsWith("trans_")) {
+            // Fetch Translation as Tafsir
+            val realId = tafsirId.removePrefix("trans_")
+            getTranslationForSurah(tafsirId, realId, surahNumber)
+        } else {
+            // Fetch Real Tafsir
+            val response: TafsirResponse = client.get(
+                "$baseUrl/tafsirs/$tafsirId/by_chapter/$surahNumber"
+            ) {
+                parameter("per_page", 300)
+            }.body()
+            
+            response.tafsirs.map { dto ->
+                val parts = dto.verseKey.split(":")
                 TafsirTextDto(
                     tafsirId = tafsirId,
-                    surahNumber = surahNumber,
-                    ayahNumber = ayahNumber,
-                    text = generateMockTafsirText(tafsirId, surahNumber, ayahNumber),
+                    surahNumber = parts[0].toInt(),
+                    ayahNumber = parts[1].toInt(),
+                    text = dto.text,
                     footnotes = emptyList(),
                     references = emptyList()
                 )
-            )
-        }
-        
-        return texts
-    }
-    
-    /**
-     * Generate mock tafsir text for testing
-     */
-    private fun generateMockTafsirText(tafsirId: String, surahNumber: Int, ayahNumber: Int): String {
-        val tafsirName = when {
-            tafsirId.contains("kathir") -> "Ibn Kathir"
-            tafsirId.contains("jalalayn") -> "Jalalayn"
-            tafsirId.contains("saadi") -> "As-Sa'di"
-            tafsirId.contains("maududi") -> "Maududi"
-            tafsirId.contains("tabari") -> "At-Tabari"
-            tafsirId.contains("tamil") -> "Tamil Commentary"
-            tafsirId.contains("urdu") -> "Urdu Commentary"
-            else -> "Commentary"
-        }
-        
-        return "[$tafsirName] This is a sample commentary for Surah $surahNumber, Ayah $ayahNumber. " +
-               "In a production environment, this would contain the actual tafsir text from the selected source. " +
-               "The commentary would explain the meaning, context, and lessons from this verse."
-    }
-    
-    /**
-     * Helper to get ayah count for each surah
-     */
-    private fun getAyahCountForSurah(surahNumber: Int): Int {
-        return when (surahNumber) {
-            1 -> 7; 2 -> 286; 3 -> 200; 4 -> 176; 5 -> 120
-            6 -> 165; 7 -> 206; 8 -> 75; 9 -> 129; 10 -> 109
-            else -> 50 // Default for mock
+            }
         }
     }
 
+    private suspend fun getTranslationForSurah(originalId: String, resourceId: String, surahNumber: Int): List<TafsirTextDto> {
+        val response: VersesResponse = client.get(
+            "$baseUrl/verses/by_chapter/$surahNumber"
+        ) {
+            parameter("translations", resourceId)
+            parameter("per_page", 300)
+            parameter("fields", "text_uthmani") // Minimize payload
+        }.body()
+
+        return response.verses.mapNotNull { verse ->
+            val translation = verse.translations.firstOrNull { it.resourceId.toString() == resourceId }
+            translation?.let {
+                val parts = verse.verseKey.split(":")
+                TafsirTextDto(
+                    tafsirId = originalId,
+                    surahNumber = parts[0].toInt(),
+                    ayahNumber = parts[1].toInt(),
+                    text = it.text, // Use translation text as tafsir
+                    footnotes = emptyList(),
+                    references = emptyList()
+                )
+            }
+        }
+    }
+    
     /**
      * Get tafsir for a specific ayah
      */
@@ -115,27 +115,50 @@ class TafsirApiService(private val client: HttpClient) {
         ayahNumber: Int
     ): TafsirTextDto? {
         return try {
-            val response: TafsirAyahResponse = client.get(
-                "$baseUrl/tafsirs/$tafsirId/by_ayah/$surahNumber:$ayahNumber"
-            ) {
-                parameter("language", "en")
-            }.body()
-            
-            TafsirTextDto(
-                tafsirId = tafsirId,
-                surahNumber = surahNumber,
-                ayahNumber = ayahNumber,
-                text = response.tafsir.text,
-                footnotes = emptyList(),
-                references = emptyList()
-            )
+            if (tafsirId.startsWith("trans_")) {
+                val realId = tafsirId.removePrefix("trans_")
+                // Fetch translation for single ayah
+                val response: VersesResponse = client.get(
+                    "$baseUrl/verses/by_key/$surahNumber:$ayahNumber"
+                ) {
+                   parameter("translations", realId)
+                }.body()
+                
+                val verse = response.verses.firstOrNull() ?: return null
+                val translation = verse.translations.firstOrNull { it.resourceId.toString() == realId }
+                
+                translation?.let {
+                    TafsirTextDto(
+                        tafsirId = tafsirId,
+                        surahNumber = surahNumber,
+                        ayahNumber = ayahNumber,
+                        text = it.text,
+                        footnotes = emptyList(),
+                        references = emptyList()
+                    )
+                }
+            } else {
+                val response: TafsirAyahResponse = client.get(
+                    "$baseUrl/tafsirs/$tafsirId/by_ayah/$surahNumber:$ayahNumber"
+                ).body()
+                
+                TafsirTextDto(
+                    tafsirId = tafsirId,
+                    surahNumber = surahNumber,
+                    ayahNumber = ayahNumber,
+                    text = response.tafsir.text,
+                    footnotes = emptyList(),
+                    references = emptyList()
+                )
+            }
         } catch (e: Exception) {
+            println("Error fetching ayah tafsir: $e")
             null
         }
     }
 }
 
-// Response DTOs (these would match the actual API structure)
+// Response DTOs
 @kotlinx.serialization.Serializable
 private data class TafsirResponse(
     val tafsirs: List<TafsirItemDto>
@@ -143,8 +166,8 @@ private data class TafsirResponse(
 
 @kotlinx.serialization.Serializable
 private data class TafsirItemDto(
-    @kotlinx.serialization.SerialName("verse_number")
-    val verseNumber: Int,
+    @kotlinx.serialization.SerialName("resource_id") val resourceId: Int,
+    @kotlinx.serialization.SerialName("verse_key") val verseKey: String,
     val text: String
 )
 
@@ -155,5 +178,33 @@ private data class TafsirAyahResponse(
 
 @kotlinx.serialization.Serializable
 private data class TafsirAyahDto(
+    val text: String
+)
+
+@kotlinx.serialization.Serializable
+private data class VersesResponse(
+    val verses: List<VerseDto> = emptyList(),
+    @kotlinx.serialization.SerialName("verse") val verse: VerseDto? = null // Handle single verse response structure if different
+) {
+    // Helper because single verse endpoint might return "verse": {} instead of "verses": []? 
+    // Checking API docs: /verses/by_key returns {"verse": {...}}
+    // So I need to handle that.
+    fun getList(): List<VerseDto> = if (verse != null) listOf(verse) else verses
+}
+// Wait, VersesResponse might differ for by_key vs by_chapter.
+// by_chapter -> { "verses": [] }
+// by_key -> { "verse": {} } 
+// I should handle this carefully.
+
+@kotlinx.serialization.Serializable
+private data class VerseDto(
+    @kotlinx.serialization.SerialName("verse_key") val verseKey: String,
+    val translations: List<TranslationDto> = emptyList()
+)
+
+@kotlinx.serialization.Serializable
+private data class TranslationDto(
+    val id: Int? = null,
+    @kotlinx.serialization.SerialName("resource_id") val resourceId: Int,
     val text: String
 )

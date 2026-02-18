@@ -208,6 +208,8 @@ fun TafsirSelectionScreen(
             }
         }
     }
+}
+    
     // Delete Confirmation Dialog
     tafsirToDelete?.let { tafsir ->
         AlertDialog(
@@ -330,11 +332,11 @@ fun TafsirCard(
             if (isDownloading) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     LinearProgressIndicator(
-                        progress = { downloadProgress ?: 0f },
+                        progress = { downloadProgress },
                         modifier = Modifier.fillMaxWidth()
                     )
                     Text(
-                        "Downloading... ${((downloadProgress ?: 0f) * 100).toInt()}%",
+                        "Downloading... ${(downloadProgress * 100).toInt()}%",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary
                     )

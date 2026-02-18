@@ -83,11 +83,9 @@ class UpdateService : Service() {
             "Version ${updateInfo.version} is now available"
         }
         
-        NotificationService.showNotification(
-            this,
+        AlQuranNotificationManager(this).showReminderNotification(
             "Update Available",
-            message,
-            NotificationService.CHANNEL_ID_GENERAL
+            message
         )
     }
 

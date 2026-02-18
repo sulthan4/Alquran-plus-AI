@@ -158,7 +158,8 @@ enum class MatchType {
     SEMANTIC,
     ROOT,
     MORPHOLOGY,
-    FUZZY
+    FUZZY,
+    TOPIC
 }
 
 /** Highlight type */

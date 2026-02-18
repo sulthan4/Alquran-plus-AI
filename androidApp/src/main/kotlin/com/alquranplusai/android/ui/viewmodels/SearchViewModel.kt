@@ -84,24 +84,28 @@ class SearchViewModel(
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
             delay(300) // Debounce
-            performSearch(query)
+            performSearch(query, saveToHistory = false) // Don't save on typing
         }
     }
 
-    private fun performSearch(query: String) {
+    private fun performSearch(query: String, saveToHistory: Boolean = false) {
         if (query.isBlank()) {
             _searchResults.value = emptyList()
             return
         }
         
-        _isSearching.value = true
+        // Cancel any existing search job to prevent race conditions
+        searchJob?.cancel()
         
-        viewModelScope.launch {
+        searchJob = viewModelScope.launch {
+            _isSearching.value = true
             try {
                 // Check if filters are applied
                 if (_selectedSurahs.value.isNotEmpty() || _selectedTranslations.value.isNotEmpty()) {
                     searchRepository.searchWithFilters(query, _selectedSurahs.value, _selectedTranslations.value).collect { results ->
-                        _searchResults.value = results
+                        if (isActive) {
+                             _searchResults.value = results
+                        }
                     }
                 } else {
                     val flow = when (_searchType.value) {
@@ -113,21 +117,31 @@ class SearchViewModel(
                     }
 
                     flow.collect { results ->
-                        _searchResults.value = results
+                        if (isActive) {
+                             _searchResults.value = results
+                        }
                     }
                 }
-                searchRepository.saveRecentSearch(query)
+                
+                // Only save to history when user explicitly submits
+                if (saveToHistory && isActive) {
+                    searchRepository.saveRecentSearch(query)
+                }
             } catch (e: Exception) {
-                // TODO: Handle error
+                println("Search error: ${e.message}")
+                e.printStackTrace()
             } finally {
-                _isSearching.value = false
+                if (isActive) {
+                    _isSearching.value = false
+                }
             }
         }
     }
 
     fun search(query: String) {
         _searchQuery.value = query
-        performSearch(query)
+        searchJob?.cancel() // Cancel any pending debounced search
+        performSearch(query, saveToHistory = true) // Save when user explicitly submits
     }
     
     fun applyFilters(surahs: List<Int>, translations: List<String>) {

@@ -1,6 +1,7 @@
 package com.alquranplusai.android.ui.screens.quran
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,6 +16,9 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Translate
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -52,10 +56,14 @@ fun ReadingScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val fontSize by viewModel.fontSize.collectAsState()
     val bookmarksMap by viewModel.bookmarksMap.collectAsState()
+    val translationsMap by viewModel.translationsMap.collectAsState()
     
     // New State Observations
     val readingMode by viewModel.readingMode.collectAsState()
     val isWordByWordEnabled by viewModel.isWordByWordEnabled.collectAsState()
+    
+    // Reciter selection bottom sheet
+    var showReciterSheet by remember { mutableStateOf(false) }
     
     val listState = rememberLazyListState()
 
@@ -90,8 +98,27 @@ fun ReadingScreen(
                 val index = ayahs.indexOfFirst { it.ayahNumber == ayahNum }
                 if (index != -1) {
                     // Adjust index for Bismillah item if present
-                    val targetIndex = if (surahNumber != 9) index + 1 else index
+                    val targetIndex = if (surahNumber != 9 && surahNumber != 1) index + 1 else index
                     listState.animateScrollToItem(targetIndex)
+                }
+            }
+        }
+    }
+    
+    // Scroll to initial ayah when screen loads (from search/bookmarks/etc)
+    LaunchedEffect(ayahs, ayahNumber, readingMode) {
+        if (ayahs.isNotEmpty() && ayahNumber > 1) {
+            println("AlQuranPlusAI: Scrolling to initial ayah $ayahNumber")
+            val targetAyah = ayahs.find { it.ayahNumber == ayahNumber }
+            targetAyah?.let { ayah ->
+                if (readingMode == com.alquranplusai.domain.models.ReadingMode.CONTINUOUS) {
+                    val index = ayahs.indexOf(ayah)
+                    if (index != -1) {
+                        // Adjust index for Bismillah item if present
+                        val targetIndex = if (surahNumber != 9 && surahNumber != 1) index + 1 else index
+                        listState.scrollToItem(targetIndex)
+                        println("AlQuranPlusAI: Scrolled to ayah at index $targetIndex")
+                    }
                 }
             }
         }
@@ -201,6 +228,77 @@ fun ReadingScreen(
             }
         }
     }
+    
+    // Reciter Selection Bottom Sheet
+    if (showReciterSheet) {
+        val reciters by audioViewModel.reciters.collectAsState()
+        val selectedReciter by audioViewModel.selectedReciter.collectAsState()
+        
+        ModalBottomSheet(
+            onDismissRequest = { showReciterSheet = false }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Select Reciter",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                
+                LazyColumn {
+                    items(reciters) { reciter ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                                .clickable {
+                                    audioViewModel.selectReciter(reciter)
+                                    showReciterSheet = false
+                                },
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (selectedReciter?.id == reciter.id) 
+                                    MaterialTheme.colorScheme.primaryContainer 
+                                else 
+                                    MaterialTheme.colorScheme.surface
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = reciter.name,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                    Text(
+                                        text = reciter.nameArabic,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                                if (selectedReciter?.id == reciter.id) {
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = "Selected",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -219,6 +317,14 @@ fun ReadingScreen(
                     }
                 },
                 actions = {
+                    // Reciter selection button
+                    IconButton(onClick = { showReciterSheet = true }) {
+                        Icon(
+                            imageVector = Icons.Default.Mic,
+                            contentDescription = "Select Reciter"
+                        )
+                    }
+                    
                     IconButton(onClick = { 
                         // If ayahs are not loaded yet, we can still attempt to play the surah
                         audioViewModel.togglePlayPause(surahNumber)
@@ -266,6 +372,22 @@ fun ReadingScreen(
                         // Page View Implementation
                         val pages = remember(ayahs) { ayahs.groupBy { it.pageNumber }.toList().sortedBy { it.first } }
                         val pagerState = androidx.compose.foundation.pager.rememberPagerState(pageCount = { pages.size })
+                        
+                        // Scroll to the page containing the initial ayah  
+                        LaunchedEffect(ayahNumber, pages) {
+                            if (ayahNumber > 1) {
+                                val targetAyah = ayahs.find { it.ayahNumber == ayahNumber }
+                                targetAyah?.let { ayah ->
+                                    val pageIndex = pages.indexOfFirst { (_, pageAyahs) ->
+                                        pageAyahs.any { it.ayahNumber == ayah.ayahNumber }
+                                    }
+                                    if (pageIndex != -1) {
+                                        pagerState.scrollToPage(pageIndex)
+                                        println("AlQuranPlusAI: Scrolled to page $pageIndex for ayah $ayahNumber")
+                                    }
+                                }
+                            }
+                        }
                         
                         androidx.compose.foundation.pager.HorizontalPager(
                             state = pagerState,
@@ -381,6 +503,7 @@ fun AyahItem(
     fontSize: Int,
     isBookmarked: Boolean,
     onToggleBookmark: () -> Unit,
+    translationsMap: Map<String, com.alquranplusai.domain.models.Translation> = emptyMap(),
     activeWordPosition: Int? = null,
     activeAyahNumber: Int? = null,
     isSurahPlaying: Boolean = false,
@@ -466,21 +589,50 @@ fun AyahItem(
              )
         }
         
+        
         // Translations
         if (ayah.translations.isNotEmpty()) {
             Spacer(modifier = Modifier.height(12.dp))
             ayah.translations.forEach { translation ->
-                Text(
-                    text = translation.text.replace(Regex("<[^>]*>"), ""), // Basic HTML tag removal
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontSize = (fontSize * 0.9).sp,
-                        lineHeight = (fontSize * 1.4).sp
-                    ),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                )
+                // Translation header with translator name
+                val translatorName = translationsMap[translation.translationId]?. let {
+                    "${it.languageCode} - ${it.name}"
+                } ?: translation.translationId
+                
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Translate,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = translatorName,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                    
+                    Text(
+                        text = translation.text.replace(Regex("<[^>]*>"), ""), // Basic HTML tag removal
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontSize = (fontSize * 0.9).sp,
+                            lineHeight = (fontSize * 1.4).sp
+                        ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
         
@@ -509,7 +661,8 @@ fun AyahItem(
                 Icon(
                     imageVector = if (isBookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
                     contentDescription = if (isBookmarked) "Remove Bookmark" else "Bookmark",
-                    tint = if (isBookmarked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = if (isBookmarked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                    modifier = Modifier.size(20.dp)
                 )
             }
             Box(

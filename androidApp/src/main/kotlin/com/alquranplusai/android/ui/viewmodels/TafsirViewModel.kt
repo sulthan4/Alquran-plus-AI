@@ -157,21 +157,33 @@ class TafsirViewModel(
     fun downloadTafsir(tafsirId: String) {
         viewModelScope.launch {
             try {
+                println("Starting download for tafsir: $tafsirId")
                 tafsirRepository.downloadTafsir(tafsirId).collect { progress ->
                     if (progress >= 0) {
                         _downloadProgress.value = _downloadProgress.value + (tafsirId to progress)
                         
                         // Refresh downloaded tafsirs when complete
                         if (progress >= 1.0f) {
+                            println("Download completed for tafsir: $tafsirId")
                             loadDownloadedTafsirs()
                             loadAllTafsirs()
+                            // Clear progress after brief delay to show completion
+                            kotlinx.coroutines.delay(500)
+                            _downloadProgress.value = _downloadProgress.value - tafsirId
                         }
                     } else {
-                        _error.value = "Failed to download tafsir: $tafsirId"
+                        // Error occurred (progress is -1.0f)
+                        println("Download failed for tafsir: $tafsirId")
+                        _error.value = "Failed to download tafsir. Please check your internet connection and try again."
+                        // Clear progress to reset button state
+                        _downloadProgress.value = _downloadProgress.value - tafsirId
                     }
                 }
             } catch (e: Exception) {
+                println("Download error for tafsir $tafsirId: ${e.message}")
                 _error.value = "Download error: ${e.message}"
+                // Clear progress to reset button state
+                _downloadProgress.value = _downloadProgress.value - tafsirId
             }
         }
     }

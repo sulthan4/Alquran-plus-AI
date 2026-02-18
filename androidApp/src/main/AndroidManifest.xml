@@ -103,11 +103,12 @@
             android:enabled="true"
             android:exported="false" />
 
-        <!-- Notification Service -->
+        <!-- Notification Manager (Centralized) -->
         <service
             android:name=".services.NotificationService"
-            android:enabled="true"
-            android:exported="false" />
+            android:enabled="false"
+            android:exported="false"
+            tools:node="remove" />
 
         <!-- Update Service -->
         <service
@@ -177,7 +178,7 @@
             </intent-filter>
         </receiver>
 
-        <!-- Reminder Receiver (legacy) -->
+         <!-- Reminder Receiver (Consolidated) -->
         <receiver
             android:name=".receivers.ReminderReceiver"
             android:enabled="true"

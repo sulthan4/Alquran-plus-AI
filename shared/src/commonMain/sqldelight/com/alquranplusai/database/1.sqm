@@ -1,0 +1,3 @@
+-- Migration from version 1 to 2
+ALTER TABLE UserStatistics ADD COLUMN lastSurah INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE UserStatistics ADD COLUMN lastAyah INTEGER NOT NULL DEFAULT 1;

@@ -199,20 +199,16 @@ class SyncService : Service() {
     }
 
     private fun notifySyncComplete(message: String) {
-        NotificationService.showNotification(
-            this,
+        AlQuranNotificationManager(this).showReminderNotification(
             "Sync Complete",
-            message,
-            NotificationService.CHANNEL_ID_GENERAL
+            message
         )
     }
 
     private fun notifySyncFailed(message: String) {
-        NotificationService.showNotification(
-            this,
+        AlQuranNotificationManager(this).showReminderNotification(
             "Sync Failed",
-            message,
-            NotificationService.CHANNEL_ID_GENERAL
+            message
         )
     }
 

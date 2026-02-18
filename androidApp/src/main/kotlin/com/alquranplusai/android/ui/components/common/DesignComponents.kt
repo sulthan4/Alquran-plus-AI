@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alquranplusai.android.ui.theme.Elevation
@@ -24,8 +25,8 @@ import com.alquranplusai.android.ui.theme.Spacing
 @Composable
 fun FeatureCard(
     title: String,
-    icon: ImageVector,
-    gradient: Brush,
+    icon: Any, // Can be ImageVector or Image resource
+    background: Color,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -33,74 +34,75 @@ fun FeatureCard(
         modifier = modifier
             .aspectRatio(1f)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = Elevation.medium)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = background),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(gradient),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Icon(
+            when (icon) {
+                is ImageVector -> Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    modifier = Modifier.size(48.dp),
+                    modifier = Modifier.size(56.dp),
                     tint = Color.White
                 )
-                Spacer(modifier = Modifier.height(Spacing.sm))
-                Text(
-                    text = title,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.White
-                )
+                // Add support for other icon types if needed (e.g., Painter)
             }
+            Spacer(modifier = Modifier.height(Spacing.sm))
+            Text(
+                text = title,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
 
 /**
  * Quick Stats Card
- * Used for displaying streak, ayahs read, time spent, etc.
  */
 @Composable
 fun StatCard(
     icon: String,
     value: String,
     label: String,
+    backgroundColor: Color = Color(0xFFF5F5F5),
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = Elevation.low)
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = backgroundColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Spacing.md),
+                .padding(vertical = Spacing.md, horizontal = Spacing.sm),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = icon,
-                fontSize = 24.sp
+                fontSize = 28.sp
             )
             Spacer(modifier = Modifier.height(Spacing.xs))
             Text(
                 text = value,
-                fontSize = 20.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = Color.Black
             )
             Text(
                 text = label,
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                fontSize = 13.sp,
+                color = Color.Gray,
+                fontWeight = FontWeight.Medium
             )
         }
     }

@@ -1,7 +1,7 @@
 package com.alquranplusai.android.integration
 
 import android.content.Context
-import com.alquranplusai.android.utils.NotificationHelper
+import com.alquranplusai.android.services.AlQuranNotificationManager
 import com.alquranplusai.android.workers.DownloadWorker
 import com.alquranplusai.domain.models.DownloadItem
 import com.alquranplusai.domain.models.DownloadStatus
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class DownloadNotificationIntegration(
     private val context: Context,
     private val downloadRepository: DownloadRepository,
-    private val notificationHelper: NotificationHelper
+    private val notificationManager: AlQuranNotificationManager
 ) {
     
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
@@ -44,27 +44,27 @@ class DownloadNotificationIntegration(
                     0
                 }
                 
-                notificationHelper.showDownloadProgress(
+                notificationManager.showDownloadProgress(
                     downloadId = download.id,
                     title = download.name,
                     progress = progress
                 )
             }
             DownloadStatus.COMPLETED -> {
-                notificationHelper.showDownloadComplete(
+                notificationManager.showDownloadComplete(
                     downloadId = download.id,
                     title = download.name
                 )
             }
             DownloadStatus.FAILED -> {
-                notificationHelper.showDownloadFailed(
+                notificationManager.showDownloadFailed(
                     downloadId = download.id,
                     title = download.name,
                     error = "Download failed"
                 )
             }
             DownloadStatus.CANCELLED -> {
-                notificationHelper.cancelDownloadNotification(download.id)
+                notificationManager.cancelDownloadNotification(download.id)
             }
             else -> {
                 // No notification for QUEUED or PAUSED
@@ -77,7 +77,7 @@ class DownloadNotificationIntegration(
         DownloadWorker.enqueue(context, download.id)
         
         // Show initial notification
-        notificationHelper.showDownloadProgress(
+        notificationManager.showDownloadProgress(
             downloadId = download.id,
             title = download.name,
             progress = 0
@@ -89,6 +89,6 @@ class DownloadNotificationIntegration(
         DownloadWorker.cancel(context, downloadId)
         
         // Cancel notification
-        notificationHelper.cancelDownloadNotification(downloadId)
+        notificationManager.cancelDownloadNotification(downloadId)
     }
 }

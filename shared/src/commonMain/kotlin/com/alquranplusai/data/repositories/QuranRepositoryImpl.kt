@@ -222,7 +222,7 @@ class QuranRepositoryImpl(
                     verseDto.words.forEach { wordDto ->
                          database.wordQueries.insert(
                             ayahId = ayahId,
-                            position = wordDto.position.toLong(),
+                            position = (wordDto.position ?: 0).toLong(),
                             text = wordDto.textUthmani ?: wordDto.text ?: wordDto.codeV1 ?: "",
                             textUthmani = wordDto.textUthmani ?: wordDto.text ?: "",
                             textSimple = wordDto.textUthmani ?: wordDto.text ?: "",
@@ -389,13 +389,15 @@ class QuranRepositoryImpl(
     // Reading position tracking
     override suspend fun saveReadingPosition(surahNumber: Int, ayahNumber: Int) {
         database.userQueries.updateReadingPosition(
+                lastSurah = surahNumber.toLong(),
+                lastAyah = ayahNumber.toLong(),
                 lastActiveDate = Clock.System.now().toEpochMilliseconds(),
                 userId = getCurrentUserId()
         )
     }
 
     override suspend fun getLastReadingPosition(): Flow<Pair<Int, Int>?> = flow {
-        val position = database.userQueries.getReadingPosition("current_user").executeAsOneOrNull()
+        val position = database.userQueries.getReadingPosition(getCurrentUserId()).executeAsOneOrNull()
         emit(position?.let { Pair(it.lastSurah.toInt(), it.lastAyah.toInt()) })
     }
 
@@ -403,25 +405,25 @@ class QuranRepositoryImpl(
     override suspend fun markSurahAsCompleted(surahNumber: Int) {
         database.userQueries.markSurahComplete(
                 lastActiveDate = Clock.System.now().toEpochMilliseconds(),
-                userId = "current_user"
+                userId = getCurrentUserId()
         )
     }
 
     override suspend fun markJuzAsCompleted(juzNumber: Int) {
         database.userQueries.markJuzComplete(
                 lastActiveDate = Clock.System.now().toEpochMilliseconds(),
-                userId = "current_user"
+                userId = getCurrentUserId()
         )
     }
 
     override suspend fun getCompletedSurahs(): Flow<List<Int>> = flow {
-        val completed = database.userQueries.getCompletedSurahs("current_user").executeAsList()
-        emit(completed.map { it.toInt() })
+        val count = database.userQueries.getCompletedSurahs(getCurrentUserId()).executeAsOneOrNull() ?: 0
+        emit(List(count.toInt()) { it + 1 })
     }
 
     override suspend fun getCompletedJuz(): Flow<List<Int>> = flow {
-        val completed = database.userQueries.getCompletedJuz("current_user").executeAsList()
-        emit(completed.map { it.toInt() })
+        val count = database.userQueries.getCompletedJuz(getCurrentUserId()).executeAsOneOrNull() ?: 0
+        emit(List(count.toInt()) { it + 1 })
     }
     override suspend fun getWordsByAyah(ayahId: Long): Flow<List<Word>> = flow { emit(emptyList()) }
     override suspend fun getWordById(wordId: Long): Flow<Word?> = flow { emit(null) }

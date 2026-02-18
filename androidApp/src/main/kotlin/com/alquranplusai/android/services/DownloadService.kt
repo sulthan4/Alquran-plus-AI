@@ -42,7 +42,12 @@ class DownloadService : Service() {
                 putExtra("url", url)
                 putExtra("fileName", fileName)
             }
-            context.startService(intent)
+            // startForegroundService required for API 26+ to keep service alive in background
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
         }
     }
 
@@ -54,6 +59,14 @@ class DownloadService : Service() {
         super.onCreate()
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel()
+        // Must call startForeground() within 5 seconds of startForegroundService() on API 26+
+        val initialNotification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("Download Service")
+            .setContentText("Preparing download...")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setOngoing(true)
+            .build()
+        startForeground(NOTIFICATION_ID, initialNotification)
     }
 
     override fun onBind(intent: Intent?): IBinder = binder

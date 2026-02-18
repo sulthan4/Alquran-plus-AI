@@ -16,6 +16,7 @@ class DatabaseSeeder(private val database: AlQuranDatabase) {
         seedSurahs()
         seedAyahs()
         seedTranslations()
+        seedUser()
     }
     
     /**
@@ -169,6 +170,56 @@ class DatabaseSeeder(private val database: AlQuranDatabase) {
                 sajdaNumber = null
             )
         }
+    }
+    
+    private suspend fun seedUser() {
+        val now = kotlinx.datetime.Clock.System.now().toEpochMilliseconds()
+        val userId = "current_user"
+        
+        // Seed Default User
+        database.userQueries.insertUser(
+            id = userId,
+            email = "mohamed@example.com",
+            username = "mohamed",
+            displayName = "Mohamed",
+            firstName = "Mohamed",
+            lastName = "",
+            avatarUrl = null,
+            bio = "AlQuran Plus AI User",
+            country = "Egypt",
+            language = "en",
+            timezone = "UTC",
+            dateOfBirth = null,
+            gender = "Male",
+            createdAt = now,
+            updatedAt = now,
+            lastLoginAt = now,
+            isEmailVerified = 1,
+            isActive = 1
+        )
+        
+        // Seed Initial Statistics
+        database.userQueries.insertUserStatistics(
+            userId = userId,
+            totalReadingTime = 1500L, // 25 minutes
+            totalAyahsRead = 120L,
+            totalSessions = 15L,
+            currentStreak = 7L,
+            longestStreak = 10L,
+            quranCompletions = 0L,
+            surahsCompleted = 12L,
+            juzCompleted = 1L,
+            bookmarksCount = 5L,
+            notesCount = 2L,
+            quizzesCompleted = 3L,
+            averageQuizScore = 85.0,
+            achievementsUnlocked = 2L,
+            rank = 1L,
+            joinedDate = now - (10 * 24 * 60 * 60 * 1000L), // 10 days ago
+            lastActiveDate = now,
+            lastSurah = 1L,
+            lastAyah = 1L
+        )
     }
     
     private suspend fun seedTranslations() {

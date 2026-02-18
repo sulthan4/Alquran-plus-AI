@@ -1,8 +1,8 @@
 package com.alquranplusai.android.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alquranplusai.domain.repositories.UserRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,27 +10,33 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class SplashViewModel(
-    private val userRepository: UserRepository
+    private val context: Context
 ) : ViewModel() {
+
+    companion object {
+        const val PREFS_NAME = "alquran_prefs"
+        const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
+    }
 
     private val _destination = MutableStateFlow<SplashDestination?>(null)
     val destination: StateFlow<SplashDestination?> = _destination.asStateFlow()
 
     init {
-        checkAuthState()
+        checkOnboardingState()
     }
 
-    private fun checkAuthState() {
+    private fun checkOnboardingState() {
         viewModelScope.launch {
             // Artificial delay for splash branding
             delay(1500)
             
-            userRepository.isLoggedIn().collect { isLoggedIn ->
-                if (isLoggedIn) {
-                    _destination.value = SplashDestination.Home
-                } else {
-                    _destination.value = SplashDestination.Onboarding
-                }
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val onboardingCompleted = prefs.getBoolean(KEY_ONBOARDING_COMPLETED, false)
+            
+            _destination.value = if (onboardingCompleted) {
+                SplashDestination.Home
+            } else {
+                SplashDestination.Onboarding
             }
         }
     }

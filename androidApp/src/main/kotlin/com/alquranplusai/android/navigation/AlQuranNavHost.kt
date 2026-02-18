@@ -55,6 +55,7 @@ fun AlQuranNavHost(
         }
 
         composable(NavRoutes.ONBOARDING) {
+            val context = androidx.compose.ui.platform.LocalContext.current
             com.alquranplusai.android.ui.screens.OnboardingScreen(
                 onComplete = {
                     val permissions = arrayOf(
@@ -63,9 +64,9 @@ fun AlQuranNavHost(
                         arrayOf(android.Manifest.permission.POST_NOTIFICATIONS)
                     } else emptyArray()
 
-                    val permissionManager = com.alquranplusai.android.utils.PermissionManager(navController.context as android.app.Activity)
+                    val permissionManager = com.alquranplusai.android.utils.PermissionManager(context)
                     if (permissionManager.hasPermissions(permissions)) {
-                         navController.navigate(NavRoutes.HOME) {
+                        navController.navigate(NavRoutes.HOME) {
                             popUpTo(NavRoutes.ONBOARDING) { inclusive = true }
                         }
                     } else {

@@ -33,7 +33,7 @@ class SettingsDataStore(
                     lineSpacing = 1.5,
                     showTajweed = 1,
                     showTransliteration = 0,
-                    showWordByWord = 0,
+                    showWordByWord = 1,
                     defaultReciterId = null,
                     autoPlayAudio = 0,
                     audioPlaybackSpeed = 1.0,
@@ -55,6 +55,31 @@ class SettingsDataStore(
                     autoBackup = 1,
                     backupFrequency = "WEEKLY"
                 )
+            } else {
+                // Migration v1: Ensure word-by-word is enabled by default for existing users
+                // Use wordByWordAudio as a flag to indicate if this one-time migration has run
+                if (exists.wordByWordAudio == 0L) {
+                    database.settingsQueries.updateReadingPreferences(
+                        defaultReadingMode = exists.defaultReadingMode,
+                        defaultTextType = exists.defaultTextType,
+                        arabicFontFamily = exists.arabicFontFamily,
+                        arabicFontSize = exists.arabicFontSize,
+                        translationFontSize = exists.translationFontSize,
+                        lineSpacing = exists.lineSpacing,
+                        showTajweed = exists.showTajweed,
+                        showTransliteration = exists.showTransliteration,
+                        showWordByWord = 1L,
+                        userId = currentUserId
+                    )
+                    // Mark migration as completed using the secondary flag
+                    database.settingsQueries.updateAudioPreferences(
+                        defaultReciterId = exists.defaultReciterId,
+                        autoPlayAudio = exists.autoPlayAudio,
+                        audioPlaybackSpeed = exists.audioPlaybackSpeed,
+                        wordByWordAudio = 1L,
+                        userId = currentUserId
+                    )
+                }
             }
         } catch (e: Exception) {
             // Log error but don't crash

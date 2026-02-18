@@ -3,7 +3,6 @@ package com.alquranplusai.android
 import android.app.Application
 import android.util.Log
 import com.alquranplusai.android.di.DiModules
-import com.alquranplusai.android.utils.NotificationHelper
 import com.alquranplusai.android.utils.DatabaseSeeder
 import com.alquranplusai.data.database.AlQuranDatabaseWrapper
 import com.alquranplusai.di.SharedKoinModules

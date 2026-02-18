@@ -105,10 +105,25 @@ class AudioPlayerViewModel(
             position >= timing.startTime && position < timing.endTime 
         }?.verseNumber
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
-    
+
+    // Update currentAyah dynamically based on playback position
     init {
         loadReciters()
         observeSettings()
+        
+        // Dynamic Ayah tracking
+        viewModelScope.launch {
+            activeAyahNumber.collect { ayahNum ->
+                if (ayahNum != null && _currentAyah.value?.ayahNumber != ayahNum) {
+                    val surahNum = activeSurahNumber.value ?: _currentAyah.value?.surahNumber ?: return@collect
+                    quranRepository.getAyahByNumber(surahNum, ayahNum).collect { ayah ->
+                        if (ayah != null) {
+                            _currentAyah.value = ayah
+                        }
+                    }
+                }
+            }
+        }
     }
     
     private fun observeSettings() {

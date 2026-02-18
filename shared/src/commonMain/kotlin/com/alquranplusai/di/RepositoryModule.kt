@@ -21,8 +21,8 @@ val repositoryModule = module {
     // Download Repository - Managing downloads
     single<DownloadRepository> { DownloadRepositoryImpl(get(), get()) }
     
-    // Audio Repository
-    single<AudioRepository> { AudioRepositoryImpl(get(), get()) }
+    // Audio Repository - with Quran.com API for word timings
+    single<AudioRepository> { AudioRepositoryImpl(get(), get(), get()) }
     
     // Bookmark Repository - Stubbed (tables exist but not populated)
     single<BookmarkRepository> { BookmarkRepositoryImpl(get()) }
@@ -38,4 +38,7 @@ val repositoryModule = module {
     
     // User Repository - Stubbed (backend not implemented)
     single<UserRepository> { UserRepositoryImpl(get()) }
+    
+    // Quran Data Loader - For loading complete Quran from API
+    single { com.alquranplusai.data.services.QuranDataLoader(get(), get()) }
 }

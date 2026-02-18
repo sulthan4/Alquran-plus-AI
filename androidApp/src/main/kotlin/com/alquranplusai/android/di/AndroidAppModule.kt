@@ -2,6 +2,7 @@ package com.alquranplusai.android.di
 
 import com.alquranplusai.android.services.AlQuranNotificationManager
 import com.alquranplusai.android.ui.viewmodels.*
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -70,7 +71,7 @@ val androidAppModule = module {
     viewModel { SettingsViewModel(get()) }
     viewModel { ReadingPreferencesViewModel(get()) }
     viewModel { AudioSettingsViewModel(get()) }
-    viewModel { NotificationSettingsViewModel(get()) }
+    viewModel { NotificationSettingsViewModel(androidContext(), get()) }
     viewModel { PrivacySettingsViewModel(get()) }
     viewModel { BackupSettingsViewModel(get()) }
     viewModel { LanguageSettingsViewModel(get()) }
@@ -78,9 +79,10 @@ val androidAppModule = module {
     viewModel { DisplaySettingsViewModel(get()) }
     
     // Onboarding & Splash ViewModels
-    viewModel { SplashViewModel(get()) }
-    viewModel { OnboardingViewModel(get()) }
+    viewModel { SplashViewModel(androidContext()) }
+    viewModel { OnboardingViewModel(androidContext()) }
     
     // Android-specific managers
-    single { AlQuranNotificationManager(get()) }
+    single { AlQuranNotificationManager(androidContext()) }
+    single { com.alquranplusai.android.integration.DownloadNotificationIntegration(androidContext(), get(), get()) }
 }

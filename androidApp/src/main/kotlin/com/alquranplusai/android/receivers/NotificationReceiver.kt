@@ -3,7 +3,6 @@ package com.alquranplusai.android.receivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.alquranplusai.android.services.NotificationService
 
 class NotificationReceiver : BroadcastReceiver() {
 
